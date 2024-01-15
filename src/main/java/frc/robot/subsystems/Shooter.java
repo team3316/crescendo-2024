@@ -1,18 +1,18 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.constantsShooter;
 import frc.robot.motors.DBugSparkFlex;
-import frc.robot.motors.DBugSparkMax;
+
 import frc.robot.motors.PIDFGains;
 
-import com.revrobotics.SparkFlexExternalEncoder;
+
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
-import edu.wpi.first.math.controller.PIDController;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
