@@ -1,16 +1,17 @@
 package frc.robot.motors;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import frc.robot.utils.Within;
 
-public class DBugSparkMax extends CANSparkMax {
+public class DBugSparkFlex extends CANSparkFlex {
+
     private SparkPIDController _pidController;
     private RelativeEncoder _encoder;
 
-    public DBugSparkMax(int deviceNumber) {
+    public DBugSparkFlex(int deviceNumber) {
         super(deviceNumber, MotorType.kBrushless);
 
         this._encoder = this.getEncoder();
@@ -58,13 +59,13 @@ public class DBugSparkMax extends CANSparkMax {
         return this._encoder.getPosition();
     }
 
-    public static DBugSparkMax create(
+    public static DBugSparkFlex create(
             int id,
             PIDFGains gains,
             double positionFactor,
             double velocityFactor,
             double position) {
-        DBugSparkMax sparkMax = new DBugSparkMax(id);
+        DBugSparkFlex sparkMax = new DBugSparkFlex(id);
         sparkMax.restoreFactoryDefaults();
         sparkMax.setCANTimeout(50);
         sparkMax.setupPIDF(gains);
@@ -82,7 +83,7 @@ public class DBugSparkMax extends CANSparkMax {
         return sparkMax;
     }
 
-    public static DBugSparkMax create(int id) {
+    public static DBugSparkFlex create(int id) {
         return create(id, new PIDFGains(0), 1, 1, 0);
     }
 
@@ -113,4 +114,5 @@ public class DBugSparkMax extends CANSparkMax {
             return false;
         return true;
     }
+    
 }
