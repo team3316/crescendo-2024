@@ -10,10 +10,10 @@ import frc.robot.motors.PIDFGains;
 
 
 import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase{
@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase{
     private DBugSparkFlex _SparkFlexLeftFollower;
     private ShooterState _ShooterState;
 
-    private SimpleMotorFeedforward feedForward;
+
     
 
     public static enum ShooterState{
@@ -39,12 +39,11 @@ public class Shooter extends SubsystemBase{
         _SparkFlexRightLeader = DBugSparkFlex.create(constantsShooter.SparkFlexRightPort);
         _SparkFlexLeftFollower = DBugSparkFlex.create(constantsShooter.SparkFlexLeftPort);
 
-        _SparkFlexLeftFollower.setupPIDF(new PIDFGains(constantsShooter.kpShooter));
+        _SparkFlexLeftFollower.setupPIDF(new PIDFGains(constantsShooter.kpShooter,0,0,constantsShooter.kfShooter));
         
 
         _SparkFlexLeftFollower.follow(_SparkFlexRightLeader, true);
 
-        feedForward = new SimpleMotorFeedforward(0, constantsShooter.kvFeedForwardShooter);
 
 
     }
@@ -54,19 +53,23 @@ public class Shooter extends SubsystemBase{
     }
 
     public Command getSetStateCommand(ShooterState shooterState){
-        return new InstantCommand(() -> setState(shooterState), this);
-
-        
+        //only sets the Shooter's state, doesn't stops shooting independently
+        return new InstantCommand(() -> setState(shooterState), this); 
     }
+
+
 
     private void setState(ShooterState shooterState){
         _ShooterState = shooterState;
-        _SparkFlexRightLeader.setReference(shooterState.v, ControlType.kVelocity, 0, feedForward.calculate(shooterState.v), ArbFFUnits.kVoltage);
+        _SparkFlexRightLeader.setReference(shooterState.v, ControlType.kVelocity);
+
         SmartDashboard.putString("State:",_ShooterState.toString());
+        //prints the state change ont the SmartDashboard
     }
 
     @Override
     public void periodic() {
+        //prints the velocity to the SmartDashboard
         SmartDashboard.putNumber("velocity, rpm", _SparkFlexRightLeader.getVelocity());
 
     }

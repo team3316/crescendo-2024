@@ -6,5 +6,5 @@ public class constantsShooter {
     public static final int SparFlexShootingVelocity = 0; //rpm
     public static final int SparkFlexUnShootingVelocity = 0;//rpm
     public static final double kpShooter = 1;
-    public static final double kvFeedForwardShooter = 0.00178571428; // v/rpm
+    public static final double kfShooter = 0.00178571428; // (1/560)v/rpm 
 }
