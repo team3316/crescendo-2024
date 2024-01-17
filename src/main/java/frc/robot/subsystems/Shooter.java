@@ -27,10 +27,10 @@ public class Shooter extends SubsystemBase{
     public static enum ShooterState{
         ON(constantsShooter.SparFlexShootingVelocity),
         OFF(constantsShooter.SparkFlexUnShootingVelocity);
-        public final double v;
+        public final double velocity;
 
-        private ShooterState(double v){
-            this.v = v;
+        private ShooterState(double velocity){
+            this.velocity = velocity;
         }
     }
 
@@ -44,6 +44,9 @@ public class Shooter extends SubsystemBase{
 
         _SparkFlexLeftFollower.follow(_SparkFlexRightLeader, true);
 
+        //sets the shooter state to OFF in the beginning
+        this._ShooterState = ShooterState.OFF;
+        SmartDashboard.putString("State:", "OFF, enabled");
 
 
     }
@@ -61,7 +64,7 @@ public class Shooter extends SubsystemBase{
 
     private void setState(ShooterState shooterState){
         _ShooterState = shooterState;
-        _SparkFlexRightLeader.setReference(shooterState.v, ControlType.kVelocity);
+        _SparkFlexRightLeader.setReference(shooterState.velocity, ControlType.kVelocity);
 
         SmartDashboard.putString("State:",_ShooterState.toString());
         //prints the state change ont the SmartDashboard
@@ -72,6 +75,15 @@ public class Shooter extends SubsystemBase{
         //prints the velocity to the SmartDashboard
         SmartDashboard.putNumber("velocity, rpm", _SparkFlexRightLeader.getVelocity());
 
+    }
+
+    //runs when is disable
+    public void disableInit(){
+        this._ShooterState = ShooterState.OFF;
+        _SparkFlexRightLeader.setReference(_ShooterState.velocity, ControlType.kVelocity);
+
+        SmartDashboard.putString("State:",_ShooterState.toString() + ", disabled");
+        //prints the state change ont the SmartDashboard
     }
 
 }
