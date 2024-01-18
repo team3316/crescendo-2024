@@ -75,7 +75,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
     }
 
-    private Command getSetStateCommand(ArmState targetState) {
+    public Command getSetStateCommand(ArmState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains);
         Supplier<State> targetSupplier = () -> (new State(targetState.angleDeg, 0));
         return new InstantCommand(() -> {_targetState = targetState;}).alongWith(
@@ -92,16 +92,16 @@ public class Arm extends SubsystemBase {
         return _leader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
     }
 
-    public double getArmPositionDeg() {
+    public double getPositionDeg() {
         return _leader.getPosition();
     }
 
-    public double getArmVelocityDegPerSec() {
+    public double getVelocityDegPerSec() {
         return _leader.getVelocity();
     }
 
     private State getCurrentTrapezoidState() {
-        return new State(getArmPositionDeg(), getArmVelocityDegPerSec());
+        return new State(getPositionDeg(), getVelocityDegPerSec());
     }
 
     public void stop() {
@@ -110,8 +110,8 @@ public class Arm extends SubsystemBase {
 
     private void updateSDB() {
         SmartDashboard.putString("target arm state", _targetState.toString());
-        SmartDashboard.putNumber("current arm position (deg)", getArmPositionDeg());
-        SmartDashboard.putNumber("current arm velocity (deg/s)", getArmVelocityDegPerSec());
+        SmartDashboard.putNumber("current arm position (deg)", getPositionDeg());
+        SmartDashboard.putNumber("current arm velocity (deg/s)", getVelocityDegPerSec());
         SmartDashboard.putBoolean("arm fwd limit", isFwdLimitSwitchClosed());
         SmartDashboard.putBoolean("arm rev limit", isRevLimitSwitchClosed());
     }
