@@ -47,7 +47,7 @@ public class Arm extends SubsystemBase {
 
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp), 
         ArmConstants.positionFactor, ArmConstants.velocityFactor, _targetState.angleDeg);
-        _follower = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp), 
+        _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp), 
         ArmConstants.positionFactor, ArmConstants.velocityFactor, _targetState.angleDeg);
         _follower.follow(_leader, false); // TODO: verify inversion before testing
 
