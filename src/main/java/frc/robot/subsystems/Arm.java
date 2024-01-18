@@ -49,17 +49,16 @@ public class Arm extends SubsystemBase {
         ArmConstants.positionFactor, ArmConstants.velocityFactor, _targetState.angleDeg);
         _follower = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp), 
         ArmConstants.positionFactor, ArmConstants.velocityFactor, _targetState.angleDeg);
-        _follower.follow(_leader, true); //TODO: check if inverted
+        _follower.follow(_leader, false); // TODO: verify inversion before testing
 
         _feedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
     }
 
     private ArmState getInitialState() {
-        // TODO: check the switches' position and whether it NC or NO
-        if (_leader.getForwardLimitSwitch(Type.kNormallyOpen).isPressed()) {
+        if (isFwdLimitSwitchClosed()) {
             return ArmState.CLIMB;
         }
-        else if (_leader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed()) {
+        else if (isRevLimitSwitchClosed()) {
             return ArmState.COLLECT;
         }
         return ArmState.TRAP;
@@ -72,26 +71,59 @@ public class Arm extends SubsystemBase {
     private void useState(TrapezoidProfile.State targetState) {
         double feedforward = _feedforward.calculate(Math.toRadians(targetState.position), Math.toRadians(targetState.velocity));
         _leader.setReference(targetState.position, ControlType.kPosition, 0, feedforward, ArbFFUnits.kVoltage);
-        SmartDashboard.putNumber("Arm position (deg)", _leader.getPosition());
+        SmartDashboard.putNumber("target arm position (deg)", targetState.position);
+        SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
     }
 
     private Command getSetStateCommand(ArmState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains);
         Supplier<State> targetSupplier = () -> (new State(targetState.angleDeg, 0));
-        return new InstantCommand(() -> {_targetState = targetState;}).andThen(
+        return new InstantCommand(() -> {_targetState = targetState;}).alongWith(
             new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this));
         // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
+    }
+
+    // TODO: check if switches are NC or NO
+    private boolean isFwdLimitSwitchClosed() {
+        return _leader.getForwardLimitSwitch(Type.kNormallyOpen).isPressed();
+    }
+
+    private boolean isRevLimitSwitchClosed() {
+        return _leader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
     }
 
     public double getArmPositionDeg() {
         return _leader.getPosition();
     }
 
-    public double getArmVelocityDeg() {
+    public double getArmVelocityDegPerSec() {
         return _leader.getVelocity();
     }
 
     private State getCurrentTrapezoidState() {
-        return new State(getArmPositionDeg(), getArmVelocityDeg());
+        return new State(getArmPositionDeg(), getArmVelocityDegPerSec());
+    }
+
+    public void stop() {
+        _leader.set(0);
+    }
+
+    private void updateSDB() {
+        SmartDashboard.putString("target arm state", _targetState.toString());
+        SmartDashboard.putNumber("current arm position (deg)", getArmPositionDeg());
+        SmartDashboard.putNumber("current arm velocity (deg/s)", getArmVelocityDegPerSec());
+        SmartDashboard.putBoolean("arm fwd limit", isFwdLimitSwitchClosed());
+        SmartDashboard.putBoolean("arm rev limit", isRevLimitSwitchClosed());
+    }
+
+    @Override
+    public void periodic() {
+        if (isFwdLimitSwitchClosed()) {
+            _leader.setPosition(ArmState.CLIMB.angleDeg);
+        }
+        else if (isRevLimitSwitchClosed()) {
+            _leader.setPosition(ArmState.COLLECT.angleDeg);
+        }
+        updateSDB();
     }
 }
