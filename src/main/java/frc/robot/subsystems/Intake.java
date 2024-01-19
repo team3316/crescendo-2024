@@ -6,16 +6,18 @@ import frc.robot.constants.IntakeConstants;
 import frc.robot.motors.DBugSparkMax;
 
 public class Intake extends SubsystemBase {
+    
     private DBugSparkMax _intakeMotor;
 
-    private CollectorState _state;
+    private IntakeState _state;
 
-    public enum CollectorState {
+    //The diffrent states of the intake.
+    public enum IntakeState {
         COLLECTING(IntakeConstants.collectingPrecent),
         DISABLED(IntakeConstants.disabledPrecent);
         public final double precentege;
 
-        private CollectorState(double precentege){
+        private IntakeState(double precentege){
             this.precentege = precentege;
         }
     }
@@ -23,14 +25,14 @@ public class Intake extends SubsystemBase {
     public Intake(){
         _intakeMotor = new DBugSparkMax(IntakeConstants.intakeMotorID);
 
-        this._state = CollectorState.DISABLED; 
+        this._state = IntakeState.DISABLED; 
     }
 
-    public CollectorState getState(){
+    public IntakeState getState(){
         return this._state;
     }
 
-    public void setState(CollectorState state){
+    public void setState(IntakeState state){
         this._state = state;
 
         _intakeMotor.setReference(state.precentege, ControlType.kVelocity);
