@@ -6,4 +6,8 @@ import frc.robot.motors.DBugSparkMax;
 public class Intake extends SubsystemBase{
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
+
+    public Intake() {
+        
+    }
 }
