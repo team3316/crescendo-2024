@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
 
         _intakeMotor.set(state.percentage);
         SmartDashboard.putString("Intake State: ", this._state.toString());
-        SmartDashboard.putNumber("Motor precentage ", this._state.percentage);
+        SmartDashboard.putNumber("Intake precentage ", this._state.percentage);
     }
     
     public Command setStateCommand(IntakeState state){
