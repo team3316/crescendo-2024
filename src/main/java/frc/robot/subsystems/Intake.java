@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.motors.DBugSparkMax;
@@ -12,7 +13,7 @@ public class Intake extends SubsystemBase {
     private IntakeState _state;
 
     //The diffrent states of the intake.
-    public enum IntakeState {
+    public static enum IntakeState {
         COLLECTING(IntakeConstants.collectingPrecent),
         DISABLED(IntakeConstants.disabledPrecent);
         public final double precentege;
@@ -23,7 +24,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Intake(){
-        _intakeMotor = new DBugSparkMax(IntakeConstants.intakeMotorID);
+        _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
 
         this._state = IntakeState.DISABLED; 
     }
@@ -35,6 +36,8 @@ public class Intake extends SubsystemBase {
     public void setState(IntakeState state){
         this._state = state;
 
-        _intakeMotor.setReference(state.precentege, ControlType.kVelocity);
+        _intakeMotor.set(state.precentege);
     }
+
+    
 }
