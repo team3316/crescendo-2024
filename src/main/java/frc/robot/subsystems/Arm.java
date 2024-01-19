@@ -11,6 +11,7 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -43,44 +44,28 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        _targetState = getInitialState();
-
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp), 
-        ArmConstants.positionFactor, ArmConstants.velocityFactor, _targetState.angleDeg);
+        ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
         _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp), 
-        ArmConstants.positionFactor, ArmConstants.velocityFactor, _targetState.angleDeg);
+        ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
         _follower.follow(_leader, false); // TODO: verify inversion before testing
 
         _feedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
+
+        _targetState = getInitialState();
+
+        _leader.setPosition(_targetState.angleDeg);
     }
 
     private ArmState getInitialState() {
         if (isFwdLimitSwitchClosed()) {
             return ArmState.CLIMB;
         }
-        else if (isRevLimitSwitchClosed()) {
-            return ArmState.COLLECT;
-        }
-        return ArmState.TRAP;
+        return ArmState.COLLECT;
     }
 
     public ArmState getTargetState() {
         return _targetState;
-    }
-
-    private void useState(TrapezoidProfile.State targetState) {
-        double feedforward = _feedforward.calculate(Math.toRadians(targetState.position), Math.toRadians(targetState.velocity));
-        _leader.setReference(targetState.position, ControlType.kPosition, 0, feedforward, ArbFFUnits.kVoltage);
-        SmartDashboard.putNumber("target arm position (deg)", targetState.position);
-        SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
-    }
-
-    public Command getSetStateCommand(ArmState targetState) {
-        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains);
-        Supplier<State> targetSupplier = () -> (new State(targetState.angleDeg, 0));
-        return new InstantCommand(() -> {_targetState = targetState;}).alongWith(
-            new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this));
-        // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
     }
 
     // TODO: check if switches are NC or NO
@@ -104,6 +89,21 @@ public class Arm extends SubsystemBase {
         return new State(getPositionDeg(), getVelocityDegPerSec());
     }
 
+    private void useState(TrapezoidProfile.State targetState) {
+        double feedforward = _feedforward.calculate(Math.toRadians(targetState.position), Math.toRadians(targetState.velocity));
+        _leader.setReference(targetState.position, ControlType.kPosition, 0, feedforward, ArbFFUnits.kVoltage);
+        SmartDashboard.putNumber("target arm position (deg)", targetState.position);
+        SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
+    }
+
+    public Command getSetStateCommand(ArmState targetState) {
+        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains);
+        Supplier<State> targetSupplier = () -> (new State(targetState.angleDeg, 0));
+        return new InstantCommand(() -> {_targetState = targetState;}).alongWith(
+            new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this));
+        // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
+    }
+
     public void stop() {
         _leader.set(0);
     }
@@ -118,11 +118,13 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (isFwdLimitSwitchClosed()) {
-            _leader.setPosition(ArmState.CLIMB.angleDeg);
-        }
-        else if (isRevLimitSwitchClosed()) {
-            _leader.setPosition(ArmState.COLLECT.angleDeg);
+        if (DriverStation.isDisabled()) {
+            if (isFwdLimitSwitchClosed()) {
+                _leader.setPosition(ArmState.CLIMB.angleDeg);
+            }
+            else if (isRevLimitSwitchClosed()) {
+                _leader.setPosition(ArmState.COLLECT.angleDeg);
+            }
         }
         updateSDB();
     }
