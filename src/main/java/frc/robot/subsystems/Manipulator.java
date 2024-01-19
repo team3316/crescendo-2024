@@ -11,6 +11,11 @@ import frc.robot.constants.ManipulatorConstants;
 import frc.robot.motors.DBugSparkMax;
 
 public class Manipulator extends SubsystemBase {
+
+    private DBugSparkMax _sparkMaxLowerLeader;
+    private DBugSparkMax _sparkMaxUpperFollower;
+    private ManipulatorState _manipulatorState;
+
     public static enum ManipulatorState {
         AMP(ManipulatorConstants.manipulatorAMPState),
         HOLD(ManipulatorConstants.manipulatorHOLDState),
@@ -18,24 +23,18 @@ public class Manipulator extends SubsystemBase {
         SHOOTER(ManipulatorConstants.manipulatorSHOOTERState);
 
         public final double percentage;
-        ManipulatorState(double value) {
-            this.percentage = value;
+        ManipulatorState(double percentage) {
+            this.percentage = percentage;
         }
     }
 
-    private DBugSparkMax _sparkMaxLowerLeader;
-    private DBugSparkMax _sparkMaxUpperFollower;
-    private ManipulatorState _manipulatorState;
-
     public Manipulator() {
         // TODO: check what ports it should be
-        this._sparkMaxLowerLeader = new DBugSparkMax(ManipulatorConstants.ManipulatorLowerSparkMaxPort);
-        this._sparkMaxUpperFollower = new DBugSparkMax(ManipulatorConstants.ManipulatorUpperSparkMaxPort);
+        this._sparkMaxLowerLeader = DBugSparkMax.create(ManipulatorConstants.ManipulatorLowerSparkMaxPort);
+        this._sparkMaxUpperFollower = DBugSparkMax.create(ManipulatorConstants.ManipulatorUpperSparkMaxPort);
 
         // TODO: check if really inverted
-        this._sparkMaxUpperFollower.setInverted(true);
-
-        this._sparkMaxUpperFollower.follow(_sparkMaxLowerLeader);
+        this._sparkMaxUpperFollower.follow(_sparkMaxLowerLeader, true);
 
         this._manipulatorState = ManipulatorState.HOLD;
     }
@@ -44,22 +43,16 @@ public class Manipulator extends SubsystemBase {
         return this._manipulatorState;
     }
 
-    public Command getSetStateCommand(ManipulatorState state) {
-        // does not stop the manipulator processes, just start (by given state)
-        return new InstantCommand(() -> setState(state), this);
-    }
-
     private void setState(ManipulatorState state) {
         this._manipulatorState = state;
 
         this._sparkMaxLowerLeader.set(state.percentage);
 
         SmartDashboard.putString("Manipulator State:", _manipulatorState.toString());
+        SmartDashboard.putNumber("Manipulator Percentage", state.percentage);
     }
 
-    @Override
-    public void periodic() {
-        //prints the position to the SmartDashboard
-        SmartDashboard.putNumber("percent", _sparkMaxLowerLeader.get());
+    public Command getSetStateCommand(ManipulatorState state) {
+        return new InstantCommand(() -> setState(state), this);
     }
 }
