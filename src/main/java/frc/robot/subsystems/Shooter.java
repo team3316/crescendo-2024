@@ -10,6 +10,7 @@ import frc.robot.motors.DBugSparkFlex;
 import frc.robot.motors.PIDFGains;
 
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -47,8 +48,13 @@ public class Shooter extends SubsystemBase {
         return this._shooterState;
     }
 
-    public Command getSetStateCommand(ShooterState shooterState) {
-        return new InstantCommand(() -> setState(shooterState), this);
+    // TODO: check which is forward and which reverse, and whetehr they are NC or NO
+    public boolean getSlowingLiftSwitch() {
+        return _sparkFlexRightLeader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
+    }
+
+    public boolean getStoppingLiftSwitch() {
+        return _sparkFlexRightLeader.getForwardLimitSwitch(Type.kNormallyOpen).isPressed();
     }
 
     private void setState(ShooterState shooterState) {
@@ -57,6 +63,10 @@ public class Shooter extends SubsystemBase {
 
         // prints the state change onto the SmartDashboard
         SmartDashboard.putString("State:", this._shooterState.toString());
+    }
+
+    public Command getSetStateCommand(ShooterState shooterState) {
+        return new InstantCommand(() -> setState(shooterState), this);
     }
 
     public void stop() {
