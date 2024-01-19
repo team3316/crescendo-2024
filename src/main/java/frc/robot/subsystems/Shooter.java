@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -8,11 +9,7 @@ import frc.robot.motors.DBugSparkFlex;
 
 import frc.robot.motors.PIDFGains;
 
-
 import com.revrobotics.CANSparkBase.ControlType;
-
-
-
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,16 +18,13 @@ public class Shooter extends SubsystemBase {
     private DBugSparkFlex _sparkFlexLeftFollower;
     private ShooterState _shooterState;
 
-    private static double SparFlexShootingVelocity; // rpm
-
     private static double kpShooter = 1;
 
-    
-
     public static enum ShooterState {
-        ON(SparFlexShootingVelocity),
+        ON(constantsShooter.SparkFlexShootingVelocity),
         OFF(constantsShooter.SparkFlexUnShootingVelocity);
-        public final double velocity;
+
+        public double velocity;
 
         private ShooterState(double velocity) {
             this.velocity = velocity;
@@ -38,12 +32,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public Shooter() {
-        
+
         this._sparkFlexRightLeader = DBugSparkFlex.create(constantsShooter.SparkFlexRightPort);
         this._sparkFlexLeftFollower = DBugSparkFlex.create(constantsShooter.SparkFlexLeftPort);
 
         this._sparkFlexLeftFollower.setupPIDF(new PIDFGains(kpShooter, 0, 0, constantsShooter.kfShooter));
-        
 
         this._sparkFlexLeftFollower.follow(_sparkFlexRightLeader, true);
 
@@ -65,20 +58,21 @@ public class Shooter extends SubsystemBase {
         this._shooterState = shooterState;
         this._sparkFlexRightLeader.setReference(shooterState.velocity, ControlType.kVelocity);
 
-        SmartDashboard.putString("State:", this._shooterState.toString());
         // prints the state change ont the SmartDashboard
+        SmartDashboard.putString("State:", this._shooterState.toString());
     }
 
     @Override
-    public void periodic() {
-        // prints the velocity to the SmartDashboard
-        SmartDashboard.putNumber("velocity, rpm", this._sparkFlexRightLeader.getVelocity());
-
+    public void periodic() {;
         // gets the velocity value from the SmartDashboard
-        SparFlexShootingVelocity = SmartDashboard.getNumber("velocity", 0);
+        this._shooterState.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
 
         // gets the kp value from the SmartDashboard
-        kpShooter = SmartDashboard.getNumber("kp", 1);
+        this._sparkFlexLeftFollower.setupPIDF(
+                new PIDFGains(SmartDashboard.getNumber("kp", 1),
+                        0,
+                        0,
+                        constantsShooter.kfShooter));
     }
 
     // runs when is disable
