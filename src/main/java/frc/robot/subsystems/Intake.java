@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.motors.DBugSparkMax;
@@ -37,7 +39,15 @@ public class Intake extends SubsystemBase {
         this._state = state;
 
         _intakeMotor.set(state.precentege);
+        SmartDashboard.putString("Intake State: ", this._state.toString());
     }
 
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("Motor state precentage ", this._state.precentege);
+    }
     
+    public Command setStateCommand(IntakeState state){
+        return new InstantCommand(() -> setState(state),this);
+    }
 }
