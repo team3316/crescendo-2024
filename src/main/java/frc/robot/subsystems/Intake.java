@@ -46,4 +46,8 @@ public class Intake extends SubsystemBase {
     public Command setStateCommand(IntakeState state){
         return new InstantCommand(() -> setState(state), this);
     }
+
+    public void stop() {
+        setState(IntakeState.DISABLED);
+    }
 }
