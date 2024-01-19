@@ -18,7 +18,7 @@ public class Manipulator extends SubsystemBase {
 
     public static enum ManipulatorState {
         AMP(ManipulatorConstants.manipulatorAMPState),
-        HOLD(ManipulatorConstants.manipulatorHOLDState),
+        OFF(ManipulatorConstants.manipulatorOFFState),
         TRAP(ManipulatorConstants.manipulatorTRAPState),
         SHOOTER(ManipulatorConstants.manipulatorSHOOTERState);
 
@@ -36,7 +36,7 @@ public class Manipulator extends SubsystemBase {
         // TODO: check if really inverted
         this._sparkMaxUpperFollower.follow(_sparkMaxLowerLeader, true);
 
-        this._manipulatorState = ManipulatorState.HOLD;
+        this._manipulatorState = ManipulatorState.OFF;
     }
 
     public ManipulatorState getManipulatorState() {
@@ -54,5 +54,9 @@ public class Manipulator extends SubsystemBase {
 
     public Command getSetStateCommand(ManipulatorState state) {
         return new InstantCommand(() -> setState(state), this);
+    }
+
+    public void stop() {
+        setState(ManipulatorState.OFF);
     }
 }
