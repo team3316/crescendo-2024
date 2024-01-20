@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.motors.DBugSparkFlex;
 import frc.robot.motors.PIDFGains;
+import frc.robot.utils.Within;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -60,10 +61,10 @@ public class Shooter extends SubsystemBase {
 
         // sets the shooter state and the roller state to OFF in the beginning
         this._shooterState = ShooterState.OFF;
-        SmartDashboard.putString("shooter state:", "OFF, enabled");
+        SmartDashboard.putString("shooter state:", "OFF");
 
         this._rollerState = RollerState.OFF;
-        SmartDashboard.putString("roller state:", "OFF, enabled");
+        SmartDashboard.putString("roller state:", "OFF");
     }
 
     public ShooterState getShooterState() {
@@ -87,7 +88,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putString("shooter state:", this._shooterState.toString());
     }
 
-    private void setRollerState(RollerState rollerState){
+    private void setRollerState(RollerState rollerState) {
         this._shooterRoller.set(TalonSRXControlMode.PercentOutput, this._rollerState.ShooterRollerPercent);
         // prints the state change onto the SmartDashboard
         SmartDashboard.putString("roller state:", this._rollerState.toString());
@@ -106,7 +107,8 @@ public class Shooter extends SubsystemBase {
             new InstantCommand(() -> {
                 setState(ShooterState.OFF);
                 setRollerState(RollerState.OFF);
-            }, this)
+            },
+            this)
         );
         Command toReturn = new ConditionalCommand(shootingSeq, new InstantCommand(), this::getStoppingLiftSwitch);
         toReturn.addRequirements(this);
@@ -118,33 +120,28 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isAtTargetVelocity() {
-        return getMotorVelocity() == this._shooterState.velocity;
+
+        return Within.range(this._shooterState.velocity, getMotorVelocity(), 0.01);
+
     }
 
 
 
     @Override
-    public void periodic() {;
+    public void periodic() {
         // gets the velocity value from the SmartDashboard
         this._shooterState.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
         this._rollerState.ShooterRollerPercent = SmartDashboard.getNumber("Roller velocity, percentage", 0);
 
-        // gets the kp value from the SmartDashboard
-        this._sparkFlexLeftFollower.setupPIDF(
-                new PIDFGains(SmartDashboard.getNumber("kp", 1),
-                        0,
-                        0,
-                        ShooterConstants.kfShooter));
+        double curKP = SmartDashboard.getNumber("kp", 1);
+        // only updates when the values are changed
+        if (curKP != ShooterConstants.kpShooter){
+            this._sparkFlexLeftFollower.setupPIDF(
+                new PIDFGains(
+                    curKP, 
+                    0,
+                    0,
+                    ShooterConstants.kfShooter));
+        }
     }
-
-    // runs when it is disabled
-    public void stop() {
-
-        this._shooterState = ShooterState.OFF;
-        setState(_shooterState);
-
-
-        // prints the state change ont the SmartDashboard
-        SmartDashboard.putString("State:", this._shooterState.toString() + ", disabled");
-
-}}
+}
