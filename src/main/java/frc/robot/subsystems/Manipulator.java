@@ -12,8 +12,8 @@ import frc.robot.motors.DBugSparkMax;
 
 public class Manipulator extends SubsystemBase {
 
-    private DBugSparkMax _sparkMaxLowerLeader;
-    private DBugSparkMax _sparkMaxUpperFollower;
+    private DBugSparkMax _leader;
+    private DBugSparkMax _follower;
     private ManipulatorState _manipulatorState;
 
     public static enum ManipulatorState {
@@ -30,11 +30,13 @@ public class Manipulator extends SubsystemBase {
 
     public Manipulator() {
         // TODO: check what ports it should be
-        this._sparkMaxLowerLeader = DBugSparkMax.create(ManipulatorConstants.ManipulatorLowerSparkMaxPort);
-        this._sparkMaxUpperFollower = DBugSparkMax.create(ManipulatorConstants.ManipulatorUpperSparkMaxPort);
+        this._leader = DBugSparkMax.create(ManipulatorConstants.ManipulatorLowerSparkMaxPort);
+        this._follower = DBugSparkMax.create(ManipulatorConstants.ManipulatorUpperSparkMaxPort);
+        this._leader.setSmartCurrentLimit(20);
+        this._follower.setSmartCurrentLimit(20);
 
         // TODO: check if really inverted
-        this._sparkMaxUpperFollower.follow(_sparkMaxLowerLeader, true);
+        this._follower.follow(_leader, true);
 
         this._manipulatorState = ManipulatorState.OFF;
     }
@@ -46,7 +48,7 @@ public class Manipulator extends SubsystemBase {
     private void setState(ManipulatorState state) {
         this._manipulatorState = state;
 
-        this._sparkMaxLowerLeader.set(state.percentage);
+        this._leader.set(state.percentage);
 
         SmartDashboard.putString("Manipulator State:", _manipulatorState.toString());
         SmartDashboard.putNumber("Manipulator Percentage", state.percentage);
