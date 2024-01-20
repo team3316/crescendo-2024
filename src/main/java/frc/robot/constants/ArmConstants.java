@@ -10,6 +10,7 @@ public class ArmConstants {
     public static final double TRAPAngle = 0; // deg
     public static final double AMPAngle = 0; // deg
     public static final double climbAngle = 0; // deg
+    public static final double chamberAngle = 0; // deg
 
     private static final double maxVelocity = 0; // deg/sec
     private static final double maxAcceleration = 0; // deg/sec^2
