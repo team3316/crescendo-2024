@@ -1,13 +1,15 @@
 package frc.robot.constants;
 
 public class ClimberConstants {
-    // TODO: update the port number to it's correct value
-    public static final int sparkMaxPort = 0;
+    // TODO: update the values in the whole class
+    public static final int rightSpoolPort = 0;
+    public static final int leftSpoolPort = 1;
 
-    // TODO: update the percent values to there's correct value
-    public static final double startingVelocity = 1; // rmp
-    public static final double endingVelocity = 0; // rmp
+    public static final double kP = 1; // voltage/meter
 
-    public static final double kP = 1;
-    public static final double kF = 0; // v/rmp
+    private static final double spoolDiameter = 1; // meters
+    private static final double gearRatio = 1.0 / 1.0;
+    public static final double positionFactor = Math.PI * spoolDiameter * gearRatio; // meter/rotation
+    public static final double velocityFactor = Math.PI * spoolDiameter * gearRatio * 60; // (meter/second)/RPM
+    public static final double spoolsDistance = 1; // meters
 }
