@@ -11,7 +11,7 @@ import frc.robot.motors.PIDFGains;
 public class DrivetrainConstants {
     public static class SwerveModuleConstants {
         // TODO: update pidf gains
-        public static final double driveKp = 0.612; // in seconds per meter
+        public static final double driveKp = 0; // in seconds per meter
         public static final double driveKd = 0; // in seconds per meter
         public static final double driveKf = 0.75 / 2.81; // percent to motor / m/s at that
                                                           // percent
@@ -72,19 +72,19 @@ public class DrivetrainConstants {
     public final static double cancoderBLOffset = 182.8;
     public final static double cancoderBROffset = 110.4;
     public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-            new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 3, 4,
-            cancoderTLOffset, 11);
+            new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 14, 3,
+            cancoderTLOffset, 12);
 
     public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-            new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 1, 2,
+            new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 1, 1 ,
             cancoderTROffset, 10);
 
     public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
-            new Translation2d(-sideWheelDistMeters / 2, frontWheelDistMeters / 2), 5, 6,
-            cancoderBLOffset, 12);
+            new Translation2d(-sideWheelDistMeters / 2, frontWheelDistMeters / 2), 11, 6,
+            cancoderBLOffset, 11);
 
     public static final SwerveModuleConstants BRModule = new SwerveModuleConstants(
-            new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 7, 8,
+            new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 15, 7,
             cancoderBROffset, 13);
 
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
