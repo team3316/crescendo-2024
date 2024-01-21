@@ -5,8 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.JoysticksConstants;
+import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
+import frc.robot.humanIO.CommandPS5Controller;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -15,11 +19,28 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
+  Drivetrain m_Drivetrain;
+  private boolean _fieldRelative = true;
+  private final CommandPS5Controller _driverController = new CommandPS5Controller(
+            JoysticksConstants.driverPort);
   public RobotContainer() {
+
+     m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+                _driverController.getLeftY() *
+                        SwerveModuleConstants.freeSpeedMetersPerSecond,
+                _driverController.getLeftX() *
+                        SwerveModuleConstants.freeSpeedMetersPerSecond,
+                _driverController.getCombinedAxis() *
+                        DrivetrainConstants.maxRotationSpeedRadPerSec,
+                _fieldRelative), m_Drivetrain));
+
+    
+    m_Drivetrain = new Drivetrain();
     // Configure the trigger bindings
     configureBindings();
   }
+
+  
 
   private void configureBindings() {
     
