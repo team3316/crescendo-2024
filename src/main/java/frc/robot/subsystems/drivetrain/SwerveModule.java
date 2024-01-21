@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -49,10 +50,10 @@ public class SwerveModule {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         config.Slot0.withKP(gains.kP)
-                .withKI(gains.kI)
-                .withKD(gains.kD)
-                .withKS(gains.kF)// Feedforward
-                .withKV(0.12);//voltage comp
+        .withKI(gains.kI)
+        .withKD(gains.kD)
+        .withKS(gains.kF)// Feedforward
+        .withKV(0.12);//voltage comp
                 
 
         config.Feedback.withSensorToMechanismRatio(conversionFactor);
@@ -111,12 +112,12 @@ public class SwerveModule {
         if (state.speedMetersPerSecond != 0) // Avoid steering in place
             this._steerMotor.setReference(state.angle.getDegrees(), ControlType.kPosition);
 
-        if (state.speedMetersPerSecond == 0)
+            if (state.speedMetersPerSecond == 0)
             this.stop();
         else
             this._driveMotor.setControl(new VelocityVoltage(
                     state.speedMetersPerSecond * SwerveModuleConstants.drivePositionConversionFactor));
-
+ 
         _targetState = desiredState;
 
     }
@@ -167,7 +168,14 @@ public class SwerveModule {
         this._steerMotor.set(0);
     }
 
+    public double getStatorCurrent(){
+        return this._driveMotor.getStatorCurrent().getValue();
+    }
+
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(_driveMotor.getPosition().getValue(), Rotation2d.fromDegrees(getAbsAngle()));
+    }
+    public void DriveByPercent(double percent){
+        this._driveMotor.set(percent);
     }
 }
