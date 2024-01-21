@@ -26,22 +26,22 @@ public class Shooter extends SubsystemBase {
     private RollerState _rollerState;
     private TalonSRX _shooterRoller;
 
-    public enum ShooterState {
+    public static enum ShooterState {
         ON(ShooterConstants.SparkFlexShootingVelocity),
         OFF(ShooterConstants.SparkFlexUnShootingVelocity);
 
-        public double velocity;
+        public final double velocity;
 
         private ShooterState(double velocity) {
             this.velocity = velocity;
         }
     }
 
-    public enum RollerState {
+    public static enum RollerState {
         ON( ShooterConstants.ShooterRollerPercent),
         OFF(0 );
 
-        public double ShooterRollerPercent;
+        public final double ShooterRollerPercent;
 
         private RollerState(double ShooterRollerPercent) {
             this.ShooterRollerPercent = ShooterRollerPercent;
@@ -89,6 +89,7 @@ public class Shooter extends SubsystemBase {
     }
 
     private void setRollerState(RollerState rollerState) {
+        this._rollerState = rollerState;
         this._shooterRoller.set(TalonSRXControlMode.PercentOutput, this._rollerState.ShooterRollerPercent);
         // prints the state change onto the SmartDashboard
         SmartDashboard.putString("roller state:", this._rollerState.toString());
@@ -98,7 +99,7 @@ public class Shooter extends SubsystemBase {
         return new InstantCommand(() -> setState(shooterState), this);
     }
 
-    public Command getShootingCommand() {
+    public Command  getShootingCommand() {
         Command shootingSeq = Commands.sequence(
             new InstantCommand(() -> setState(ShooterState.ON), this),
             new WaitUntilCommand(this::isAtTargetVelocity),
@@ -110,7 +111,7 @@ public class Shooter extends SubsystemBase {
             },
             this)
         );
-        Command toReturn = new ConditionalCommand(shootingSeq, new InstantCommand(), this::getStoppingLiftSwitch);
+        Command toReturn = new ConditionalCommand(shootingSeq, new InstantCommand(), () -> true);
         toReturn.addRequirements(this);
         return toReturn;
     }
@@ -129,10 +130,11 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // gets the velocity value from the SmartDashboard
-        this._shooterState.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
-        this._rollerState.ShooterRollerPercent = SmartDashboard.getNumber("Roller velocity, percentage", 0);
-
+        /* gets the velocity value from the SmartDashboard. To use these lines for calibration remove final keyword from 
+        ShooterState.velocity & RollerState.ShooterRollerPercent and remember to put it back*/
+        // ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
+        // RollerState.ON.ShooterRollerPercent = SmartDashboard.getNumber("Roller velocity, percentage", 0);
+        SmartDashboard.putNumber("Shooter velocity", getMotorVelocity());
         double curKP = SmartDashboard.getNumber("kp", 1);
         // only updates when the values are changed
         if (curKP != ShooterConstants.kpShooter){
