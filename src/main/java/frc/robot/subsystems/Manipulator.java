@@ -23,7 +23,7 @@ public class Manipulator extends SubsystemBase {
         SHOOTER(ManipulatorConstants.manipulatorSHOOTERState);
 
         public final double percentage;
-        ManipulatorState(double percentage) {
+        private ManipulatorState(double percentage) {
             this.percentage = percentage;
         }
     }
