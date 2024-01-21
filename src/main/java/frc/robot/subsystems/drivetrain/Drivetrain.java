@@ -102,6 +102,13 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void periodic() {
+        for (int i = 0; i < _modules.length; i++) {
+            if (_modules[i].getStatorCurrent() != 0) {
+                System.out.print(_modules[i].getStatorCurrent() + " ");
+            }
+
+        }
+        System.out.println();
         // Update the odometry in the periodic block
         this._odometry.update(getRotation2d(), getSwerveModulePositions());
 
@@ -130,6 +137,15 @@ public class Drivetrain extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
+        SmartDashboard.putNumber("Vx", SmartDashboard.getNumber("Vx", 0));
+        SmartDashboard.putNumber("Vy", SmartDashboard.getNumber("Vy", 0));
+        SmartDashboard.putNumber("Vrot", SmartDashboard.getNumber("Vrot", 0));
+        // drive(SmartDashboard.getNumber("Vx", 0), SmartDashboard.getNumber("Vy", 0),
+        // SmartDashboard.getNumber("Vrot", 0), false);
+        SmartDashboard.putNumber("percent", SmartDashboard.getNumber("percent", 0));
+
+        SmartDashboard.putNumber("which module", SmartDashboard.getNumber("which module", 0));
+        oneModuleDrive((int) SmartDashboard.getNumber("which module", 0),SmartDashboard.getNumber("percent", 0) );
     }
 
     public Pose2d getPose() {
@@ -226,6 +242,10 @@ public class Drivetrain extends SubsystemBase {
 
     public double getPitch() {
         return _pigeon.getPitch();
+    }
+
+    public void oneModuleDrive(int i, double percent) {
+        _modules[i].DriveByPercent(percent);
     }
 
     public Command getRotateModulesCommand() {
