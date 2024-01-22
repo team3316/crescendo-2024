@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
@@ -14,7 +13,6 @@ import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
-import com.revrobotics.SparkPIDController;
 
 public class Climber extends SubsystemBase {
     private DBugSparkMax _leftSpool, _rightSpool;
@@ -37,10 +35,9 @@ public class Climber extends SubsystemBase {
         return this._rightSpool.getPosition();
     }
 
-    private void climb(Supplier<Double> joystickPercentageSupplier) {
+    private void climb(double joystickPercentage) {
         Rotation2d gyroRotation2d = this._gyroSupplier.get();
         double error = gyroRotation2d.getSin() * ClimberConstants.spoolsDistance;
-        double joystickPercentage = joystickPercentageSupplier.get();
 
         // TODO: check gyro direction
         this._leftSpool.setReference(getLeftPosition() + (error / 2), ControlType.kPosition, 0,
@@ -56,6 +53,6 @@ public class Climber extends SubsystemBase {
     }
 
     public Command getClimbCommand(Supplier<Double> joystickPercentageSupplier) {
-        return new RunCommand(() -> climb(joystickPercentageSupplier), this);
+        return new RunCommand(() -> climb(joystickPercentageSupplier.get()), this);
     }
 }
