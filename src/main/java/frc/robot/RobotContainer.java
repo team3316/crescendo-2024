@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.constants.DrivetrainConstants;
@@ -25,21 +26,27 @@ public class RobotContainer {
             JoysticksConstants.driverPort);
   public RobotContainer() {
 
-     m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+     
+
+    
+    m_Drivetrain = new Drivetrain();
+    /*m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
                         SwerveModuleConstants.freeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
                         SwerveModuleConstants.freeSpeedMetersPerSecond,
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
-                _fieldRelative), m_Drivetrain));
+                _fieldRelative), m_Drivetrain));*/
 
-    
-    m_Drivetrain = new Drivetrain();
+    m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.oneModuleDrive(0, 0.75), m_Drivetrain));
     // Configure the trigger bindings
     configureBindings();
   }
 
+  public void stop() {
+    m_Drivetrain.disabledInit();
+  }
   
 
   private void configureBindings() {
