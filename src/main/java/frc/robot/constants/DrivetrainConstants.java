@@ -13,12 +13,12 @@ public class DrivetrainConstants {
         // TODO: update pidf gains
         public static final double driveKp = 0; // in seconds per meter
         public static final double driveKd = 0; // in seconds per meter
-        public static final double driveKf = 0.75 / 2.81; // percent to motor / m/s at that
+        public static final double driveKf = 0.75 / 4.16; // percent to motor / m/s at that
                                                           // percent
         public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
         private static final double neoMaxSpeed = 5600;
-        private static final double driveRatio = 1.0 / 8.14;
+        private static final double driveRatio = 1.0 / 6.12;
         private static final double steeringRatio = 1.0 / 12.8;
         private static final double wheelDiameterMeters = 3.85 * 2.54 / 100; // 4 inches in meters
 
@@ -64,19 +64,19 @@ public class DrivetrainConstants {
 
     public static final double maxRotationSpeedRadPerSec = 11.5;
 
-    public static final double frontWheelDistMeters = 0.4803;
-    public static final double sideWheelDistMeters = 0.6703;
+    public static final double frontWheelDistMeters = 0.6703;
+    public static final double sideWheelDistMeters = 0.5102;
 
     public final static double cancoderTLOffset = 33.2;
     public final static double cancoderTROffset = 324.0;
     public final static double cancoderBLOffset = 182.8;
     public final static double cancoderBROffset = 110.4;
     public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-            new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 14,2,
+            new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 14,3,
             cancoderTLOffset, 12);
 
     public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-            new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 1, 1 ,
+            new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 1, 2 ,
             cancoderTROffset, 10);
 
     public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
