@@ -2,8 +2,8 @@ package frc.robot.constants;
 
 public class ManipulatorConstants {
     // ports
-    public static final int ManipulatorUpperSparkMaxPort = 0;
-    public static final int ManipulatorLowerSparkMaxPort = 1;
+    public static final int upperSparkMaxPort = 0;
+    public static final int lowerSparkMaxPort = 1;
 
     // motor percentages
     public static final double manipulatorAMPState = 0.5;

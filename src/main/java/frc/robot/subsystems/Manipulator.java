@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -14,7 +11,7 @@ public class Manipulator extends SubsystemBase {
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
-    private ManipulatorState _manipulatorState;
+    private ManipulatorState _state;
 
     public static enum ManipulatorState {
         AMP(ManipulatorConstants.manipulatorAMPState),
@@ -30,27 +27,27 @@ public class Manipulator extends SubsystemBase {
 
     public Manipulator() {
         // TODO: check what ports it should be
-        this._leader = DBugSparkMax.create(ManipulatorConstants.ManipulatorLowerSparkMaxPort);
-        this._follower = DBugSparkMax.create(ManipulatorConstants.ManipulatorUpperSparkMaxPort);
+        this._leader = DBugSparkMax.create(ManipulatorConstants.lowerSparkMaxPort);
+        this._follower = DBugSparkMax.create(ManipulatorConstants.upperSparkMaxPort);
         this._leader.setSmartCurrentLimit(20);
         this._follower.setSmartCurrentLimit(20);
 
         // TODO: check if really inverted
-        this._follower.follow(_leader, true);
+        this._follower.follow(this._leader, true);
 
-        this._manipulatorState = ManipulatorState.OFF;
+        setState(ManipulatorState.OFF);
     }
 
     public ManipulatorState getManipulatorState() {
-        return this._manipulatorState;
+        return this._state;
     }
 
     private void setState(ManipulatorState state) {
-        this._manipulatorState = state;
+        this._state = state;
 
         this._leader.set(state.percentage);
 
-        SmartDashboard.putString("Manipulator State:", _manipulatorState.toString());
+        SmartDashboard.putString("Manipulator State", this._state.toString());
         SmartDashboard.putNumber("Manipulator Percentage", state.percentage);
     }
 
