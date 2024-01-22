@@ -35,7 +35,11 @@ public class Manipulator extends SubsystemBase {
         // TODO: check if really inverted
         this._follower.follow(this._leader, true);
 
-        setState(ManipulatorState.OFF);
+        this._state = ManipulatorState.OFF;
+
+        // initialize values into the SDB
+        SmartDashboard.putString("Manipulator State", this._state.toString());
+        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
     }
 
     public ManipulatorState getManipulatorState() {
@@ -45,10 +49,10 @@ public class Manipulator extends SubsystemBase {
     private void setState(ManipulatorState state) {
         this._state = state;
 
-        this._leader.set(state.percentage);
+        this._leader.set(this._state.percentage);
 
         SmartDashboard.putString("Manipulator State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator Percentage", state.percentage);
+        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
