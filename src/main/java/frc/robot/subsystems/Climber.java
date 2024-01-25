@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.motors.DBugSparkMax;
@@ -35,7 +33,7 @@ public class Climber extends SubsystemBase {
         return this._rightSpool.getPosition();
     }
 
-    private void climb(double joystickPercentage) {
+    public void climb(double joystickPercentage) {
         Rotation2d gyroRotation2d = this._gyroSupplier.get();
         double error = gyroRotation2d.getSin() * ClimberConstants.spoolsDistance;
 
@@ -50,9 +48,5 @@ public class Climber extends SubsystemBase {
         SmartDashboard.putNumber("Joystick Percentage", joystickPercentage);
         SmartDashboard.putNumber("Left Spool Position, meters", getLeftPosition());
         SmartDashboard.putNumber("Right Spool Position, meters", getRightPosition());
-    }
-
-    public Command getClimbCommand(Supplier<Double> joystickPercentageSupplier) {
-        return new RunCommand(() -> climb(joystickPercentageSupplier.get()), this);
     }
 }
