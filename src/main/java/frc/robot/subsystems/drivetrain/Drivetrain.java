@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.LimelightConstants;
 
 /**
@@ -79,6 +80,13 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
+         for (int i = 0; i < this._modules.length; i++) {
+            //][\SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
+           SmartDashboard.putNumber("input xspeed " + i, xSpeed);
+           SmartDashboard.putNumber("input yspeed " + i, ySpeed);
+           SmartDashboard.putNumber("input rotspeed " + i, rot);
+
+        }
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
@@ -99,6 +107,7 @@ public class Drivetrain extends SubsystemBase {
         for (int i = 0; i < this._modules.length; i++) {
             this._modules[i].setDesiredState(moduleStates[i]);
         }
+
     }
 
     public void periodic() {
@@ -133,19 +142,24 @@ public class Drivetrain extends SubsystemBase {
     @SuppressWarnings({ "unused" })
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
-            SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
+            //][\SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
+           SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
+
         }
 
         SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
         SmartDashboard.putNumber("Vx", SmartDashboard.getNumber("Vx", 0));
         SmartDashboard.putNumber("Vy", SmartDashboard.getNumber("Vy", 0));
         SmartDashboard.putNumber("Vrot", SmartDashboard.getNumber("Vrot", 0));
-        // drive(SmartDashboard.getNumber("Vx", 0), SmartDashboard.getNumber("Vy", 0),
-        // SmartDashboard.getNumber("Vrot", 0), false);
+        // drive(SmartDashboard.getNumber("Vx", 0)*SwerveModuleConstants.driveFreeSpeedMetersPerSecond, SmartDashboard.getNumber("Vy", 0)*SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+        //  SmartDashboard.getNumber("Vrot", 0)* DrivetrainConstants.maxRotationSpeedRadPerSec, false);
         SmartDashboard.putNumber("percent", SmartDashboard.getNumber("percent", 0));
 
         SmartDashboard.putNumber("which module", SmartDashboard.getNumber("which module", 0));
-        oneModuleDrive((int) SmartDashboard.getNumber("which module", 0),SmartDashboard.getNumber("percent", 0) );
+        // oneModuleDrive(0, SmartDashboard.getNumber("percent", 0));
+        // oneModuleDrive(1, SmartDashboard.getNumber("percent", 0));
+        // oneModuleDrive(2, SmartDashboard.getNumber("percent", 0));
+        // oneModuleDrive(3, SmartDashboard.getNumber("percent", 0));
     }
 
     public Pose2d getPose() {
@@ -153,11 +167,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getHeading() {
-        return this._pigeon.getFusedHeading();
+        return 0;// this._pigeon.getFusedHeading();
     }
 
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(getHeading());
+        return new Rotation2d();// Rotation2d.fromDegrees(getHeading());
     }
 
     public void resetYaw() {
@@ -241,7 +255,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getPitch() {
-        return _pigeon.getPitch();
+        return 0;// _pigeon.getPitch();
     }
 
     public void oneModuleDrive(int i, double percent) {
