@@ -20,11 +20,10 @@ import com.revrobotics.SparkLimitSwitch.Type;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
-    private DBugSparkFlex _sparkFlexRightLeader;
-    private DBugSparkFlex _sparkFlexLeftFollower;
+
+    private DBugSparkFlex _leader;
+    private DBugSparkFlex _follower;
     private ShooterState _shooterState;
-    private RollerState _rollerState;
-    private TalonSRX _shooterRoller;
 
     public static enum ShooterState {
         ON(ShooterConstants.SparkFlexShootingVelocity),
@@ -37,34 +36,19 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    public static enum RollerState {
-        ON( ShooterConstants.ShooterRollerPercent),
-        OFF(0 );
-
-        public final double ShooterRollerPercent;
-
-        private RollerState(double ShooterRollerPercent) {
-            this.ShooterRollerPercent = ShooterRollerPercent;
-        }
-    }
-
     public Shooter() {
 
-        this._sparkFlexRightLeader = DBugSparkFlex.create(ShooterConstants.SparkFlexRightPort);
-        this._sparkFlexLeftFollower = DBugSparkFlex.create(ShooterConstants.SparkFlexLeftPort);
+        this._leader = DBugSparkFlex.create(ShooterConstants.SparkFlexRightPort);
+        this._follower = DBugSparkFlex.create(ShooterConstants.SparkFlexLeftPort);
 
-        this._sparkFlexLeftFollower.setupPIDF(new PIDFGains(ShooterConstants.kpShooter, 0, 0, ShooterConstants.kfShooter));
+        this._leader.setupPIDF(new PIDFGains(ShooterConstants.kpShooter, 0, 0, ShooterConstants.kfShooter));
 
-        this._sparkFlexLeftFollower.follow(_sparkFlexRightLeader, true);
-
-        this._shooterRoller = new TalonSRX(ShooterConstants.ShooterRollerPort);
+        this._follower.follow(_leader, true);
 
         // sets the shooter state and the roller state to OFF in the beginning
         this._shooterState = ShooterState.OFF;
         SmartDashboard.putString("shooter state:", "OFF");
 
-        this._rollerState = RollerState.OFF;
-        SmartDashboard.putString("roller state:", "OFF");
     }
 
     public ShooterState getShooterState() {
@@ -73,60 +57,32 @@ public class Shooter extends SubsystemBase {
 
     // TODO: check which is forward and which reverse, and whetehr they are NC or NO
     public boolean getSlowingLiftSwitch() {
-        return _sparkFlexRightLeader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
+        return _leader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
     }
 
     public boolean getStoppingLiftSwitch() {
-        return _sparkFlexRightLeader.getForwardLimitSwitch(Type.kNormallyOpen).isPressed();
+        return _leader.getForwardLimitSwitch(Type.kNormallyOpen).isPressed();
     }
 
     private void setState(ShooterState shooterState) {
         this._shooterState = shooterState;
-        this._sparkFlexRightLeader.setReference(shooterState.velocity, ControlType.kVelocity);
+        this._leader.setReference(shooterState.velocity, ControlType.kVelocity);
 
         // prints the state change onto the SmartDashboard
         SmartDashboard.putString("shooter state:", this._shooterState.toString());
     }
 
-    private void setRollerState(RollerState rollerState) {
-        this._rollerState = rollerState;
-        this._shooterRoller.set(TalonSRXControlMode.PercentOutput, this._rollerState.ShooterRollerPercent);
-        // prints the state change onto the SmartDashboard
-        SmartDashboard.putString("roller state:", this._rollerState.toString());
-    }
-
-    public Command getSetStateCommand(ShooterState shooterState) {
-        return new InstantCommand(() -> setState(shooterState), this);
-    }
-
-    public Command  getShootingCommand() {
-        Command shootingSeq = Commands.sequence(
-            new InstantCommand(() -> setState(ShooterState.ON), this),
-            new WaitUntilCommand(this::isAtTargetVelocity),
-            new InstantCommand(() -> setRollerState(RollerState.ON), this),
-            new WaitCommand(ShooterConstants.shootingTime),
-            new InstantCommand(() -> {
-                setState(ShooterState.OFF);
-                setRollerState(RollerState.OFF);
-            },
-            this)
-        );
-        Command toReturn = new ConditionalCommand(shootingSeq, new InstantCommand(), () -> true);
-        toReturn.addRequirements(this);
-        return toReturn;
+    public Command getSetStateCommand(ShooterState targetState) {
+        return new InstantCommand(() -> setState(targetState), this);
     }
 
     public double getMotorVelocity() {
-        return this._sparkFlexRightLeader.getVelocity();
+        return this._leader.getVelocity();
     }
 
     public boolean isAtTargetVelocity() {
-
         return Within.range(this._shooterState.velocity, getMotorVelocity(), 0.01);
-
     }
-
-
 
     @Override
     public void periodic() {
@@ -135,7 +91,7 @@ public class Shooter extends SubsystemBase {
         // ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
         // RollerState.ON.ShooterRollerPercent = SmartDashboard.getNumber("Roller velocity, percentage", 0);
         SmartDashboard.putNumber("Shooter velocity", getMotorVelocity());
-        double curKP = SmartDashboard.getNumber("kp", 1);
+        /*double curKP = SmartDashboard.getNumber("kp", 1);
         // only updates when the values are changed
         if (curKP != ShooterConstants.kpShooter){
             this._sparkFlexLeftFollower.setupPIDF(
@@ -144,6 +100,6 @@ public class Shooter extends SubsystemBase {
                     0,
                     0,
                     ShooterConstants.kfShooter));
-        }
+        }*/
     }
 }
