@@ -17,7 +17,7 @@ public class DrivetrainConstants {
                                                           // percent
         public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
-        private static final double neoMaxSpeed = 5600;
+                public static final double talonMaxSpeed = 6300;
         private static final double driveRatio = 1.0 / 6.12;
         private static final double steeringRatio = 1.0 / 12.8;
         private static final double wheelDiameterMeters = 3.85 * 2.54 / 100; // 4 inches in meters
