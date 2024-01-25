@@ -174,7 +174,12 @@ public class SwerveModule {
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(_driveMotor.getPosition().getValue(), Rotation2d.fromDegrees(getAbsAngle()));
     }
-    public void DriveByPercent(double percent){
-        this._driveMotor.set(percent);
+
+    public void DriveByPercent(double percent) {
+        this._driveMotor.setControl(new DutyCycleOut(percent));
+    }
+
+    public double getVelocity() {
+        return this._driveMotor.getVelocity().getValue();
     }
 }
