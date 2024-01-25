@@ -55,9 +55,8 @@ public class SwerveModule {
         .withKS(gains.kF)// Feedforward
         .withKV(0.12);//voltage comp
                 
-
-        config.Feedback.withSensorToMechanismRatio(conversionFactor);
-        
+        config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
+        // config.Feedback.withRotorToSensorRatio(1 / conversionFactor);
 
         return config;
     }
