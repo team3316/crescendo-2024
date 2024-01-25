@@ -24,18 +24,18 @@ public class RobotContainer {
   private final CommandPS5Controller _driverController = new CommandPS5Controller(
             JoysticksConstants.driverPort);
   public RobotContainer() {
+    m_Drivetrain = new Drivetrain();
 
      m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
-                        SwerveModuleConstants.freeSpeedMetersPerSecond,
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
-                        SwerveModuleConstants.freeSpeedMetersPerSecond,
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
 
     
-    m_Drivetrain = new Drivetrain();
     // Configure the trigger bindings
     configureBindings();
   }
