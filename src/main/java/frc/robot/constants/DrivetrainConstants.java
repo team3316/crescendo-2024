@@ -37,7 +37,7 @@ public class DrivetrainConstants {
                                                                                                              // *
                                                                                                              // seconds/minute)
 
-        public static final double freeSpeedMetersPerSecond = neoMaxSpeed * driveVelocityConversionFactor;
+                public static final double driveFreeSpeedMetersPerSecond = talonMaxSpeed * driveVelocityConversionFactor;
 
         public final Translation2d position;
         public final int idDrive;
