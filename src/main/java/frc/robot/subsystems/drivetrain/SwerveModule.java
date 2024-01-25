@@ -115,7 +115,7 @@ public class SwerveModule {
             this.stop();
         else
             this._driveMotor.setControl(new VelocityVoltage(
-                    state.speedMetersPerSecond * SwerveModuleConstants.drivePositionConversionFactor));
+                    state.speedMetersPerSecond / SwerveModuleConstants.drivePositionConversionFactor));
  
         _targetState = desiredState;
 
