@@ -167,7 +167,7 @@ public class SwerveModule {
         this._steerMotor.set(0);
     }
 
-    public double getStatorCurrent(){
+    public double getStatorCurrent() {
         return this._driveMotor.getStatorCurrent().getValue();
     }
 
