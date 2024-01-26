@@ -50,7 +50,7 @@ public class Climber extends SubsystemBase {
         this._leftSpool.setReference(ClimberConstants.climbHeight, ControlType.kPosition, 0,
                 balanceFeedforward, ArbFFUnits.kPercentOut);
         this._rightSpool.setReference(ClimberConstants.climbHeight, ControlType.kPosition, 0,
-                balanceFeedforward, ArbFFUnits.kPercentOut);
+                -balanceFeedforward, ArbFFUnits.kPercentOut);
 
         // putting values into the Smart Dashboard
         SmartDashboard.putNumber("Error Angle, degrees", gyroRotation2d.getDegrees());
