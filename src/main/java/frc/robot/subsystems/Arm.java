@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkLimitSwitch.Type;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
@@ -32,10 +30,8 @@ public class Arm extends SubsystemBase {
 
     public static enum ArmState {
         COLLECT(ArmConstants.collectAngle),
-        CHAMBER(ArmConstants.chamberAngle),
         AMP(ArmConstants.AMPAngle),
-        TRAP(ArmConstants.TRAPAngle),
-        CLIMB(ArmConstants.climbAngle);
+        TRAP(ArmConstants.TRAPAngle);
 
         public final double angleDeg;
 
@@ -60,7 +56,7 @@ public class Arm extends SubsystemBase {
 
     private ArmState getInitialState() {
         if (isFwdLimitSwitchClosed()) {
-            return ArmState.CLIMB;
+            return ArmState.TRAP;
         }
         return ArmState.COLLECT;
     }
@@ -121,7 +117,7 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         if (DriverStation.isDisabled()) {
             if (isFwdLimitSwitchClosed()) {
-                _leader.setPosition(ArmState.CLIMB.angleDeg);
+                _leader.setPosition(ArmState.TRAP.angleDeg);
             }
             else if (isRevLimitSwitchClosed()) {
                 _leader.setPosition(ArmState.COLLECT.angleDeg);
