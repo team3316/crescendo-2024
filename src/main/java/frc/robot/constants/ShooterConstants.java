@@ -1,8 +1,12 @@
 package frc.robot.constants;
 
+
 public class ShooterConstants {
-    public static final int SparkFlexRightPort = 0;
-    public static final int SparkFlexLeftPort = 0;
+    public static final int leaderUpLeftPort = 0;
+    public static final int followerUpRightPort = 0;
+    public static final int followerDownLeftPort = 0;
+    public static final int followerDownRightPort = 0;
+
 
     public static final double SparkFlexUnShootingVelocity = 0; // rpm
     public static final double SparkFlexShootingVelocity = 1; // rpm

@@ -33,10 +33,10 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
 
-        this._leaderUpLeft = DBugSparkFlex.create(ShooterConstants.SparkFlexRightPort);
-        this._followerUpRight = DBugSparkFlex.create(ShooterConstants.SparkFlexLeftPort);
-        this._followerDownLeft = DBugSparkFlex.create(ShooterConstants.SparkFlexLeftPort);
-        this._followerDownRight = DBugSparkFlex.create(ShooterConstants.SparkFlexLeftPort);
+        this._leaderUpLeft = DBugSparkFlex.create(ShooterConstants.leaderUpLeftPort);
+        this._followerUpRight = DBugSparkFlex.create(ShooterConstants.followerUpRightPort);
+        this._followerDownLeft = DBugSparkFlex.create(ShooterConstants.followerDownLeftPort);
+        this._followerDownRight = DBugSparkFlex.create(ShooterConstants.followerDownRightPort);
 
         this._leaderUpLeft.setupPIDF(new PIDFGains(ShooterConstants.kpShooter, 0, 0, ShooterConstants.kfShooter));
 
