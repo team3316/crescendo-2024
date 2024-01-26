@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -11,13 +12,17 @@ public class Manipulator extends SubsystemBase {
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
+
+    private DigitalInput _hasNoteSwitch;
+
     private ManipulatorState _state;
 
     public static enum ManipulatorState {
-        AMP(ManipulatorConstants.manipulatorAMPState),
-        OFF(ManipulatorConstants.manipulatorOFFState),
-        TRAP(ManipulatorConstants.manipulatorTRAPState),
-        SHOOTER(ManipulatorConstants.manipulatorSHOOTERState);
+        OFF(ManipulatorConstants.offPercentage),
+        COLLECT(ManipulatorConstants.collectingPercentage),
+        AMP(ManipulatorConstants.AMPPercentage),
+        TRAP(ManipulatorConstants.TRAPPercentage),
+        SHOOTER(ManipulatorConstants.shooterPercentage);
 
         public final double percentage;
         private ManipulatorState(double percentage) {
@@ -44,6 +49,11 @@ public class Manipulator extends SubsystemBase {
 
     public ManipulatorState getManipulatorState() {
         return this._state;
+    }
+
+    // TODO: Check if NC or NO
+    public boolean hasNoteSwitch() {
+        return _hasNoteSwitch.get();
     }
 
     private void setState(ManipulatorState state) {
