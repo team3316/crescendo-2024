@@ -5,7 +5,11 @@ public class ClimberConstants {
     public static final int rightSpoolPort = 0;
     public static final int leftSpoolPort = 1;
 
-    public static final double kP = 1; // voltage/meter
+    public static final double averageKp = 1; // voltage/meter
+    public static final double averageKf = 1; // voltage/meter
+    public static final double differentialKp = 1; // motor percentage/meter
+
+    public static final double climbHeight = 1; // meters
 
     private static final double spoolDiameter = 1; // meters
     private static final double gearRatio = 1.0 / 1.0;
