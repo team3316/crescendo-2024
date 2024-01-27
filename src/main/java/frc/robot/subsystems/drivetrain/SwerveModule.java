@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -58,6 +59,9 @@ public class SwerveModule {
 
         config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
         // config.Feedback.withRotorToSensorRatio(1 / conversionFactor);
+
+                config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+
 
         return config;
     }
