@@ -36,9 +36,10 @@ public class Manipulator extends SubsystemBase {
         this._follower = DBugSparkMax.create(ManipulatorConstants.upperSparkMaxPort);
         this._leader.setSmartCurrentLimit(20);
         this._follower.setSmartCurrentLimit(20);
+        
+        this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
-        // TODO: check if really inverted
-        this._follower.follow(this._leader, true);
+        this._follower.follow(this._leader, false);
 
         this._state = ManipulatorState.OFF;
 
