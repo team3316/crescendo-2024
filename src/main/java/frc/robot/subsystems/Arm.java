@@ -56,9 +56,9 @@ public class Arm extends SubsystemBase {
 
     private ArmState getInitialState() {
         if (isFwdLimitSwitchClosed()) {
-            return ArmState.TRAP;
+            return ArmState.COLLECT;
         }
-        return ArmState.COLLECT;
+        return ArmState.TRAP;
     }
 
     public ArmState getTargetState() {
