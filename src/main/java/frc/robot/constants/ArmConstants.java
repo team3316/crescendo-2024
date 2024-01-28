@@ -21,7 +21,7 @@ public class ArmConstants {
 
     public static final double kp = 0;
 
-    private static final double gearRatio = 1.0 / 1.0;
+    private static final double gearRatio = 1.0 / 64.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
     public static final double velocityFactor = 360 * gearRatio / 60; // (deg/sec)/RPM
 
