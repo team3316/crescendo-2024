@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -43,6 +44,12 @@ public class RobotContainer {
   
 
   private void configureBindings() {
+     _driverController.options().onTrue(
+                new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
+        // relative mode
+
+        _driverController.share().onTrue(
+                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
     
   }
 

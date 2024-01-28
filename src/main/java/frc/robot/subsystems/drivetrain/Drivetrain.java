@@ -151,9 +151,10 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Vx", SmartDashboard.getNumber("Vx", 0));
         SmartDashboard.putNumber("Vy", SmartDashboard.getNumber("Vy", 0));
         SmartDashboard.putNumber("Vrot", SmartDashboard.getNumber("Vrot", 0));
-        // drive(SmartDashboard.getNumber("Vx", 0)*SwerveModuleConstants.driveFreeSpeedMetersPerSecond, SmartDashboard.getNumber("Vy", 0)*SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-        //  SmartDashboard.getNumber("Vrot", 0)* DrivetrainConstants.maxRotationSpeedRadPerSec, false);
-        SmartDashboard.putNumber("percent", SmartDashboard.getNumber("percent", 0));
+        // drive(SmartDashboard.getNumber("Vx", 0),
+        //         SmartDashboard.getNumber("Vy", 0),
+        //         SmartDashboard.getNumber("Vrot", 0), false);
+        // SmartDashboard.putNumber("percent", SmartDashboard.getNumber("percent", 0));
 
         SmartDashboard.putNumber("which module", SmartDashboard.getNumber("which module", 0));
         // oneModuleDrive(0, SmartDashboard.getNumber("percent", 0));
@@ -167,11 +168,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getHeading() {
-        return 0;// this._pigeon.getFusedHeading();
+        return this._pigeon.getFusedHeading();
     }
 
     public Rotation2d getRotation2d() {
-        return new Rotation2d();// Rotation2d.fromDegrees(getHeading());
+        return Rotation2d.fromDegrees(getHeading());
     }
 
     public void resetYaw() {
@@ -255,7 +256,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getPitch() {
-        return 0;// _pigeon.getPitch();
+        return _pigeon.getPitch();
     }
 
     public void oneModuleDrive(int i, double percent) {
