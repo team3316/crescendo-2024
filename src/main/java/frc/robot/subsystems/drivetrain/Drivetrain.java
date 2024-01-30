@@ -190,7 +190,7 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
-    private SwerveModulePosition[] getSwerveModulePositions() {
+    public SwerveModulePosition[] getSwerveModulePositions() {
         SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[this._modules.length];
 
         for (int i = 0; i < swerveModulePositions.length; i++) {
