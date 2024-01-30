@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.SparkLimitSwitch.Type;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
@@ -46,16 +47,17 @@ public class Arm extends SubsystemBase {
         _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp), 
         ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
         _follower.follow(_leader, false); // TODO: verify inversion before testing
+        _leader.setSoftLimit(SoftLimitDirection.kForward, (float)ArmState.TRAP.angleDeg + 2); // TODO: check which side (fwd/rev) is soft and which is hard limit
+        _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
 
         _feedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
 
         _targetState = getInitialState();
-
         _leader.setPosition(_targetState.angleDeg);
     }
 
     private ArmState getInitialState() {
-        if (isFwdLimitSwitchClosed()) {
+        if (isRevLimitSwitchClosed()) {
             return ArmState.COLLECT;
         }
         return ArmState.TRAP;
@@ -66,10 +68,6 @@ public class Arm extends SubsystemBase {
     }
 
     // TODO: check if switches are NC or NO
-    private boolean isFwdLimitSwitchClosed() {
-        return _leader.getForwardLimitSwitch(Type.kNormallyOpen).isPressed();
-    }
-
     private boolean isRevLimitSwitchClosed() {
         return _leader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
     }
@@ -109,19 +107,13 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putString("target arm state", _targetState.toString());
         SmartDashboard.putNumber("current arm position (deg)", getPositionDeg());
         SmartDashboard.putNumber("current arm velocity (deg/s)", getVelocityDegPerSec());
-        SmartDashboard.putBoolean("arm fwd limit", isFwdLimitSwitchClosed());
         SmartDashboard.putBoolean("arm rev limit", isRevLimitSwitchClosed());
     }
 
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled()) {
-            if (isFwdLimitSwitchClosed()) {
-                _leader.setPosition(ArmState.TRAP.angleDeg);
-            }
-            else if (isRevLimitSwitchClosed()) {
-                _leader.setPosition(ArmState.COLLECT.angleDeg);
-            }
+        if (DriverStation.isDisabled() && isRevLimitSwitchClosed()) {
+            _leader.setPosition(ArmState.COLLECT.angleDeg);
         }
         updateSDB();
     }
