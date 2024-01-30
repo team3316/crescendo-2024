@@ -4,14 +4,25 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.DrivetrainConstants;
-import frc.robot.constants.JoysticksConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
+import frc.robot.constants.JoysticksConstants;
 import frc.robot.humanIO.CommandPS5Controller;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmState;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Manipulator.ManipulatorState;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
@@ -25,10 +36,22 @@ public class RobotContainer {
   private boolean _fieldRelative = true;
   private final CommandPS5Controller _driverController = new CommandPS5Controller(
             JoysticksConstants.driverPort);
-  public RobotContainer() {
-    m_Drivetrain = new Drivetrain();
 
-    m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+  private Arm m_Arm;
+  private Manipulator m_Manipulator;
+  private Shooter m_Shooter;
+  private Intake m_Intake;
+
+  private CommandPS5Controller m_buttonController;
+
+  public RobotContainer() {
+
+    m_Arm = new Arm();
+    m_Intake = new Intake();
+    m_Manipulator = new Manipulator();
+    m_Shooter = new Shooter();
+
+     m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
@@ -52,6 +75,43 @@ public class RobotContainer {
     _driverController.share().onTrue(
                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
     
+    m_buttonController.L1().onTrue(getCollectSequence());
+    m_buttonController.R1().onTrue(getShootSequence());
+    m_buttonController.cross().onTrue(getAMPSequence());
+
+    /* driver should press this before cross to save time, but cross still includes arm to amp in case of mistake */
+    m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+  }
+
+  private Command getCollectSequence() {
+    return Commands.sequence(
+      m_Arm.getSetStateCommand(ArmState.COLLECT).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
+      m_Intake.setStateCommand(IntakeState.COLLECTING),
+      new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+      m_Intake.setStateCommand(IntakeState.DISABLED).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))
+    );
+  }
+
+  private Command getShootSequence() {
+    return new ConditionalCommand(
+      Commands.sequence(
+        m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
+        m_Shooter.getSetStateCommand(ShooterState.ON),
+        new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
+        m_Manipulator.getSetStateCommand(ManipulatorState.SHOOTER),
+        new WaitCommand(1), // arbitrary time
+        m_Manipulator.getSetStateCommand(ManipulatorState.OFF).alongWith(m_Shooter.getSetStateCommand(ShooterState.OFF))),
+      new InstantCommand(),
+      () -> m_Manipulator.hasNoteSwitch()
+    );
+  }
+
+  private Command getAMPSequence() {
+    return Commands.sequence(
+      m_Arm.getSetStateCommand(ArmState.AMP),
+      m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
+      new WaitCommand(1) /*arbitrary time */
+    );
   }
 
   /**
