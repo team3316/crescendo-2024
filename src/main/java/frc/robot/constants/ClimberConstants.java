@@ -14,6 +14,6 @@ public class ClimberConstants {
     private static final double spoolDiameter = 1; // meters
     private static final double gearRatio = 1.0 / 1.0;
     public static final double positionFactor = Math.PI * spoolDiameter * gearRatio; // meter/rotation
-    public static final double velocityFactor = Math.PI * spoolDiameter * gearRatio * 60; // (meter/second)/RPM
+    public static final double velocityFactor = positionFactor * 60; // (meter/second)/RPM
     public static final double spoolsDistance = 1; // meters
 }
