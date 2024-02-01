@@ -25,7 +25,7 @@ public class DrivetrainConstants {
                 public static final double drivePositionConversionFactor = driveRatio * wheelDiameterMeters * Math.PI; // m
                                                                                                                        // /
                                                                                                                        // rotation
-                public static final double driveVelocityConversionFactor = drivePositionConversionFactor/60; // (m/sec) / (rotation/sec)
+                public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60; // (m/sec) / (rotation/sec)
 
                 public static final double steeringPositionConversionFactor = steeringRatio * 360; // degrees / rotation
                 public static final double steeringVelocityConversionFactor = steeringPositionConversionFactor / 60; // degrees
