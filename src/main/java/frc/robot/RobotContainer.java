@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -20,26 +21,23 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  Drivetrain m_Drivetrain;
+  private Drivetrain m_drivetrain = new Drivetrain();
   private boolean _fieldRelative = true;
   private final CommandPS5Controller _driverController = new CommandPS5Controller(
             JoysticksConstants.driverPort);
   public RobotContainer() {
-
-     
-
+    m_drivetrain = new Drivetrain();
     
-    m_Drivetrain = new Drivetrain();
-    /*m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+     m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
-                        SwerveModuleConstants.freeSpeedMetersPerSecond,
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
-                        SwerveModuleConstants.freeSpeedMetersPerSecond,
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
-                _fieldRelative), m_Drivetrain));*/
+                _fieldRelative), m_Drivetrain));
 
-    m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.oneModuleDrive(0, 0.75), m_Drivetrain));
+    
     // Configure the trigger bindings
     configureBindings();
   }
@@ -50,6 +48,12 @@ public class RobotContainer {
   
 
   private void configureBindings() {
+     _driverController.options().onTrue(
+                new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
+        // relative mode
+
+        _driverController.share().onTrue(
+                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
     
   }
 

@@ -6,6 +6,8 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,7 +39,7 @@ public class SwerveModule {
                 constants.steeringGains,
                 SwerveModuleConstants.steeringPositionConversionFactor,
                 SwerveModuleConstants.steeringVelocityConversionFactor,
-                _absEncoder.getAbsolutePosition().getValue());
+                  _absEncoder.getAbsolutePosition().getValue()*360);
 
         this._driveMotor.getConfigurator()
                 .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor));
@@ -50,14 +52,16 @@ public class SwerveModule {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         config.Slot0.withKP(gains.kP)
-        .withKI(gains.kI)
-        .withKD(gains.kD)
-        .withKS(gains.kF)// Feedforward
-        .withKV(0.12);//voltage comp
-                
+                .withKI(gains.kI)
+                .withKD(gains.kD)
+                .withKS(gains.kF)// Feedforward
+                .withKV(0.12);// voltage comp
 
-        config.Feedback.withSensorToMechanismRatio(conversionFactor);
-        
+        config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
+        // config.Feedback.withRotorToSensorRatio(1 / conversionFactor);
+
+                config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+
 
         return config;
     }
@@ -69,7 +73,8 @@ public class SwerveModule {
         // Always set CANcoder relative encoder to 0 on boot
 
         // Configure the offset angle of the magnet
-        _absencoderConfig.MagnetSensor.withMagnetOffset(360 - zeroAngle);
+        _absencoderConfig.MagnetSensor.withMagnetOffset((360 -zeroAngle)/360);
+        _absencoderConfig.MagnetSensor.AbsoluteSensorRange  = AbsoluteSensorRangeValue.Unsigned_0To1;
         CANcoder.getConfigurator().apply(_absencoderConfig, 0.3);
 
         return CANcoder;
@@ -112,12 +117,12 @@ public class SwerveModule {
         if (state.speedMetersPerSecond != 0) // Avoid steering in place
             this._steerMotor.setReference(state.angle.getDegrees(), ControlType.kPosition);
 
-            if (state.speedMetersPerSecond == 0)
+        if (state.speedMetersPerSecond == 0)
             this.stop();
         else
             this._driveMotor.setControl(new VelocityVoltage(
-                    state.speedMetersPerSecond * SwerveModuleConstants.drivePositionConversionFactor));
- 
+                    state.speedMetersPerSecond / SwerveModuleConstants.drivePositionConversionFactor));
+
         _targetState = desiredState;
 
     }
@@ -160,7 +165,7 @@ public class SwerveModule {
     }
 
     public double getAbsAngle() {
-        return _absEncoder.getAbsolutePosition().getValue();
+        return _absEncoder.getAbsolutePosition().getValue()*360;
     }
 
     public void disable() {
@@ -168,14 +173,19 @@ public class SwerveModule {
         this._steerMotor.set(0);
     }
 
-    public double getStatorCurrent(){
+    public double getStatorCurrent() {
         return this._driveMotor.getStatorCurrent().getValue();
     }
 
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(_driveMotor.getPosition().getValue(), Rotation2d.fromDegrees(getAbsAngle()));
     }
-    public void DriveByPercent(double percent){
-        this._driveMotor.set(percent);
+
+    public void DriveByPercent(double percent) {
+        this._driveMotor.setControl(new DutyCycleOut(percent));
+    }
+
+    public double getVelocity() {
+        return this._driveMotor.getVelocity().getValue();
     }
 }
