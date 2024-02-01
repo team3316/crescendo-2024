@@ -12,6 +12,8 @@ import frc.robot.constants.JoysticksConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.humanIO.CommandPS5Controller;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.PoseEstimator;
+import frc.robot.subsystems.vision.LimeLight;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,12 +22,16 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  LimeLight m_LimeLight;
   Drivetrain m_Drivetrain;
   private boolean _fieldRelative = true;
   private final CommandPS5Controller _driverController = new CommandPS5Controller(
             JoysticksConstants.driverPort);
+  PoseEstimator m_Estimator;
   public RobotContainer() {
     m_Drivetrain = new Drivetrain();
+    m_LimeLight = new LimeLight();
+    m_Estimator = new PoseEstimator(m_Drivetrain, m_LimeLight);
 
      m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
