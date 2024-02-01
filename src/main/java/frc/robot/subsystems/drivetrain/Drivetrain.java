@@ -111,13 +111,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void periodic() {
-        for (int i = 0; i < _modules.length; i++) {
-            if (_modules[i].getStatorCurrent() != 0) {
-                System.out.print(_modules[i].getStatorCurrent() + " ");
-            }
-
-        }
-        System.out.println();
         // Update the odometry in the periodic block
         this._odometry.update(getRotation2d(), getSwerveModulePositions());
 
