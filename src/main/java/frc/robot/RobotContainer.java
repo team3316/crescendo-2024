@@ -37,20 +37,13 @@ public class RobotContainer {
   private final CommandPS5Controller _driverController = new CommandPS5Controller(
             JoysticksConstants.driverPort);
 
-  private Arm m_Arm;
-  private Manipulator m_Manipulator;
-  private Shooter m_Shooter;
-  private Intake m_Intake;
-
+  private Arm m_Arm = new Arm();
+  private Manipulator m_Manipulator = new Manipulator();
+  private Shooter m_Shooter = new Shooter();
+  private Intake m_Intake = new Intake();
   private CommandPS5Controller m_buttonController;
 
   public RobotContainer() {
-
-    m_Arm = new Arm();
-    m_Intake = new Intake();
-    m_Manipulator = new Manipulator();
-    m_Shooter = new Shooter();
-
      m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
