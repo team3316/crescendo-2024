@@ -144,16 +144,6 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Vx", SmartDashboard.getNumber("Vx", 0));
         SmartDashboard.putNumber("Vy", SmartDashboard.getNumber("Vy", 0));
         SmartDashboard.putNumber("Vrot", SmartDashboard.getNumber("Vrot", 0));
-        // drive(SmartDashboard.getNumber("Vx", 0),
-        //         SmartDashboard.getNumber("Vy", 0),
-        //         SmartDashboard.getNumber("Vrot", 0), false);
-        // SmartDashboard.putNumber("percent", SmartDashboard.getNumber("percent", 0));
-
-        SmartDashboard.putNumber("which module", SmartDashboard.getNumber("which module", 0));
-        // oneModuleDrive(0, SmartDashboard.getNumber("percent", 0));
-        // oneModuleDrive(1, SmartDashboard.getNumber("percent", 0));
-        // oneModuleDrive(2, SmartDashboard.getNumber("percent", 0));
-        // oneModuleDrive(3, SmartDashboard.getNumber("percent", 0));
     }
 
     public Pose2d getPose() {
