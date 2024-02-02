@@ -27,12 +27,15 @@ public class LimeLight extends SubsystemBase {
 
     /** Creates a new LimeLight. */
     public LimeLight() { // CR: add a way to send the config to the limelight trough code
+   
         limeLightTable = NetworkTableInstance.getDefault().getTable("limelight");
         tx = limeLightTable.getEntry("tx");
         ty = limeLightTable.getEntry("ty");
         hasTarget = limeLightTable.getEntry("tv");
         pipeLine = limeLightTable.getEntry("pipeline");
         LEDs = limeLightTable.getEntry("ledMode");
+        SmartDashboard.putNumber("tx", tx.getDouble(52));
+             setPipeLine(0);
     }
 
     public boolean hasTarget() {
@@ -73,12 +76,13 @@ public BotPose getBotPose() {
         if (!hasTarget())
             return null;
 
-        String entryName = DriverStation.getAlliance().get() == Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
+        String entryName = "botpose_wpiblue";
 
         double[] poseComponents = limeLightTable.getEntry(entryName).getDoubleArray(new double[6]);
         if (poseComponents.length == 0)
             return null;
         double latency = limeLightTable.getEntry("tl").getDouble(0) + limeLightTable.getEntry("cl").getDouble(0);
+
         return new BotPose(new Pose2d(
                 poseComponents[0],
                 poseComponents[1],
@@ -90,6 +94,8 @@ public BotPose getBotPose() {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("hasTarget",hasTarget() );
+
         SmartDashboard.putNumber("xLength", this.getFieldXMeters());
         SmartDashboard.putNumber("yLength", this.getFieldYMeters());
     }
