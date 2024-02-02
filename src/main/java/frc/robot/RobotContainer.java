@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.DrivetrainConstants;
@@ -70,7 +71,7 @@ public class RobotContainer {
     
     m_buttonController.L1().onTrue(getCollectSequence());
     m_buttonController.R1().onTrue(getShootSequence());
-    m_buttonController.cross().onTrue(getAMPSequence());
+    m_buttonController.cross().whileTrue(getAMPSequence());
 
     /* driver should press this before cross to save time, but cross still includes arm to amp in case of mistake */
     m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
@@ -91,7 +92,7 @@ public class RobotContainer {
         m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
         m_Shooter.getSetStateCommand(ShooterState.ON),
         new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-        m_Manipulator.getSetStateCommand(ManipulatorState.SHOOTER),
+        m_Manipulator.getSetStateCommand(ManipulatorState.TOSHOOTER),
         new WaitCommand(1), // arbitrary time
         m_Manipulator.getSetStateCommand(ManipulatorState.OFF).alongWith(m_Shooter.getSetStateCommand(ShooterState.OFF))),
       new InstantCommand(),
@@ -100,11 +101,9 @@ public class RobotContainer {
   }
 
   private Command getAMPSequence() {
-    return Commands.sequence(
-      m_Arm.getSetStateCommand(ArmState.AMP),
-      m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
-      new WaitCommand(1) /*arbitrary time */
-    );
+    Command start = m_Arm.getSetStateCommand(ArmState.AMP).andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
+    Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF).andThen(m_Arm.getSetStateCommand(ArmState.COLLECT));
+    return new StartEndCommand(() -> {start.schedule();}, () -> {start.cancel(); end.schedule();});
   }
 
   /**
