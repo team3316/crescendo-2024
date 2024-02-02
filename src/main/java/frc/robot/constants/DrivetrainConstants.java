@@ -11,10 +11,9 @@ import frc.robot.motors.PIDFGains;
 public class DrivetrainConstants {
         public static class SwerveModuleConstants {
                 // TODO: update pidf gains
-                public static final double driveKp = 0; // in seconds per meter
-                public static final double driveKd = 0; // in seconds per meter
-                public static final double driveKf = 0.75 / 4.16; // percent to motor / m/s at that
-                                                                  // percent
+                public static final double driveKp = 0; // voltage / (m/sec)
+                public static final double driveKd = 0; // voltage / (m/sec^2)
+                public static final double driveKv = 9 / 4.16; // voltage / (m/sec)
                 public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
                 public static final double talonMaxSpeed = 6300;
@@ -38,7 +37,7 @@ public class DrivetrainConstants {
                 
                 public final Translation2d position;
                 public final int idDrive;
-                public final PIDFGains driveGains = new PIDFGains(driveKp, 0, driveKd, driveKf);
+                public final PIDFGains driveGains = new PIDFGains(driveKp, 0, driveKd, driveKv);
                 public final int idSteering;
                 public final PIDFGains steeringGains = new PIDFGains(steeringKp);
                 public final double cancoderZeroAngle;

@@ -51,14 +51,14 @@ public class SwerveModule {
             double conversionFactor) {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
+        
+        config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
+        
         config.Slot0.withKP(gains.kP)
                 .withKI(gains.kI)
                 .withKD(gains.kD)
-                .withKS(gains.kF)// Feedforward
-                .withKV(0.12);// voltage comp
+                .withKV(gains.kF); // feedforward
 
-        config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
-        // config.Feedback.withRotorToSensorRatio(1 / conversionFactor);
 
                 config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
 
