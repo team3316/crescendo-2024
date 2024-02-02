@@ -85,6 +85,9 @@ public class PoseEstimator extends SubsystemBase {
                 .getNorm() > visionMeasurementRejectionThreshold) {
             return;
         }
+        SmartDashboard.putNumber("poseX", robotPose.getPose().getX());
+        SmartDashboard.putNumber("posey", robotPose.getPose().getY());
+        SmartDashboard.putNumber("poseRot", robotPose.getPose().getRotation().getDegrees());
 
         lastVisionTimestamp = robotPose.getTimestamp();
         poseEstimator.addVisionMeasurement(robotPose.getPose(), robotPose.getTimestamp());
