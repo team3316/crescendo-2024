@@ -11,7 +11,7 @@ import frc.robot.motors.PIDFGains;
 public class DrivetrainConstants {
     public static class SwerveModuleConstants {
         // TODO: update pidf gains
-        public static final double driveKp = 0.612; // in seconds per meter
+        public static final double driveKp = 0;//.612; // in seconds per meter
         public static final double driveKd = 0; // in seconds per meter
         public static final double driveKf = 0.75 / 2.81; // percent to motor / m/s at that
                                                           // percent

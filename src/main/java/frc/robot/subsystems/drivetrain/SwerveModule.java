@@ -1,8 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -13,24 +11,29 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.motors.DBugSparkMax;
-import frc.robot.motors.PIDFGains;
 
 /**
  * SwerveModule
  */
 public class SwerveModule {
 
-    private TalonFX _driveMotor;
+    private DBugSparkMax _driveMotor;
     private DBugSparkMax _steerMotor;
 
     private CANcoder _absEncoder;
+
 
     private SwerveModuleState _targetState;
 
     public SwerveModule(SwerveModuleConstants constants) {
         this._absEncoder = createCANcoder(constants.canCoderId, constants.cancoderZeroAngle);
 
-        this._driveMotor = new TalonFX(constants.idDrive);
+        this._driveMotor = DBugSparkMax.create(
+                constants.idDrive,
+                constants.driveGains,
+                SwerveModuleConstants.drivePositionConversionFactor,
+                SwerveModuleConstants.driveVelocityConversionFactor,
+                0);
 
         this._steerMotor = DBugSparkMax.create(
                 constants.idSteering,
@@ -39,24 +42,10 @@ public class SwerveModule {
                 SwerveModuleConstants.steeringVelocityConversionFactor,
                 _absEncoder.getAbsolutePosition().getValue());
 
-        this._driveMotor.getConfigurator()
-                .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor));
+        this._driveMotor.setAverageDepth(4);
+        this._driveMotor.setMeasurementPeriod(8);
 
         this._targetState = getState();
-    }
-
-    private static TalonFXConfiguration getTalonConfig(PIDFGains gains,
-            double conversionFactor) {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-
-        config.Slot0.withKP(gains.kP);
-        config.Slot0.withKI(gains.kI);
-        config.Slot0.withKD(gains.kD);
-        config.Slot0.withKS(gains.kF);// Feedforward
-
-        config.Feedback.withSensorToMechanismRatio(conversionFactor);
-
-        return config;
     }
 
     private static CANcoder createCANcoder(int id, double zeroAngle) {
@@ -64,7 +53,7 @@ public class SwerveModule {
         CANcoderConfiguration _absencoderConfig = new CANcoderConfiguration();
         CANcoder CANcoder = new CANcoder(id);
         // Always set CANcoder relative encoder to 0 on boot
-
+        
         // Configure the offset angle of the magnet
         _absencoderConfig.MagnetSensor.withMagnetOffset((360 -zeroAngle)/360);
         _absencoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
@@ -95,7 +84,7 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                this._driveMotor.getVelocity().getValue(),
+                this._driveMotor.getVelocity(),
                 new Rotation2d().rotateBy(Rotation2d.fromDegrees(this._steerMotor.getPosition())));
     }
 
@@ -113,8 +102,7 @@ public class SwerveModule {
         if (state.speedMetersPerSecond == 0)
             this.stop();
         else
-            this._driveMotor.setControl(new VelocityDutyCycle(
-                    state.speedMetersPerSecond * SwerveModuleConstants.drivePositionConversionFactor));
+            this._driveMotor.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
 
         _targetState = desiredState;
 
@@ -167,6 +155,6 @@ public class SwerveModule {
     }
 
     public SwerveModulePosition getSwerveModulePosition() {
-        return new SwerveModulePosition(_driveMotor.getPosition().getValue(), Rotation2d.fromDegrees(getAbsAngle()));
+        return new SwerveModulePosition(_driveMotor.getPosition(), Rotation2d.fromDegrees(getAbsAngle()));
     }
-}
+} 
