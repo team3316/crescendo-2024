@@ -16,7 +16,7 @@ public class DrivetrainConstants {
                 public static final double driveKv = 9 / 4.16; // voltage / (m/sec)
                 public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
-                public static final double talonMaxSpeed = 6300;
+                public static final double talonMaxSpeed = 6300; // RPM
                 private static final double driveRatio = 1.0 / 6.12;
                 private static final double steeringRatio = 1.0 / 12.8;
                 private static final double wheelDiameterMeters = 3.85 * 2.54 / 100; // 4 inches in meters
@@ -24,7 +24,6 @@ public class DrivetrainConstants {
                 public static final double drivePositionConversionFactor = driveRatio * wheelDiameterMeters * Math.PI; // m
                                                                                                                        // /
                                                                                                                        // rotation
-                public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60; // (m/sec) / (rotation/sec)
 
                 public static final double steeringPositionConversionFactor = steeringRatio * 360; // degrees / rotation
                 public static final double steeringVelocityConversionFactor = steeringPositionConversionFactor / 60; // degrees
@@ -33,7 +32,7 @@ public class DrivetrainConstants {
                                                                                                                      // *
                                                                                                                      // seconds/minute)
 
-                public static final double driveFreeSpeedMetersPerSecond = talonMaxSpeed * driveVelocityConversionFactor;
+                public static final double driveFreeSpeedMetersPerSecond = talonMaxSpeed / 60 * drivePositionConversionFactor;
                 
                 public final Translation2d position;
                 public final int idDrive;

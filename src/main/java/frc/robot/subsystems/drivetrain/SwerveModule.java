@@ -53,15 +53,13 @@ public class SwerveModule {
 
         
         config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
-        
+
         config.Slot0.withKP(gains.kP)
                 .withKI(gains.kI)
                 .withKD(gains.kD)
                 .withKV(gains.kF); // feedforward
 
-
                 config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-
 
         return config;
     }
@@ -121,7 +119,7 @@ public class SwerveModule {
             this.stop();
         else
             this._driveMotor.setControl(new VelocityVoltage(
-                    state.speedMetersPerSecond / SwerveModuleConstants.drivePositionConversionFactor));
+                    state.speedMetersPerSecond));
 
         _targetState = desiredState;
 
