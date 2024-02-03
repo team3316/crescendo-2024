@@ -18,6 +18,7 @@ import frc.robot.constants.LimelightConstants;
 
 public class LimeLight extends SubsystemBase {
     NetworkTable limeLightTable;
+    private NetworkTableEntry ta;
     private NetworkTableEntry tx;
     private NetworkTableEntry ty;
     private NetworkTableEntry hasTarget;
@@ -29,6 +30,7 @@ public class LimeLight extends SubsystemBase {
     public LimeLight() { // CR: add a way to send the config to the limelight trough code
    
         limeLightTable = NetworkTableInstance.getDefault().getTable("limelight");
+        ta = limeLightTable.getEntry("ta");
         tx = limeLightTable.getEntry("tx");
         ty = limeLightTable.getEntry("ty");
         hasTarget = limeLightTable.getEntry("tv");
@@ -37,7 +39,11 @@ public class LimeLight extends SubsystemBase {
         SmartDashboard.putNumber("tx", tx.getDouble(52));
              setPipeLine(0);
     }
-
+    public double getArea(){
+  
+        return this.ta.getDouble(-1);
+        
+    }
     public boolean hasTarget() {
         return hasTarget.getDouble(0) == 1;
     }

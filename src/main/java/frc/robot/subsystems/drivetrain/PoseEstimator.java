@@ -24,7 +24,9 @@ public class PoseEstimator extends SubsystemBase {
 
       // maximum allowed deviation in meters between current pose and vision pose in
     // order to accept the vision reading as valid.
-    private static final double visionMeasurementRejectionThreshold = 2.0;
+    private static final double visionMeasurementRejectionThreshold = 2;
+
+    private static final double visionMeasurementRejectionThresholdAprilTagSize = 0;
         private double lastVisionTimestamp = -1;
     Drivetrain drivetrain;        
     LimeLight limeLight;
@@ -43,7 +45,7 @@ public class PoseEstimator extends SubsystemBase {
      * Standard deviations of model states. Increase these numbers to trust your
      * model's state estimates less. This
      * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then
-     * meters.
+          * meters.
      */
     private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
 
@@ -82,7 +84,8 @@ public class PoseEstimator extends SubsystemBase {
         }
 
         if (getCurrentPose().minus(robotPose.getPose()).getTranslation()
-                .getNorm() > visionMeasurementRejectionThreshold) {
+                .getNorm() > visionMeasurementRejectionThreshold ||
+                this.limeLight.getArea() < this.visionMeasurementRejectionThresholdAprilTagSize) {
             return;
         }
         SmartDashboard.putNumber("poseX", robotPose.getPose().getX());
