@@ -33,19 +33,20 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private Drivetrain m_Drivetrain = new Drivetrain();
-  private boolean _fieldRelative = true;
-  private final CommandPS5Controller _driverController = new CommandPS5Controller(
-            JoysticksConstants.driverPort);
 
-  private Arm m_Arm = new Arm();
-  private Manipulator m_Manipulator = new Manipulator();
-  private Shooter m_Shooter = new Shooter();
-  private Intake m_Intake = new Intake();
-  private CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
+    private final Drivetrain m_Drivetrain = new Drivetrain();
+    private final Arm m_Arm = new Arm();
+    private final Manipulator m_Manipulator = new Manipulator();
+    private final Shooter m_Shooter = new Shooter();
+    private final Intake m_Intake = new Intake();
+
+    private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
+    private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
+    
+    private boolean _fieldRelative = true;
 
   public RobotContainer() {
-     m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+    m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
