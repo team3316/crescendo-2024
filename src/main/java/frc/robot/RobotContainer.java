@@ -29,9 +29,12 @@ import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -45,11 +48,11 @@ public class RobotContainer {
 
     private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
-    
+
     private boolean _fieldRelative = true;
 
-  public RobotContainer() {
-    m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+    public RobotContainer() {
+        m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
@@ -57,75 +60,86 @@ public class RobotContainer {
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
-    // Configure the trigger bindings
-    configureBindings();
-  }
+        // Configure the trigger bindings
+        configureBindings();
+    }
 
-  public void stop() {
-    m_Drivetrain.disabledInit();
-    m_Arm.stop();
-    m_Intake.stop();
-    m_Manipulator.stop();
-    m_Shooter.stop();
-    m_Climber.stop();
-  }
+    public void stop() {
+        m_Drivetrain.disabledInit();
+        m_Arm.stop();
+        m_Intake.stop();
+        m_Manipulator.stop();
+        m_Shooter.stop();
+        m_Climber.stop();
+    }
 
-  private void configureBindings() {
-    _driverController.options().onTrue(
+    private void configureBindings() {
+        _driverController.options().onTrue(
                 new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
         // relative mode
 
-    _driverController.share().onTrue(
+        _driverController.share().onTrue(
                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
-    
-    m_buttonController.L1().onTrue(getCollectSequence());
-    m_buttonController.R1().onTrue(getShootSequence());
-    m_buttonController.cross().whileTrue(getAMPSequence());
-    m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
-    m_buttonController.triangle().onTrue(getClimbSequence());
-    /* driver should press this before cross to save time, but cross still includes arm to amp in case of mistake */
-    m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
-  }
 
-  private Command getCollectSequence() {
-    return Commands.sequence(
-      m_Arm.getSetStateCommand(ArmState.COLLECT).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
-      m_Intake.setStateCommand(IntakeState.COLLECTING),
-      new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-      m_Intake.setStateCommand(IntakeState.DISABLED).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))
-    );
-  }
+        m_buttonController.L1().onTrue(getCollectSequence());
+        m_buttonController.R1().onTrue(getShootSequence());
+        m_buttonController.cross().whileTrue(getAMPSequence());
+        m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
+        m_buttonController.triangle().onTrue(getClimbSequence());
+        /*
+         * driver should press this before cross to save time, but cross still includes
+         * arm to amp in case of mistake
+         */
+        m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+    }
 
-  private Command getShootSequence() {
-    return new ConditionalCommand(
-      Commands.sequence(
-        m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
-        m_Shooter.getSetStateCommand(ShooterState.ON),
-        new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-        m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-        new WaitCommand(1), // arbitrary time
-        m_Manipulator.getSetStateCommand(ManipulatorState.OFF).alongWith(m_Shooter.getSetStateCommand(ShooterState.OFF))),
-      new InstantCommand(),
-      () -> m_Manipulator.hasNoteSwitch()
-    );
-  }
+    private Command getCollectSequence() {
+        return Commands.sequence(
+                m_Arm.getSetStateCommand(ArmState.COLLECT)
+                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
+                m_Intake.setStateCommand(IntakeState.COLLECTING),
+                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                m_Intake.setStateCommand(IntakeState.DISABLED)
+                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+    }
 
-  private Command getAMPSequence() {
-    Command start = m_Arm.getSetStateCommand(ArmState.AMP).andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
-    Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF).andThen(m_Arm.getSetStateCommand(ArmState.COLLECT));
-    return new StartEndCommand(() -> {start.schedule();}, () -> {start.cancel(); end.schedule();});
-  }
+    private Command getShootSequence() {
+        return new ConditionalCommand(
+                Commands.sequence(
+                        m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
+                        m_Shooter.getSetStateCommand(ShooterState.ON),
+                        new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
+                        m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                        new WaitCommand(1), // arbitrary time
+                        m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
+                                .alongWith(m_Shooter.getSetStateCommand(ShooterState.OFF))),
+                new InstantCommand(),
+                () -> m_Manipulator.hasNoteSwitch());
+    }
 
-  private Command getClimbSequence() {
-    return m_Arm.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand());
-  }
+    private Command getAMPSequence() {
+        Command start = m_Arm.getSetStateCommand(ArmState.AMP)
+                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
+        Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
+                .andThen(m_Arm.getSetStateCommand(ArmState.COLLECT));
+        return new StartEndCommand(() -> {
+            start.schedule();
+        }, () -> {
+            start.cancel();
+            end.schedule();
+        });
+    }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return null;
-  }
+    private Command getClimbSequence() {
+        return m_Arm.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand());
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return null;
+    }
 }
