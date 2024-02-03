@@ -37,11 +37,11 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
  */
 public class RobotContainer {
 
-    private final Drivetrain m_Drivetrain = new Drivetrain();
+    /*private final Drivetrain m_Drivetrain = new Drivetrain();
     private final Arm m_Arm = new Arm();
     private final Manipulator m_Manipulator = new Manipulator();
     private final Shooter m_Shooter = new Shooter();
-    private final Intake m_Intake = new Intake();
+    private final Intake m_Intake = new Intake();*/
     private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(0));
 
     private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
@@ -50,14 +50,14 @@ public class RobotContainer {
     private boolean _fieldRelative = true;
 
   public RobotContainer() {
-    m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+    /*m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
-                _fieldRelative), m_Drivetrain));
+                _fieldRelative), m_Drivetrain));*/
     
     
     // Configure the trigger bindings
@@ -65,38 +65,38 @@ public class RobotContainer {
   }
 
   public void stop() {
-    m_Drivetrain.disabledInit();
+    // m_Drivetrain.disabledInit();
     m_Climber.stop();
   }
 
   private void configureBindings() {
-    _driverController.options().onTrue(
+    /*_driverController.options().onTrue(
                 new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
         // relative mode
 
     _driverController.share().onTrue(
-                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
+                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode*
     
     m_buttonController.L1().onTrue(getCollectSequence());
     m_buttonController.R1().onTrue(getShootSequence());
-    m_buttonController.cross().whileTrue(getAMPSequence());
+    m_buttonController.cross().whileTrue(getAMPSequence());*/
     m_buttonController.povUp().whileTrue(new StartEndCommand(() -> m_Climber.upClimbPercentage(), () -> m_Climber.stop(), m_Climber));
     m_buttonController.povDown().whileTrue(new StartEndCommand(() -> m_Climber.downClimbPercentage(), () -> m_Climber.stop(), m_Climber));
 
     /* driver should press this before cross to save time, but cross still includes arm to amp in case of mistake */
-    m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+    // m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
   }
 
-  private Command getCollectSequence() {
+  /*private Command getCollectSequence() {
     return Commands.sequence(
       m_Arm.getSetStateCommand(ArmState.COLLECT).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
       m_Intake.setStateCommand(IntakeState.COLLECTING),
       new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
       m_Intake.setStateCommand(IntakeState.DISABLED).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))
     );
-  }
+  }*/
 
-  private Command getShootSequence() {
+  /*private Command getShootSequence() {
     return new ConditionalCommand(
       Commands.sequence(
         m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
@@ -114,7 +114,7 @@ public class RobotContainer {
     Command start = m_Arm.getSetStateCommand(ArmState.AMP).andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
     Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF).andThen(m_Arm.getSetStateCommand(ArmState.COLLECT));
     return new StartEndCommand(() -> {start.schedule();}, () -> {start.cancel(); end.schedule();});
-  }
+  }*/
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
