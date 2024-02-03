@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -17,6 +18,7 @@ import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
 import frc.robot.humanIO.CommandPS5Controller;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -39,6 +41,7 @@ public class RobotContainer {
     private final Manipulator m_Manipulator = new Manipulator();
     private final Shooter m_Shooter = new Shooter();
     private final Intake m_Intake = new Intake();
+    private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
     private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
@@ -73,7 +76,8 @@ public class RobotContainer {
     m_buttonController.L1().onTrue(getCollectSequence());
     m_buttonController.R1().onTrue(getShootSequence());
     m_buttonController.cross().whileTrue(getAMPSequence());
-
+    m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
+    m_buttonController.triangle().onTrue(getClimbSequence());
     /* driver should press this before cross to save time, but cross still includes arm to amp in case of mistake */
     m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
   }
@@ -105,6 +109,10 @@ public class RobotContainer {
     Command start = m_Arm.getSetStateCommand(ArmState.AMP).andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
     Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF).andThen(m_Arm.getSetStateCommand(ArmState.COLLECT));
     return new StartEndCommand(() -> {start.schedule();}, () -> {start.cancel(); end.schedule();});
+  }
+
+  private Command getClimbSequence() {
+    return m_Arm.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand());
   }
 
   /**

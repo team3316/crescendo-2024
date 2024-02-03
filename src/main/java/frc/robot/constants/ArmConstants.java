@@ -8,6 +8,7 @@ public class ArmConstants {
 
     public static final double collectAngle = 0; // deg
     public static final double TRAPAngle = 0; // deg
+    public static final double underChainAngle = 0; // deg
     public static final double AMPAngle = 0; // deg
 
     private static final double maxVelocity = 0; // deg/sec

@@ -32,6 +32,7 @@ public class Arm extends SubsystemBase {
     public static enum ArmState {
         COLLECT(ArmConstants.collectAngle),
         AMP(ArmConstants.AMPAngle),
+        UNDER_CHAIN(ArmConstants.underChainAngle),
         TRAP(ArmConstants.TRAPAngle);
 
         public final double angleDeg;
