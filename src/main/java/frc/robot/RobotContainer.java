@@ -63,6 +63,11 @@ public class RobotContainer {
 
   public void stop() {
     m_Drivetrain.disabledInit();
+    m_Arm.stop();
+    m_Intake.stop();
+    m_Manipulator.stop();
+    m_Shooter.stop();
+    m_Climber.stop();
   }
 
   private void configureBindings() {
