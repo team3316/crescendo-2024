@@ -42,7 +42,7 @@ public class RobotContainer {
   private Manipulator m_Manipulator = new Manipulator();
   private Shooter m_Shooter = new Shooter();
   private Intake m_Intake = new Intake();
-  private CommandPS5Controller m_buttonController;
+  private CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
 
   public RobotContainer() {
      m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
@@ -92,7 +92,7 @@ public class RobotContainer {
         m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
         m_Shooter.getSetStateCommand(ShooterState.ON),
         new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-        m_Manipulator.getSetStateCommand(ManipulatorState.TOSHOOTER),
+        m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
         new WaitCommand(1), // arbitrary time
         m_Manipulator.getSetStateCommand(ManipulatorState.OFF).alongWith(m_Shooter.getSetStateCommand(ShooterState.OFF))),
       new InstantCommand(),
