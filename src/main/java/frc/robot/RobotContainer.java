@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -17,6 +19,7 @@ import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
 import frc.robot.humanIO.CommandPS5Controller;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Arm.ArmState;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -39,6 +42,7 @@ public class RobotContainer {
     private final Manipulator m_Manipulator = new Manipulator();
     private final Shooter m_Shooter = new Shooter();
     private final Intake m_Intake = new Intake();
+    private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(0));
 
     private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
@@ -54,12 +58,15 @@ public class RobotContainer {
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
+    
+    
     // Configure the trigger bindings
     configureBindings();
   }
 
   public void stop() {
     m_Drivetrain.disabledInit();
+    m_Climber.stop();
   }
 
   private void configureBindings() {
@@ -73,6 +80,8 @@ public class RobotContainer {
     m_buttonController.L1().onTrue(getCollectSequence());
     m_buttonController.R1().onTrue(getShootSequence());
     m_buttonController.cross().whileTrue(getAMPSequence());
+    m_buttonController.povUp().whileTrue(new StartEndCommand(() -> m_Climber.upClimbPercentage(), () -> m_Climber.stop(), m_Climber));
+    m_buttonController.povDown().whileTrue(new StartEndCommand(() -> m_Climber.downClimbPercentage(), () -> m_Climber.stop(), m_Climber));
 
     /* driver should press this before cross to save time, but cross still includes arm to amp in case of mistake */
     m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));

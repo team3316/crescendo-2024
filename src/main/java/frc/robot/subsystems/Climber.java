@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
@@ -60,5 +61,31 @@ public class Climber extends SubsystemBase {
 
     public Command getClimbCommand() {
         return new RunCommand(this::climb, this);
+    }
+
+    private void setPercentage(double left, double right) {
+        _leftSpool.set(left);
+        _rightSpool.set(right);
+    }
+
+    public void upClimbPercentage() {
+        setPercentage(SmartDashboard.getNumber("leftUp", 0), SmartDashboard.getNumber("rightUp", 0));
+    }
+
+    public void downClimbPercentage() {
+        setPercentage(SmartDashboard.getNumber("leftDown", 0), SmartDashboard.getNumber("rightDown", 0));
+    }
+
+    public void stop() {
+        _leftSpool.set(0);
+        _rightSpool.set(0);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("leftUp", SmartDashboard.getNumber("leftUp", 0));
+        SmartDashboard.putNumber("rightUp", SmartDashboard.getNumber("rightUp", 0));
+        SmartDashboard.putNumber("leftDown", SmartDashboard.getNumber("leftDown", 0));
+        SmartDashboard.putNumber("rightDown", SmartDashboard.getNumber("rightDown", 0));
     }
 }
