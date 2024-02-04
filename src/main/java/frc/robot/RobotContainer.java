@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -91,6 +92,11 @@ public class RobotContainer {
          * arm to amp in case of mistake
          */
         m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+
+        _driverController.povUp().whileTrue(m_Drivetrain.sysIDQuasistatic(Direction.kForward));
+        _driverController.povDown().whileTrue(m_Drivetrain.sysIDQuasistatic(Direction.kReverse));
+        _driverController.povRight().whileTrue(m_Drivetrain.sysIDDynamic(Direction.kForward));
+        _driverController.povLeft().whileTrue(m_Drivetrain.sysIDDynamic(Direction.kReverse));
     }
 
     private Command getCollectSequence() {

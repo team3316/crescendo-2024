@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+import com.ctre.phoenix6.controls.VoltageOut;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,14 +12,23 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.UnitBuilder;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.LimelightConstants;
@@ -38,6 +48,8 @@ public class Drivetrain extends SubsystemBase {
     private static PIDController vision_xController;
     private static PIDController vision_yController;
     private static PIDController thetaController;
+
+    private SysIdRoutine _routine;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -68,6 +80,8 @@ public class Drivetrain extends SubsystemBase {
         thetaController.setSetpoint(DrivetrainConstants.installAngle.getDegrees());
 
         resetControllers();
+
+        _routine = new SysIdRoutine(new Config(), new SysIdRoutine.Mechanism(this::voltageDrive, this::logSysID, this));
     }
 
     public void setModulesAngle(double angle) {
@@ -254,5 +268,27 @@ public class Drivetrain extends SubsystemBase {
     public Command getRotateModulesCommand() {
         return new RunCommand(() -> drive(0, -0.1, 0, false)).withTimeout(0.2)
                 .finallyDo((interrupted) -> drive(0, 0, 0, false));
+    }
+
+    private void voltageDrive(Measure<Voltage> voltMeasure) {
+        for (SwerveModule module : _modules) {
+            module.driveByVoltage(voltMeasure.magnitude());
+        }
+    }
+
+    private void logSysID(SysIdRoutineLog log) {
+        String[] modulesNames = {"TR", "TL", "BR", "BL"};
+        for (int i = 0; i < 4; i++) {
+            log.motor(modulesNames[i]).voltage(MutableMeasure.mutable(BaseUnits.Voltage.of(_modules[i].getDriveOutput()))).
+            linearVelocity(BaseUnits.Velocity.of(_modules[i].getVelocity()));
+        }
+    }
+
+    public Command sysIDQuasistatic(SysIdRoutine.Direction direction) {
+        return _routine.quasistatic(direction);
+    }
+
+    public Command sysIDDynamic(SysIdRoutine.Direction direction) {
+        return _routine.dynamic(direction);
     }
 }
