@@ -24,9 +24,9 @@ public class PoseEstimator extends SubsystemBase {
 
       // maximum allowed deviation in meters between current pose and vision pose in
     // order to accept the vision reading as valid.
-    private static final double visionMeasurementRejectionThreshold = 2;
 
-    private static final double visionMeasurementRejectionThresholdAprilTagSize = 0;
+
+    private static double visionXStd;
         private double lastVisionTimestamp = -1;
     Drivetrain drivetrain;        
     LimeLight limeLight;
@@ -34,6 +34,10 @@ public class PoseEstimator extends SubsystemBase {
     private final double xTolerance = 0.2; // in meters
     private final double yTolerance = 0.1; // in meters
     private final double tTolerance = 10; // in degrees
+
+    private final double xConversionFactorStdDevVision = 1; // in meters
+    private final double yConversionFactorStdDevVision = 1; // in meters
+    private final double tConversionFactorStdDevVision = 1; // in radians
 
     // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
     // you trust your various sensors. Smaller numbers will cause the filter to
@@ -83,17 +87,19 @@ public class PoseEstimator extends SubsystemBase {
             return;
         }
 
-        if (getCurrentPose().minus(robotPose.getPose()).getTranslation()
-                .getNorm() > visionMeasurementRejectionThreshold ||
-                this.limeLight.getArea() < this.visionMeasurementRejectionThresholdAprilTagSize) {
-            return;
-        }
+
         SmartDashboard.putNumber("poseX", robotPose.getPose().getX());
         SmartDashboard.putNumber("posey", robotPose.getPose().getY());
         SmartDashboard.putNumber("poseRot", robotPose.getPose().getRotation().getDegrees());
 
         lastVisionTimestamp = robotPose.getTimestamp();
         poseEstimator.addVisionMeasurement(robotPose.getPose(), robotPose.getTimestamp());
+    }
+
+
+    public void updateStdDevs(){
+        double a = limeLight.getArea();
+        this.poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(a * xConversionFactorStdDevVision, a * yConversionFactorStdDevVision, a * tConversionFactorStdDevVision));
     }
 
     @Override
@@ -108,6 +114,8 @@ public class PoseEstimator extends SubsystemBase {
 
         field2d.setRobotPose(getCurrentPose());
         SmartDashboard.putData("field", field2d);
+        this.updateStdDevs();
+        
     }
     
 
