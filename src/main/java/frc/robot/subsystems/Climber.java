@@ -61,4 +61,9 @@ public class Climber extends SubsystemBase {
     public Command getClimbCommand() {
         return new RunCommand(this::climb, this);
     }
+
+    public void stop() {
+        _leftSpool.set(0);
+        _rightSpool.set(0);
+    }
 }

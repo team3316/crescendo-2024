@@ -238,8 +238,13 @@ public class Drivetrain extends SubsystemBase {
         this.drive(xSpeed, ySpeed, thetaController.calculate(this.getPose().getRotation().getRadians()), true);
     }
 
+    // TODO: check what are the real axises
     public double getPitch() {
         return _pigeon.getPitch();
+    }
+
+    public double getRoll() {
+        return _pigeon.getRoll();
     }
 
     public void oneModuleDrive(int i, double percent) {

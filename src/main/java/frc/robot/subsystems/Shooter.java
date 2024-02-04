@@ -91,4 +91,8 @@ public class Shooter extends SubsystemBase {
                     ShooterConstants.kfShooter));
         }*/
     }
+
+    public void stop() {
+        _leaderUpLeft.set(0);
+    }
 }
