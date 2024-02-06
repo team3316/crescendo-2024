@@ -99,6 +99,8 @@ public class RobotContainer {
         //m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
 
         _driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
+
+        _driverController.circle().onTrue(m_Drivetrain.zeroCANCodersCommand());
     }
 
     /*private Command getCollectSequence() {

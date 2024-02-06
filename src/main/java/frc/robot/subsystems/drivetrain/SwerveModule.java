@@ -48,6 +48,7 @@ public class SwerveModule {
                 .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor));
 
         this._targetState = getState();
+        
     }
 
     private static TalonFXConfiguration getTalonConfig(PIDFGains gains,
@@ -196,5 +197,9 @@ public class SwerveModule {
     
     public double getDriveOutput() {
         return _driveMotor.get() * RobotController.getBatteryVoltage();
+    }
+
+    public void zeroCANCoder() {
+        _absEncoder.setPosition(0);
     }
 }

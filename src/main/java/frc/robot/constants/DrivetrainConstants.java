@@ -16,7 +16,7 @@ public class DrivetrainConstants {
                 public static final double driveKv = 9 / 4.16; // voltage / (m/sec)
                 public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
-                public static final double talonMaxSpeed = 6300; // RPM
+                public static final double krakenFreeSpeed = 6000; // RPM
                 private static final double driveRatio = 1.0 / 6.12;
                 private static final double steeringRatio = 1.0 / 12.8;
                 private static final double wheelDiameterMeters = 3.85 * 2.54 / 100; // 4 inches in meters
@@ -32,7 +32,7 @@ public class DrivetrainConstants {
                                                                                                                      // *
                                                                                                                      // seconds/minute)
 
-                public static final double driveFreeSpeedMetersPerSecond = talonMaxSpeed / 60 * drivePositionConversionFactor;
+                public static final double driveFreeSpeedMetersPerSecond = krakenFreeSpeed / 60 * drivePositionConversionFactor;
                 
                 public final Translation2d position;
                 public final int idDrive;
