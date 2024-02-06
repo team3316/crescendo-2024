@@ -28,6 +28,7 @@ import frc.robot.subsystems.Manipulator.ManipulatorState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -52,6 +53,8 @@ public class RobotContainer {
 
     private boolean _fieldRelative = true;
 
+    private SwerveSysidCommands m_SysidCommands;
+
     public RobotContainer() {
         m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
@@ -61,6 +64,8 @@ public class RobotContainer {
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
+
+        m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
         // Configure the trigger bindings
         configureBindings();
     }
@@ -93,10 +98,7 @@ public class RobotContainer {
          */
         m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
 
-        _driverController.povUp().whileTrue(m_Drivetrain.sysIDQuasistatic(Direction.kForward));
-        _driverController.povDown().whileTrue(m_Drivetrain.sysIDQuasistatic(Direction.kReverse));
-        _driverController.povRight().whileTrue(m_Drivetrain.sysIDDynamic(Direction.kForward));
-        _driverController.povLeft().whileTrue(m_Drivetrain.sysIDDynamic(Direction.kReverse));
+        _driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
     }
 
     private Command getCollectSequence() {

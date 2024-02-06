@@ -49,8 +49,6 @@ public class Drivetrain extends SubsystemBase {
     private static PIDController vision_yController;
     private static PIDController thetaController;
 
-    private SysIdRoutine _routine;
-
     public Drivetrain() {
         this._modules = new SwerveModule[] {
                 new SwerveModule(DrivetrainConstants.TRModule),
@@ -81,7 +79,6 @@ public class Drivetrain extends SubsystemBase {
 
         resetControllers();
 
-        _routine = new SysIdRoutine(new Config(), new SysIdRoutine.Mechanism(this::voltageDrive, this::logSysID, this));
     }
 
     public void setModulesAngle(double angle) {
@@ -270,25 +267,9 @@ public class Drivetrain extends SubsystemBase {
                 .finallyDo((interrupted) -> drive(0, 0, 0, false));
     }
 
-    private void voltageDrive(Measure<Voltage> voltMeasure) {
+    public void voltageDrive(Measure<Voltage> voltMeasure) {
         for (SwerveModule module : _modules) {
             module.driveByVoltage(voltMeasure.magnitude());
         }
-    }
-
-    private void logSysID(SysIdRoutineLog log) {
-        String[] modulesNames = {"TR", "TL", "BR", "BL"};
-        for (int i = 0; i < 4; i++) {
-            log.motor(modulesNames[i]).voltage(MutableMeasure.mutable(BaseUnits.Voltage.of(_modules[i].getDriveOutput()))).
-            linearVelocity(BaseUnits.Velocity.of(_modules[i].getVelocity()));
-        }
-    }
-
-    public Command sysIDQuasistatic(SysIdRoutine.Direction direction) {
-        return _routine.quasistatic(direction);
-    }
-
-    public Command sysIDDynamic(SysIdRoutine.Direction direction) {
-        return _routine.dynamic(direction);
     }
 }
