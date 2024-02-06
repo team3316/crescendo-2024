@@ -18,7 +18,7 @@ public class Intake extends SubsystemBase {
     public static enum IntakeState {
         COLLECTING(IntakeConstants.collectingPrecent),
         DISABLED(IntakeConstants.disabledPrecent);
-        public final double percentage;
+        public double percentage;
 
         private IntakeState(double precentege){
             this.percentage = precentege;
@@ -39,8 +39,8 @@ public class Intake extends SubsystemBase {
         this._state = state;
 
         _intakeMotor.set(state.percentage);
-        SmartDashboard.putString("Intake State: ", this._state.toString());
-        SmartDashboard.putNumber("Intake precentage ", this._state.percentage);
+        //SmartDashboard.putString("Intake State: ", this._state.toString());
+        //SmartDashboard.putNumber("Intake precentage ", this._state.percentage);
     }
     
     public Command setStateCommand(IntakeState state){
@@ -49,5 +49,11 @@ public class Intake extends SubsystemBase {
 
     public void stop() {
         setState(IntakeState.DISABLED);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Intake Percentage", SmartDashboard.getNumber("Intake Percentage", 0));
+        IntakeState.COLLECTING.percentage = SmartDashboard.getNumber("Intake Percentage", 0);
     }
 }

@@ -39,12 +39,12 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
  */
 public class RobotContainer {
 
-    private final Drivetrain m_Drivetrain = new Drivetrain();
-    private final Arm m_Arm = new Arm();
-    private final Manipulator m_Manipulator = new Manipulator();
-    private final Shooter m_Shooter = new Shooter();
+    // private final Drivetrain m_Drivetrain = new Drivetrain();
+    // private final Arm m_Arm = new Arm();
+    // private final Manipulator m_Manipulator = new Manipulator*();
+    // private final Shooter m_Shooter = new Shooter();
     private final Intake m_Intake = new Intake();
-    private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
+    // private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
     private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
@@ -52,48 +52,50 @@ public class RobotContainer {
     private boolean _fieldRelative = true;
 
     public RobotContainer() {
-        m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+        /*m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getLeftX() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
-                _fieldRelative), m_Drivetrain));
+                _fieldRelative), m_Drivetrain));*/
         // Configure the trigger bindings
         configureBindings();
     }
 
     public void stop() {
-        m_Drivetrain.disabledInit();
-        m_Arm.stop();
+        // m_Drivetrain.disabledInit();
+        // m_Arm.stop();
         m_Intake.stop();
-        m_Manipulator.stop();
-        m_Shooter.stop();
-        m_Climber.stop();
+        // m_Manipulator.stop();
+        // m_Shooter.stop();
+        // m_Climber.stop();
     }
 
     private void configureBindings() {
-        _driverController.options().onTrue(
+        /*_driverController.options().onTrue(
                 new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
         // relative mode
 
-        _driverController.share().onTrue(
+        /*_driverController.share().onTrue(
                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
         m_buttonController.L1().onTrue(getCollectSequence());
         m_buttonController.R1().onTrue(getShootSequence());
         m_buttonController.cross().whileTrue(getAMPSequence());
         m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
-        m_buttonController.triangle().onTrue(getClimbSequence());
+        m_buttonController.triangle().onTrue(getClimbSequence());*/
         /*
          * driver should press this before cross to save time, but cross still includes
          * arm to amp in case of mistake
          */
-        m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+        //m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+        m_buttonController.povUp().onTrue(m_Intake.setStateCommand(IntakeState.COLLECTING));
+        _driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED));
     }
 
-    private Command getCollectSequence() {
+    /*private Command getCollectSequence() {
         return Commands.sequence(
                 m_Arm.getSetStateCommand(ArmState.COLLECT)
                         .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
