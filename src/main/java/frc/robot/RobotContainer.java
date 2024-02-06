@@ -91,7 +91,7 @@ public class RobotContainer {
          * arm to amp in case of mistake
          */
         //m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
-        m_buttonController.povUp().onTrue(m_Intake.setStateCommand(IntakeState.COLLECTING));
+        _driverController.povUp().onTrue(m_Intake.setStateCommand(IntakeState.COLLECTING));
         _driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED));
     }
 
