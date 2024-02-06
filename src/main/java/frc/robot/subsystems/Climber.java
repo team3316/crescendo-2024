@@ -28,7 +28,7 @@ public class Climber extends SubsystemBase {
         this._rightSpool = DBugSparkMax.create(ClimberConstants.rightSpoolPort, 
                 new PIDFGains(ClimberConstants.averageKp, 0, 0, ClimberConstants.averageKf),
                 ClimberConstants.positionFactor, ClimberConstants.velocityFactor, 0);
-
+        _leftSpool.setInverted(true);
         this._gyroSupplier = gyroSupplier;
 
         this._balanceController = new PIDController(ClimberConstants.differentialKp, 0, 0);
@@ -52,7 +52,7 @@ public class Climber extends SubsystemBase {
                 balanceFeedforward, ArbFFUnits.kPercentOut);
         this._rightSpool.setReference(ClimberConstants.climbHeight, ControlType.kPosition, 0,
                 -balanceFeedforward, ArbFFUnits.kPercentOut);
-        this._rightSpool.setInverted(true);
+        this._leftSpool.setInverted(true);
 
         // putting values into the Smart Dashboard
         SmartDashboard.putNumber("Error Angle, degrees", gyroRotation2d.getDegrees());
