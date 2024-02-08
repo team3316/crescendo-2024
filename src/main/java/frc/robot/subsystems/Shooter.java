@@ -19,7 +19,7 @@ public class Shooter extends SubsystemBase {
     private DBugSparkFlex _followerDownLeft;
     private DBugSparkFlex _followerDownRight;
     private ShooterState _shooterState;
-
+    
     public static enum ShooterState {
         ON(ShooterConstants.SparkFlexShootingVelocity),
         OFF(ShooterConstants.SparkFlexUnShootingVelocity);
@@ -32,7 +32,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public Shooter() {
+       
 
+        this.initSDB();
         this._leaderUpLeft = DBugSparkFlex.create(ShooterConstants.leaderUpLeftPort);
         this._followerUpRight = DBugSparkFlex.create(ShooterConstants.followerUpRightPort);
         this._followerDownLeft = DBugSparkFlex.create(ShooterConstants.followerDownLeftPort);
@@ -48,6 +50,23 @@ public class Shooter extends SubsystemBase {
         this._shooterState = ShooterState.OFF;
         SmartDashboard.putString("shooter state:", "OFF");
 
+    }
+
+    private void initSDB() {
+        SmartDashboard.putData("update pid", new InstantCommand(()->updatePID()));
+        
+    }
+    private void updateSDB(){
+        SmartDashboard.putNumber("kf", SmartDashboard.getNumber("kf", 0));
+    }
+
+    private void updatePID(){
+        this._leaderUpLeft._pidController.setP(SmartDashboard.getNumber("kp", 0));
+        this._leaderUpLeft._pidController.setFF(SmartDashboard.getNumber("kf", 0));
+    }
+
+    public void setPIDF(PIDFGains gains){
+        this._leaderUpLeft.setupPIDF(gains);
     }
 
     public ShooterState getShooterState() {
@@ -76,6 +95,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        this.updateSDB();
         /* gets the velocity value from the SmartDashboard. To use these lines for calibration remove final keyword from 
         ShooterState.velocity and remember to put it back*/
         // ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
