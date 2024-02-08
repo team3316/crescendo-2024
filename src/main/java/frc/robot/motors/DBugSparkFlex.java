@@ -8,7 +8,7 @@ import frc.robot.utils.Within;
 
 public class DBugSparkFlex extends CANSparkFlex {
 
-    private SparkPIDController _pidController;
+    public SparkPIDController _pidController;
     private RelativeEncoder _encoder;
 
     public DBugSparkFlex(int deviceNumber) {
