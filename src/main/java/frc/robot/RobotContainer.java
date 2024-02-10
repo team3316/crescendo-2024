@@ -48,7 +48,7 @@ public class RobotContainer {
     private final Intake m_Intake = new Intake();
     private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
-    private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);*/
+    private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
     private boolean _fieldRelative = true;
