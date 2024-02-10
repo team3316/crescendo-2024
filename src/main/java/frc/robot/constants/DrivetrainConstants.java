@@ -16,7 +16,7 @@ public class DrivetrainConstants {
                 public static final double driveKv = 9 / 4.16; // voltage / (m/sec)
                 public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
-                public static final double talonMaxSpeed = 6300; // RPM
+                public static final double krakenFreeSpeed = 6000; // RPM
                 private static final double driveRatio = 1.0 / 6.12;
                 private static final double steeringRatio = 1.0 / 12.8;
                 private static final double wheelDiameterMeters = 3.85 * 2.54 / 100; // 4 inches in meters
@@ -32,7 +32,7 @@ public class DrivetrainConstants {
                                                                                                                      // *
                                                                                                                      // seconds/minute)
 
-                public static final double driveFreeSpeedMetersPerSecond = talonMaxSpeed / 60 * drivePositionConversionFactor;
+                public static final double driveFreeSpeedMetersPerSecond = krakenFreeSpeed / 60 * drivePositionConversionFactor;
                 
                 public final Translation2d position;
                 public final int idDrive;
@@ -59,37 +59,37 @@ public class DrivetrainConstants {
 
         public static final double maxRotationSpeedRadPerSec = 11.5;
 
-        public static final double frontWheelDistMeters = 0.6703;
-        public static final double sideWheelDistMeters = 0.5102;
+        public static final double frontWheelDistMeters = 0.7403;
+        public static final double sideWheelDistMeters = 0.4253;
 
-        public final static double cancoderTROffset = 299.2-180;
-        public final static double cancoderTLOffset = 90.8+180;
-        public final static double cancoderBROffset = 285.2-180;        
-        public final static double cancoderBLOffset = 326.5-180;
+        public final static double cancoderTROffset = 124-180;
+        public final static double cancoderTLOffset = 288.19+180;
+        public final static double cancoderBROffset = 116.27-180;        
+        public final static double cancoderBLOffset = 186.15-180;
         
         
         
         
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-                        new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 14, 3,
-                        cancoderTLOffset, 12);
+                        new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 17, 2,
+                        cancoderTLOffset, 21);
 
         public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-                        new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 1, 2,
-                        cancoderTROffset, 10);
+                        new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 16, 1,
+                        cancoderTROffset, 20);
 
         public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
-                        new Translation2d(-sideWheelDistMeters / 2, frontWheelDistMeters / 2), 11, 6,
-                        cancoderBLOffset, 11);
+                        new Translation2d(-sideWheelDistMeters / 2, frontWheelDistMeters / 2), 19, 4,
+                        cancoderBLOffset, 23);
 
         public static final SwerveModuleConstants BRModule = new SwerveModuleConstants(
-                        new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 15, 7,
-                        cancoderBROffset, 13);
+                        new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 18, 3,
+                        cancoderBROffset, 22);
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
                         TLModule.position, BRModule.position, BLModule.position);
 
-        public static final int pigeonId = 9;
+        public static final int pigeonId = 24;
 
         public static final Rotation2d installAngle = Rotation2d.fromDegrees(0);
         public static final Rotation2d collectAngle = Rotation2d.fromDegrees(90);

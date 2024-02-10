@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.Manipulator.ManipulatorState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -46,20 +48,24 @@ public class RobotContainer {
     private final Intake m_Intake = new Intake();
     private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
-    private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
+    private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);*/
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
     private boolean _fieldRelative = true;
 
+    private SwerveSysidCommands m_SysidCommands;
+
     public RobotContainer() {
         m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 _driverController.getLeftY() *
-                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond*0.25,
                 _driverController.getLeftX() *
-                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond*0.25,
                 _driverController.getCombinedAxis() *
-                        DrivetrainConstants.maxRotationSpeedRadPerSec,
+                        DrivetrainConstants.maxRotationSpeedRadPerSec*0.25,
                 _fieldRelative), m_Drivetrain));
+
+        m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
         // Configure the trigger bindings
         configureBindings();
     }
@@ -90,7 +96,11 @@ public class RobotContainer {
          * driver should press this before cross to save time, but cross still includes
          * arm to amp in case of mistake
          */
-        //m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+        ////m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+
+        _driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
+
+        _driverController.circle().onTrue(m_Drivetrain.zeroCANCodersCommand());
     }
 
     private Command getCollectSequence() {
