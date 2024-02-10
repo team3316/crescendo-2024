@@ -35,9 +35,9 @@ public class PoseEstimator extends SubsystemBase {
     private final double yTolerance = 0.1; // in meters
     private final double tTolerance = 10; // in degrees
 
-    private final double xConversionFactorStdDevVision = 1; // in meters
-    private final double yConversionFactorStdDevVision = 1; // in meters
-    private final double tConversionFactorStdDevVision = 1; // in radians
+    private final double xConversionFactorStdDevVision = 0.01; // in meters
+    private final double yConversionFactorStdDevVision = 0.01; // in meters
+    private final double tConversionFactorStdDevVision = 0.01; // in radians
 
     // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
     // you trust your various sensors. Smaller numbers will cause the filter to
@@ -64,6 +64,7 @@ public class PoseEstimator extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator;
 
     private final Field2d field2d = new Field2d();
+    private final Field2d field2dAudiometry = new Field2d();
 
     public PoseEstimator(Drivetrain drivetrain, LimeLight limeLight) {
         this.limeLight = limeLight;
@@ -100,6 +101,8 @@ public class PoseEstimator extends SubsystemBase {
     public void updateStdDevs(){
         double a = limeLight.getArea();
         this.poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(a * xConversionFactorStdDevVision, a * yConversionFactorStdDevVision, a * tConversionFactorStdDevVision));
+        SmartDashboard.putNumber("area percent", limeLight.getArea());
+        SmartDashboard.putNumberArray("Standart Deviation", new double[]{a * xConversionFactorStdDevVision, a * yConversionFactorStdDevVision, a * tConversionFactorStdDevVision, a});
     }
 
     @Override
@@ -114,6 +117,12 @@ public class PoseEstimator extends SubsystemBase {
 
         field2d.setRobotPose(getCurrentPose());
         SmartDashboard.putData("field", field2d);
+        
+        field2dAudiometry.setRobotPose(drivetrain.getPose());
+        SmartDashboard.putData("field Audiometry", field2dAudiometry);
+
+
+        //updating the StdDev and display the value on the SmartDashboard;
         this.updateStdDevs();
         
     }
