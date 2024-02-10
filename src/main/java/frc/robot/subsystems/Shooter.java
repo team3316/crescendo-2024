@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
         ON(ShooterConstants.SparkFlexShootingVelocity),
         OFF(ShooterConstants.SparkFlexUnShootingVelocity);
 
-        public final double velocity;
+        public double velocity;
 
         private ShooterState(double velocity) {
             this.velocity = velocity;
@@ -78,18 +78,20 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         /* gets the velocity value from the SmartDashboard. To use these lines for calibration remove final keyword from 
         ShooterState.velocity and remember to put it back*/
-        // ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
+        ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
+        SmartDashboard.putNumber("kp", SmartDashboard.getNumber("kp", 0));
+        SmartDashboard.putNumber("velocity, rpm", SmartDashboard.getNumber("velocity, rpm", 0));
         SmartDashboard.putNumber("Shooter velocity", getMotorVelocity());
-        /*double curKP = SmartDashboard.getNumber("kp", 1);
+        double curKP = SmartDashboard.getNumber("kp", 1);
         // only updates when the values are changed
         if (curKP != ShooterConstants.kpShooter){
-            this._sparkFlexLeftFollower.setupPIDF(
+            this._leaderUpLeft.setupPIDF(
                 new PIDFGains(
                     curKP, 
                     0,
                     0,
                     ShooterConstants.kfShooter));
-        }*/
+        }
     }
 
     public void stop() {

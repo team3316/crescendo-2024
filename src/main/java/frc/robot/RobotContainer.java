@@ -40,7 +40,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class RobotContainer {
 
     private final Drivetrain m_Drivetrain = new Drivetrain();
-    private final Arm m_Arm = new Arm();
+    //private final Arm m_Arm = new Arm();
     private final Manipulator m_Manipulator = new Manipulator();
     private final Shooter m_Shooter = new Shooter();
     private final Intake m_Intake = new Intake();
@@ -66,7 +66,7 @@ public class RobotContainer {
 
     public void stop() {
         m_Drivetrain.disabledInit();
-        m_Arm.stop();
+        //m_Arm.stop();
         m_Intake.stop();
         m_Manipulator.stop();
         m_Shooter.stop();
@@ -83,20 +83,21 @@ public class RobotContainer {
 
         m_buttonController.L1().onTrue(getCollectSequence());
         m_buttonController.R1().onTrue(getShootSequence());
-        m_buttonController.cross().whileTrue(getAMPSequence());
-        m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
-        m_buttonController.triangle().onTrue(getClimbSequence());
+        //m_buttonController.cross().whileTrue(getAMPSequence());
+        //m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
+        //m_buttonController.triangle().onTrue(getClimbSequence());
         /*
          * driver should press this before cross to save time, but cross still includes
          * arm to amp in case of mistake
          */
-        m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
+        //m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
     }
 
     private Command getCollectSequence() {
         return Commands.sequence(
-                m_Arm.getSetStateCommand(ArmState.COLLECT)
-                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
+                /*m_Arm.getSetStateCommand(ArmState.COLLECT)
+                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),*/
+                m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT),
                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                 m_Intake.setStateCommand(IntakeState.DISABLED)
@@ -106,7 +107,7 @@ public class RobotContainer {
     private Command getShootSequence() {
         return new ConditionalCommand(
                 Commands.sequence(
-                        m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
+                        //m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to amp and then regretting
                         m_Shooter.getSetStateCommand(ShooterState.ON),
                         new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
                         m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
@@ -117,7 +118,7 @@ public class RobotContainer {
                 () -> m_Manipulator.hasNoteSwitch());
     }
 
-    private Command getAMPSequence() {
+    /*private Command getAMPSequence() {
         Command start = m_Arm.getSetStateCommand(ArmState.AMP)
                 .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
         Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
@@ -128,11 +129,11 @@ public class RobotContainer {
             start.cancel();
             end.schedule();
         });
-    }
+    }*/
 
-    private Command getClimbSequence() {
+    /*private Command getClimbSequence() {
         return m_Arm.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand());
-    }
+    }*/
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

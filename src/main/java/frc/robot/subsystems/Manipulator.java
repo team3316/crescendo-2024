@@ -24,7 +24,7 @@ public class Manipulator extends SubsystemBase {
         TRAP(ManipulatorConstants.TRAPPercentage),
         TO_SHOOTER(ManipulatorConstants.shooterPercentage);
 
-        public final double percentage;
+        public double percentage;
         private ManipulatorState(double percentage) {
             this.percentage = percentage;
         }
@@ -72,5 +72,13 @@ public class Manipulator extends SubsystemBase {
 
     public void stop() {
         setState(ManipulatorState.OFF);
+    }
+
+    @Override
+    public void periodic() {
+        ManipulatorState.COLLECT.percentage = SmartDashboard.getNumber("manipulator collect", 0);
+        ManipulatorState.TO_SHOOTER.percentage = SmartDashboard.getNumber("manipulator to shooter", 0);
+        SmartDashboard.putNumber("mainpulator collect", SmartDashboard.getNumber("manipulator collect", 0));
+        SmartDashboard.putNumber("manipulator to shooter", SmartDashboard.getNumber("manipulator to shooter", 0));
     }
 }
