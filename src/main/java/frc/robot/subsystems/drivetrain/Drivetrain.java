@@ -79,6 +79,7 @@ public class Drivetrain extends SubsystemBase {
         thetaController.setSetpoint(DrivetrainConstants.installAngle.getDegrees());
 
         resetControllers();
+        calibrateSteering();
 
     }
 
@@ -147,7 +148,7 @@ public class Drivetrain extends SubsystemBase {
     @SuppressWarnings({ "unused" })
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
-            //][\SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
+            SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
            SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
 
         }

@@ -59,13 +59,13 @@ public class DrivetrainConstants {
 
         public static final double maxRotationSpeedRadPerSec = 11.5;
 
-        public static final double frontWheelDistMeters = 0.4253;
-        public static final double sideWheelDistMeters = 0.7403;
+        public static final double frontWheelDistMeters = 0.7403;
+        public static final double sideWheelDistMeters = 0.4253;
 
-        public final static double cancoderTROffset = 299.2-180;
-        public final static double cancoderTLOffset = 90.8+180;
-        public final static double cancoderBROffset = 285.2-180;        
-        public final static double cancoderBLOffset = 326.5-180;
+        public final static double cancoderTROffset = 124-180;
+        public final static double cancoderTLOffset = 288.19+180;
+        public final static double cancoderBROffset = 116.27-180;        
+        public final static double cancoderBLOffset = 186.15-180;
         
         
         
@@ -89,7 +89,7 @@ public class DrivetrainConstants {
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
                         TLModule.position, BRModule.position, BLModule.position);
 
-        public static final int pigeonId = 9;
+        public static final int pigeonId = 24;
 
         public static final Rotation2d installAngle = Rotation2d.fromDegrees(0);
         public static final Rotation2d collectAngle = Rotation2d.fromDegrees(90);
