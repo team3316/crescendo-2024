@@ -83,7 +83,7 @@ public class Shooter extends SubsystemBase {
         ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
         if (DriverStation.isEnabled()) {
             //setState(ShooterState.ON);
-            _leaderUpLeft.set(0.1);
+          //  _leaderUpLeft.set(0.1);
         }
         SmartDashboard.putNumber("kp", SmartDashboard.getNumber("kp", 0));
         SmartDashboard.putNumber("velocity, rpm", SmartDashboard.getNumber("velocity, rpm", 0));

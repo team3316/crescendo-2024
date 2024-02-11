@@ -12,7 +12,6 @@ public class ShooterConstants {
     public static final double SparkFlexShootingVelocity = 1; // rpm
 
     public static final double kpShooter = 0; // percentage/rpm
-    public static final double kfShooter = (1 / 12.7) / 550; // percentage/rpm 
-
+    public static final double kfShooter = 0.75 / 5090; // percentage/rpm 
     public static final double shootingTime = 2; // seconds
 }
