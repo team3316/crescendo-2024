@@ -46,7 +46,7 @@ public class RobotContainer {
     private final Manipulator m_Manipulator = new Manipulator();
     private final Shooter m_Shooter = new Shooter();
     private final Intake m_Intake = new Intake();
-    private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
+    //private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
     private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
@@ -76,7 +76,7 @@ public class RobotContainer {
         m_Intake.stop();
         m_Manipulator.stop();
         m_Shooter.stop();
-        m_Climber.stop();
+        //m_Climber.stop();
     }
 
     private void configureBindings() {
@@ -87,8 +87,8 @@ public class RobotContainer {
         _driverController.share().onTrue(
                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
-        m_buttonController.L1().onTrue(getCollectSequence());
-        m_buttonController.R1().onTrue(getShootSequence());
+        _driverController.L1().onTrue(getCollectSequence());
+        _driverController.R1().onTrue(getShootSequence());
         //m_buttonController.cross().whileTrue(getAMPSequence());
         //m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
         //m_buttonController.triangle().onTrue(getClimbSequence());
@@ -99,8 +99,6 @@ public class RobotContainer {
         ////m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
 
         _driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
-
-        _driverController.circle().onTrue(m_Drivetrain.zeroCANCodersCommand());
     }
 
     private Command getCollectSequence() {
@@ -125,7 +123,7 @@ public class RobotContainer {
                         m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
                                 .alongWith(m_Shooter.getSetStateCommand(ShooterState.OFF))),
                 new InstantCommand(),
-                () -> m_Manipulator.hasNoteSwitch());
+                () -> !m_Manipulator.hasNoteSwitch());
     }
 
     /*private Command getAMPSequence() {

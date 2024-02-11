@@ -274,14 +274,4 @@ public class Drivetrain extends SubsystemBase {
             module.driveByVoltage(voltMeasure.magnitude());
         }
     }
-
-    private void zeroCANCoders() {
-        for (SwerveModule module : _modules) {
-            module.zeroCANCoder();
-        }
-    }
-
-    public Command zeroCANCodersCommand() {
-        return new InstantCommand(this::zeroCANCoders, this);
-    }
 }
