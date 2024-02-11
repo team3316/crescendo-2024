@@ -4,7 +4,7 @@ public class ManipulatorConstants {
     // ports
     public static final int upperSparkMaxPort = 9;
     public static final int lowerSparkMaxPort = 10;
-    public static final int noteSwitchPort = 2;
+    public static final int noteSwitchPort = 0;
 
     // motor percentages
     public static final double offPercentage = 0;
