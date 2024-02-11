@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import javax.sound.midi.Sequence;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.JoysticksConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
@@ -55,7 +58,14 @@ public class RobotContainer {
         // relative mode
 
         _driverController.share().onTrue(
-                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
+                new SequentialCommandGroup(
+                        new InstantCommand(m_Drivetrain::resetYaw).andThen(
+                        new InstantCommand(()->m_Drivetrain.resetPose(m_Estimator.getCurrentPose()))))
+                        
+                        
+                        
+                        
+                        ); // toggle field relative mode
     
   }
 

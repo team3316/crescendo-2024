@@ -15,6 +15,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -38,6 +39,8 @@ public class Drivetrain extends SubsystemBase {
     private static PIDController vision_xController;
     private static PIDController vision_yController;
     private static PIDController thetaController;
+
+    private final Field2d field2dAudiometry = new Field2d();
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -109,6 +112,9 @@ public class Drivetrain extends SubsystemBase {
         updateSDB();
         SmartDashboard.putNumber("pitch", this.getPitch());
         // printEverything();
+
+        this.field2dAudiometry.setRobotPose(getPose());
+        SmartDashboard.putData("field audiometry", field2dAudiometry); // prints the estimated position only by the audiometry
     }
 
     public void updateTelemetry() {
