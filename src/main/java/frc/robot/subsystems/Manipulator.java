@@ -45,7 +45,7 @@ public class Manipulator extends SubsystemBase {
 
         // initialize values into the SDB
         SmartDashboard.putString("Manipulator State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
+       
     }
 
     public ManipulatorState getManipulatorState() {
@@ -63,7 +63,7 @@ public class Manipulator extends SubsystemBase {
         this._leader.set(this._state.percentage);
 
         SmartDashboard.putString("Manipulator State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
+      
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
@@ -74,6 +74,11 @@ public class Manipulator extends SubsystemBase {
         setState(ManipulatorState.OFF);
     }
 
+    public void manipulatByPercent(double follower,double leader){
+        this._leader.set(leader);
+        this._follower.set(follower);
+    }
+
     @Override
     public void periodic() {
         ManipulatorState.COLLECT.percentage = SmartDashboard.getNumber("manipulator collect", 0);
@@ -81,5 +86,12 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putNumber("manipulator collect", SmartDashboard.getNumber("manipulator collect", 0));
         SmartDashboard.putNumber("manipulator to shooter", SmartDashboard.getNumber("manipulator to shooter", 0));
         SmartDashboard.putBoolean("has note", hasNoteSwitch());
+     //   manipulatByPercent(SmartDashboard.getNumber("Manipulator Percentage leader", 0), SmartDashboard.getNumber("Manipulator Percentage follower", 0));
+    }
+
+    public void updatSDB(){
+        SmartDashboard.putNumber("Manipulator Percentage leader", SmartDashboard.getNumber("Manipulator Percentage leader", 0));
+        SmartDashboard.putNumber("Manipulator Percentage follower", SmartDashboard.getNumber("Manipulator Percentage follower", 0));
+
     }
 }
