@@ -54,7 +54,7 @@ public class Manipulator extends SubsystemBase {
 
     // TODO: Check if NC or NO
     public boolean hasNoteSwitch() {
-        return _hasNoteSwitch.get();
+        return !_hasNoteSwitch.get();
     }
 
     private void setState(ManipulatorState state) {
@@ -78,7 +78,8 @@ public class Manipulator extends SubsystemBase {
     public void periodic() {
         ManipulatorState.COLLECT.percentage = SmartDashboard.getNumber("manipulator collect", 0);
         ManipulatorState.TO_SHOOTER.percentage = SmartDashboard.getNumber("manipulator to shooter", 0);
-        SmartDashboard.putNumber("mainpulator collect", SmartDashboard.getNumber("manipulator collect", 0));
+        SmartDashboard.putNumber("manipulator collect", SmartDashboard.getNumber("manipulator collect", 0));
         SmartDashboard.putNumber("manipulator to shooter", SmartDashboard.getNumber("manipulator to shooter", 0));
+        SmartDashboard.putBoolean("has note", hasNoteSwitch());
     }
 }
