@@ -10,6 +10,8 @@ import frc.robot.utils.Within;
 
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
@@ -79,19 +81,24 @@ public class Shooter extends SubsystemBase {
         /* gets the velocity value from the SmartDashboard. To use these lines for calibration remove final keyword from 
         ShooterState.velocity and remember to put it back*/
         ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
+        if (DriverStation.isEnabled()) {
+            //setState(ShooterState.ON);
+            _leaderUpLeft.set(0.1);
+        }
         SmartDashboard.putNumber("kp", SmartDashboard.getNumber("kp", 0));
         SmartDashboard.putNumber("velocity, rpm", SmartDashboard.getNumber("velocity, rpm", 0));
         SmartDashboard.putNumber("Shooter velocity", getMotorVelocity());
+        SmartDashboard.putNumber("output", _leaderUpLeft.get());
         double curKP = SmartDashboard.getNumber("kp", 1);
         // only updates when the values are changed
-        if (curKP != ShooterConstants.kpShooter){
+        /*if (curKP != ShooterConstants.kpShooter){
             this._leaderUpLeft.setupPIDF(
                 new PIDFGains(
                     curKP, 
                     0,
                     0,
                     ShooterConstants.kfShooter));
-        }
+        }*/
     }
 
     public void stop() {
