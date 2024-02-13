@@ -62,10 +62,10 @@ public class DrivetrainConstants {
         public static final double frontWheelDistMeters = 0.7403;
         public static final double sideWheelDistMeters = 0.4253;
 
-        public final static double cancoderTROffset = 124-180;
-        public final static double cancoderTLOffset = 288.19+180;
-        public final static double cancoderBROffset = 116.27-180;        
-        public final static double cancoderBLOffset = 186.15-180;
+        public final static double cancoderTROffset = 124;
+        public final static double cancoderTLOffset = 288.19;
+        public final static double cancoderBROffset = 116.27;        
+        public final static double cancoderBLOffset = 186.15;
         
         
         
