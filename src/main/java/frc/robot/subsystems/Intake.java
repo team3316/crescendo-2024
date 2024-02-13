@@ -16,7 +16,8 @@ public class Intake extends SubsystemBase {
 
     //The diffrent states of the intake.
     public static enum IntakeState {
-        COLLECTING(IntakeConstants.collectingPrecent),
+        COLLECTING(IntakeConstants.collectingPercentage),
+        EJECT(IntakeConstants.ejectPercentage),
         DISABLED(IntakeConstants.disabledPrecent);
         public double percentage;
 
@@ -55,5 +56,6 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         // SmartDashboard.putNumber("intake percentage", SmartDashboard.getNumber("intake percentage", 0));
         // IntakeState.COLLECTING.percentage = SmartDashboard.getNumber("intake percentage", 0);
+        SmartDashboard.putNumber("Intake velocity rpm", _intakeMotor.getVelocity());
     }
 }
