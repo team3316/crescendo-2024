@@ -91,6 +91,7 @@ public class RobotContainer {
 
         _driverController.L1().onTrue(getCollectSequence());
         _driverController.R1().onTrue(getShootSequence());
+        _driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
         // m_buttonController.cross().whileTrue(getAMPSequence());
         // m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
         // m_buttonController.triangle().onTrue(getClimbSequence());
@@ -114,7 +115,7 @@ public class RobotContainer {
                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                 m_Intake.setStateCommand(IntakeState.DISABLED)
                         .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
-        sequence.addRequirements(m_Intake, m_Manipulator);
+        //sequence.addRequirements(m_Intake, m_Manipulator);
         return sequence;
     }
 
@@ -125,7 +126,7 @@ public class RobotContainer {
                         // amp and then regretting
                         m_Shooter.getSetStateCommand(ShooterState.ON),
                         new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-                        // new WaitCommand(5),
+                        // new WaitCommand(0.2),
                         m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
                         new WaitCommand(2),
                         m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
@@ -133,7 +134,7 @@ public class RobotContainer {
                                         .getSetStateCommand(ShooterState.OFF))),
                 new InstantCommand(),
                 () -> m_Manipulator.hasNoteSwitch());
-        sequence.addRequirements(m_Shooter, m_Manipulator);
+        //sequence.addRequirements(m_Shooter, m_Manipulator);
         return sequence;
     }
 
