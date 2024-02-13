@@ -15,7 +15,7 @@ public class ShooterConstants {
     public static final double positionFactor = wheelDiameter; // meters / rotation
     public static final double velocityFactor = wheelDiameter / 60; // (meters / second) / RPM
 
-    public static final double kpShooter = 0.00005 / velocityFactor; // percentage/rpm
+    public static final double kpShooter = 0.0002 / velocityFactor; // percentage/rpm
     public static final double kfShooter = 0.75 / (4874 * velocityFactor); // percentage/(meters per second)
     public static final double shootingTime = 2; // seconds
 }
