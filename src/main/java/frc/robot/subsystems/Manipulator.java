@@ -93,8 +93,8 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putBoolean("has note", hasNoteSwitch());
         // SmartDashboard.putNumber("left current", _leader.getOutputCurrent());
         // SmartDashboard.putNumber("right current", _follower.getOutputCurrent());
-        // SmartDashboard.putNumber("right velocity", _follower.getVelocity());
-        // SmartDashboard.putNumber("left velocity", _leader.getVelocity());
+        SmartDashboard.putNumber("right velocity rpm", _follower.getVelocity());
+        SmartDashboard.putNumber("left velocity rpm", _leader.getVelocity());
         // SmartDashboard.putNumber("manipulator collect right", SmartDashboard.getNumber("manipulator collect right", 0));
         // SmartDashboard.putNumber("manipulator collect left", SmartDashboard.getNumber("manipulator collect left", 0));
         // SmartDashboard.putNumber("manipulator to shooter right", SmartDashboard.getNumber("manipulator to shooter right", 0));
