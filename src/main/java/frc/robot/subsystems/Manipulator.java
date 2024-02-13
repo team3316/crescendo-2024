@@ -18,15 +18,17 @@ public class Manipulator extends SubsystemBase {
     private ManipulatorState _state;
 
     public static enum ManipulatorState {
-        OFF(ManipulatorConstants.offPercentage),
-        COLLECT(ManipulatorConstants.collectingPercentage),
-        AMP(ManipulatorConstants.AMPPercentage),
-        TRAP(ManipulatorConstants.TRAPPercentage),
-        TO_SHOOTER(ManipulatorConstants.shooterPercentage);
+        OFF(ManipulatorConstants.offPercentage, ManipulatorConstants.offPercentage),
+        COLLECT(ManipulatorConstants.leftCollectingPercentage, ManipulatorConstants.rightCollectingPercentage),
+        AMP(ManipulatorConstants.AMPPercentage, ManipulatorConstants.AMPPercentage),
+        TRAP(ManipulatorConstants.TRAPPercentage, ManipulatorConstants.TRAPPercentage),
+        TO_SHOOTER(ManipulatorConstants.leftShooterPercentage, ManipulatorConstants.rightShooterPercentage);
 
-        public double percentage;
-        private ManipulatorState(double percentage) {
-            this.percentage = percentage;
+        public double rightPercentage;
+        public double leftPercentage;
+        private ManipulatorState(double leftPercentage, double rightPercentage) {
+            this.rightPercentage = rightPercentage;
+            this.leftPercentage = leftPercentage;
         }
     }
 
@@ -39,7 +41,7 @@ public class Manipulator extends SubsystemBase {
         
         this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
-        this._follower.follow(this._leader, false);
+        //this._follower.follow(this._leader, false);
 
         this._state = ManipulatorState.OFF;
 
@@ -60,7 +62,8 @@ public class Manipulator extends SubsystemBase {
     private void setState(ManipulatorState state) {
         this._state = state;
 
-        this._leader.set(this._state.percentage);
+        this._leader.set(state.leftPercentage);
+        this._follower.set(state.rightPercentage);
 
         SmartDashboard.putString("Manipulator State", this._state.toString());
       
@@ -81,22 +84,22 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        ManipulatorState.COLLECT.percentage = SmartDashboard.getNumber("manipulator collect", 0);
-        ManipulatorState.TO_SHOOTER.percentage = SmartDashboard.getNumber("manipulator to shooter", 0);
-        SmartDashboard.putNumber("manipulator collect", SmartDashboard.getNumber("manipulator collect", 0));
-        SmartDashboard.putNumber("manipulator to shooter", SmartDashboard.getNumber("manipulator to shooter", 0));
+        // ManipulatorState.COLLECT.rightPercentage = SmartDashboard.getNumber("manipulator collect right", 0);
+        // ManipulatorState.COLLECT.leftPercentage = SmartDashboard.getNumber("manipulator collect left", 0);
+        // ManipulatorState.TO_SHOOTER.rightPercentage = SmartDashboard.getNumber("manipulator to shooter right", 0);
+        // ManipulatorState.TO_SHOOTER.leftPercentage = SmartDashboard.getNumber("manipulator to shooter left", 0);
+        //SmartDashboard.putNumber("manipulator collect", SmartDashboard.getNumber("manipulator collect", 0));
+        //SmartDashboard.putNumber("manipulator to shooter", SmartDashboard.getNumber("manipulator to shooter", 0));
         SmartDashboard.putBoolean("has note", hasNoteSwitch());
-        SmartDashboard.putNumber("left current", _leader.getOutputCurrent());
-        SmartDashboard.putNumber("right current", _follower.getOutputCurrent());
-        SmartDashboard.putNumber("right velocity", _follower.getVelocity());
-        SmartDashboard.putNumber("left velocity", _leader.getVelocity());
+        // SmartDashboard.putNumber("left current", _leader.getOutputCurrent());
+        // SmartDashboard.putNumber("right current", _follower.getOutputCurrent());
+        // SmartDashboard.putNumber("right velocity", _follower.getVelocity());
+        // SmartDashboard.putNumber("left velocity", _leader.getVelocity());
+        // SmartDashboard.putNumber("manipulator collect right", SmartDashboard.getNumber("manipulator collect right", 0));
+        // SmartDashboard.putNumber("manipulator collect left", SmartDashboard.getNumber("manipulator collect left", 0));
+        // SmartDashboard.putNumber("manipulator to shooter right", SmartDashboard.getNumber("manipulator to shooter right", 0));
+        // SmartDashboard.putNumber("manipulator to shooter left", SmartDashboard.getNumber("manipulator to shooter left", 0));
 
      //   manipulatByPercent(SmartDashboard.getNumber("Manipulator Percentage leader", 0), SmartDashboard.getNumber("Manipulator Percentage follower", 0));
-    }
-
-    public void updatSDB(){
-        SmartDashboard.putNumber("Manipulator Percentage leader", SmartDashboard.getNumber("Manipulator Percentage leader", 0));
-        SmartDashboard.putNumber("Manipulator Percentage follower", SmartDashboard.getNumber("Manipulator Percentage follower", 0));
-
     }
 }
