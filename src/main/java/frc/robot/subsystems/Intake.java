@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("intake percentage", SmartDashboard.getNumber("intake percentage", 0));
-        IntakeState.COLLECTING.percentage = SmartDashboard.getNumber("intake percentage", 0);
+        // SmartDashboard.putNumber("intake percentage", SmartDashboard.getNumber("intake percentage", 0));
+        // IntakeState.COLLECTING.percentage = SmartDashboard.getNumber("intake percentage", 0);
     }
 }
