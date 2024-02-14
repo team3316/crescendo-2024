@@ -62,34 +62,34 @@ public class DrivetrainConstants {
         public static final double frontWheelDistMeters = 0.6703;
         public static final double sideWheelDistMeters = 0.5102;
 
-        public final static double cancoderTROffset = 299.2-180;
-        public final static double cancoderTLOffset = 90.8+180;
-        public final static double cancoderBROffset = 285.2-180;        
-        public final static double cancoderBLOffset = 326.5-180;
+        public final static double cancoderTROffset = 124;
+        public final static double cancoderTLOffset = 288.19;
+        public final static double cancoderBROffset = 116.27;        
+        public final static double cancoderBLOffset = 186.15;
         
         
         
         
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-                        new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 14, 3,
-                        cancoderTLOffset, 12);
+                        new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 17, 2,
+                        cancoderTLOffset, 21);
 
         public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-                        new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 1, 2,
-                        cancoderTROffset, 10);
+                        new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 16, 1,
+                        cancoderTROffset, 20);
 
         public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
-                        new Translation2d(-sideWheelDistMeters / 2, frontWheelDistMeters / 2), 11, 6,
-                        cancoderBLOffset, 11);
+                        new Translation2d(-sideWheelDistMeters / 2, frontWheelDistMeters / 2), 19, 4,
+                        cancoderBLOffset, 23);
 
         public static final SwerveModuleConstants BRModule = new SwerveModuleConstants(
-                        new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 15, 7,
-                        cancoderBROffset, 13);
+                        new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 18, 3,
+                        cancoderBROffset, 22);
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
                         TLModule.position, BRModule.position, BLModule.position);
 
-        public static final int pigeonId = 9;
+        public static final int pigeonId = 24;
 
         public static final Rotation2d installAngle = Rotation2d.fromDegrees(0);
         public static final Rotation2d collectAngle = Rotation2d.fromDegrees(90);
