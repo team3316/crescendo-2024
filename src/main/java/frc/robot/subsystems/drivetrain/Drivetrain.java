@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,6 +70,26 @@ public class Drivetrain extends SubsystemBase {
 
         resetControllers();
     }
+
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return DrivetrainConstants.kinematics.toChassisSpeeds(_modules[0].getState(),_modules[1].getState(),_modules[2].getState(), _modules[3].getState());
+    }
+
+    public void autoDrive(ChassisSpeeds speeds) {
+        var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
+
+        setDesiredStates(moduleStates);
+    }
+
+public boolean shouldFlipPath(){
+        var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                
+                
+}
 
     public void setModulesAngle(double angle) {
         SwerveModuleState state = new SwerveModuleState(0, Rotation2d.fromDegrees(angle));

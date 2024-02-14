@@ -4,15 +4,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.autonomous.AutoFactory;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -46,8 +45,11 @@ public class RobotContainer {
     private final Intake m_Intake = new Intake();
     private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
-    private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
+
+    private final SendableChooser<Command> chooser;
+  private final AutoFactory _autoFactory;
+  
 
     private boolean _fieldRelative = true;
 
@@ -60,8 +62,11 @@ public class RobotContainer {
                 _driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
+                this._autoFactory  = new AutoFactory(m_Drivetrain);
+                this.chooser = AutoBuilder.buildAutoChooser();
         // Configure the trigger bindings
         configureBindings();
+        initChooser();
     }
 
     public void stop() {
@@ -130,8 +135,11 @@ public class RobotContainer {
         });
     }
 
-    private Command getClimbSequence() {
-        return m_Arm.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand());
+
+     private void initChooser() {
+     SmartDashboard.putData("Auto Chooser", chooser);
+    chooser.addOption("testauto",_autoFactory.createAuto("testauto") );
+   
     }
 
     /**
@@ -140,6 +148,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        return chooser.getSelected();
     }
 }
