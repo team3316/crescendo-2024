@@ -122,7 +122,7 @@ public class RobotContainer {
                 () -> m_Manipulator.hasNoteSwitch());
     }
 
-    private Command getAMPSequence() {
+    private Command getAMPsequence() {
         Command start = m_Arm.getSetStateCommand(ArmState.AMP)
                 .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
         Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
