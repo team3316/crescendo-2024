@@ -199,7 +199,4 @@ public class SwerveModule {
         return _driveMotor.get() * RobotController.getBatteryVoltage();
     }
 
-    public void zeroCANCoder() {
-        _absEncoder.setPosition(0);
-    }
 }

@@ -33,6 +33,8 @@ public class DrivetrainConstants {
                                                                                                                      // seconds/minute)
 
                 public static final double driveFreeSpeedMetersPerSecond = krakenFreeSpeed / 60 * drivePositionConversionFactor;
+
+                public static final double driveSpeedLimit = 0.25;
                 
                 public final Translation2d position;
                 public final int idDrive;
