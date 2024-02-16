@@ -50,6 +50,8 @@ public class Drivetrain extends SubsystemBase {
     private static PIDController vision_yController;
     private static PIDController thetaController;
 
+    private static PIDController angleController;
+
     public Drivetrain() {
         this._modules = new SwerveModule[] {
                 new SwerveModule(DrivetrainConstants.TRModule),
@@ -71,6 +73,11 @@ public class Drivetrain extends SubsystemBase {
         vision_xController = new PIDController(LimelightConstants.xKp, 0, 0);
         vision_yController = new PIDController(LimelightConstants.yKp, 0, 0);
         thetaController = new PIDController(LimelightConstants.thetaKp, 0, 0);
+
+        angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
+        angleController.setTolerance(LimelightConstants.angleTol);
+        angleController.setSetpoint(0);
+
         vision_xController.setTolerance(LimelightConstants.xTol);
         vision_yController.setTolerance(LimelightConstants.yTol);
         thetaController.setTolerance(LimelightConstants.thetaTol);
@@ -239,6 +246,17 @@ public class Drivetrain extends SubsystemBase {
 
         this.drive(vision_xController.atSetpoint() ? 0 : x, vision_yController.atSetpoint() ? 0 : y, t, true);
     }
+
+    public double getRotByVision(double angle,boolean hasTarget) {
+        double t = 0;
+        if(hasTarget){
+            t = angleController.calculate(angle);
+        }
+
+        return angleController.atSetpoint() ? 0 : t;
+
+    }
+
 
     public void setKeepHeading(Rotation2d rotation) {
         thetaController.reset();

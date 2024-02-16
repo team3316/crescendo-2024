@@ -43,7 +43,7 @@ public class LimeLight extends SubsystemBase {
         return hasTarget.getDouble(0) == 1;
     }
 
-    private double getXAngle() {
+    public double getXAngle() {
         return LimelightConstants.AlignLimeLightToPigeonPhase * tx.getDouble(0);
     }
 

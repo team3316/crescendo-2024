@@ -29,6 +29,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
+import frc.robot.subsystems.vision.LimeLight;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -46,6 +47,7 @@ public class RobotContainer {
         private final Manipulator m_Manipulator = new Manipulator();
         private final Shooter m_Shooter = new Shooter();
         private final Intake m_Intake = new Intake();
+        private final LimeLight m_limeLight = new LimeLight();
         // private final Climber m_Climber = new Climber(() ->
         // Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
@@ -82,6 +84,15 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
+
+                m_driverController.triangle().onTrue(new RunCommand(() -> m_Drivetrain.drive(
+                                m_driverController.getLeftY() *
+                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond*SwerveModuleConstants.driveSpeedLimit,
+                                m_driverController.getLeftX() *
+                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond*SwerveModuleConstants.driveSpeedLimit,
+                                m_Drivetrain.getRotByVision(m_limeLight.getXAngle(), m_limeLight.hasTarget()),
+                                _fieldRelative), m_Drivetrain));
+
                 m_driverController.options().onTrue(
                                 new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
                 // relative mode
