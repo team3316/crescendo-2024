@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(){
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
+        _intakeMotor.setSmartCurrentLimit(15);
 
         this._state = IntakeState.DISABLED; 
     }
