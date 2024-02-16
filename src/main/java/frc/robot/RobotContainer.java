@@ -10,8 +10,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.autonomous.AutoFactory;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
@@ -42,18 +46,18 @@ public class RobotContainer {
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
     private final SendableChooser<Command> chooser;
-  private final AutoFactory _autoFactory;
+    private final AutoFactory _autoFactory;
   
 
     private boolean _fieldRelative = true;
 
     public RobotContainer() {
         m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
-                _driverController.getLeftY() *
+                m_driverController.getLeftY() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                _driverController.getLeftX() *
+                m_driverController.getLeftX() *
                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                _driverController.getCombinedAxis() *
+                m_driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
                 this._autoFactory  = new AutoFactory(m_Drivetrain);
