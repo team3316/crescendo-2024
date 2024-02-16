@@ -25,7 +25,7 @@ public class Shooter extends SubsystemBase {
         ON(ShooterConstants.SparkFlexShootingVelocity),
         OFF(ShooterConstants.SparkFlexUnShootingVelocity);
 
-        public double velocity;
+        public final double velocity;
 
         private ShooterState(double velocity) {
             this.velocity = velocity;
@@ -55,11 +55,6 @@ public class Shooter extends SubsystemBase {
         this._shooterState = shooterState;
         this._leaderLeft.setReference(shooterState.velocity, ControlType.kVelocity);
 
-        /*
-         * if (shooterState == ShooterState.ON) {
-         * _leaderUpLeft.set(1);
-         * }
-         */
         // prints the state change onto the SmartDashboard
         SmartDashboard.putString("shooter state:", this._shooterState.toString());
     }
@@ -68,12 +63,12 @@ public class Shooter extends SubsystemBase {
         return new InstantCommand(() -> setState(targetState), this);
     }
 
-    public double getMotorVelocity() {
+    private double getShooterVelocityMPS() {
         return this._leaderLeft.getVelocity();
     }
 
     public boolean isAtTargetVelocity() {
-        return Within.range(this._shooterState.velocity, getMotorVelocity(), 0.1);
+        return Within.range(this._shooterState.velocity, getShooterVelocityMPS(), 0.1);
     }
 
     @Override
@@ -83,14 +78,13 @@ public class Shooter extends SubsystemBase {
          * calibration remove final keyword from
          * ShooterState.velocity and remember to put it back
          */
-        ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, mps", 0);
+        /*ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, mps", 0);
         if (DriverStation.isEnabled()) {
             // setState(ShooterState.ON);
             // leaderUpLeft.set(0.5);
         }
-        SmartDashboard.putNumber("velocity, mps", SmartDashboard.getNumber("velocity, mps", 0));
-        SmartDashboard.putNumber("Shooter velocity", getMotorVelocity());
-
+        SmartDashboard.putNumber("velocity, mps", SmartDashboard.getNumber("velocity, mps", 0));*/
+        SmartDashboard.putNumber("Shooter velocity", getShooterVelocityMPS());
         SmartDashboard.putNumber("shooter BL current", _leaderLeft.getOutputCurrent());
         SmartDashboard.putNumber("shooter BR current", _followerRight.getOutputCurrent());
 

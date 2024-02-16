@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
         COLLECTING(IntakeConstants.collectingPercentage),
         EJECT(IntakeConstants.ejectPercentage),
         DISABLED(IntakeConstants.disabledPrecent);
-        public double percentage;
+        public final double percentage;
 
         private IntakeState(double precentege){
             this.percentage = precentege;
@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(){
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
+        _intakeMotor.setSmartCurrentLimit(15);
 
         this._state = IntakeState.DISABLED; 
     }
