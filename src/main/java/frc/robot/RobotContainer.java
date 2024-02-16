@@ -115,7 +115,6 @@ public class RobotContainer {
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                                 m_Intake.setStateCommand(IntakeState.DISABLED)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
-                // sequence.addRequirements(m_Intake, m_Manipulator);
                 return sequence;
         }
 
@@ -134,7 +133,6 @@ public class RobotContainer {
                                                                                 .getSetStateCommand(ShooterState.OFF))),
                                 new InstantCommand(),
                                 () -> m_Manipulator.hasNoteSwitch());
-                // sequence.addRequirements(m_Shooter, m_Manipulator);
                 return sequence;
         }
 
