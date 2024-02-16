@@ -25,7 +25,7 @@ public class Shooter extends SubsystemBase {
         ON(ShooterConstants.SparkFlexShootingVelocity),
         OFF(ShooterConstants.SparkFlexUnShootingVelocity);
 
-        public double velocity;
+        public final double velocity;
 
         private ShooterState(double velocity) {
             this.velocity = velocity;
@@ -55,11 +55,6 @@ public class Shooter extends SubsystemBase {
         this._shooterState = shooterState;
         this._leaderLeft.setReference(shooterState.velocity, ControlType.kVelocity);
 
-        /*
-         * if (shooterState == ShooterState.ON) {
-         * _leaderUpLeft.set(1);
-         * }
-         */
         // prints the state change onto the SmartDashboard
         SmartDashboard.putString("shooter state:", this._shooterState.toString());
     }
