@@ -8,16 +8,17 @@ import frc.robot.motors.DBugSparkFlex;
 import frc.robot.motors.PIDFGains;
 import frc.robot.utils.Within;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
 
-    private DBugSparkFlex _leaderUpLeft;
-    private DBugSparkFlex _followerUpRight;
-    private DBugSparkFlex _followerDownLeft;
-    private DBugSparkFlex _followerDownRight;
+    private DBugSparkFlex _leaderLeft;
+    private DBugSparkFlex _followerRight;
     private ShooterState _shooterState;
 
     public static enum ShooterState {
@@ -33,16 +34,12 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
 
-        this._leaderUpLeft = DBugSparkFlex.create(ShooterConstants.leaderUpLeftPort);
-        this._followerUpRight = DBugSparkFlex.create(ShooterConstants.followerUpRightPort);
-        this._followerDownLeft = DBugSparkFlex.create(ShooterConstants.followerDownLeftPort);
-        this._followerDownRight = DBugSparkFlex.create(ShooterConstants.followerDownRightPort);
+        this._leaderLeft = DBugSparkFlex.create(ShooterConstants.leaderUpLeftPort,
+                new PIDFGains(ShooterConstants.kpShooter, 0, 0, ShooterConstants.kfShooter),
+                ShooterConstants.positionFactor, ShooterConstants.velocityFactor, 0);
+        this._followerRight = DBugSparkFlex.create(ShooterConstants.followerDownRightPort);
 
-        this._leaderUpLeft.setupPIDF(new PIDFGains(ShooterConstants.kpShooter, 0, 0, ShooterConstants.kfShooter));
-
-        this._followerUpRight.follow(_leaderUpLeft, true);
-        this._followerDownLeft.follow(_leaderUpLeft, false);
-        this._followerDownRight.follow(_leaderUpLeft, true);
+        this._followerRight.follow(_leaderLeft, true);
 
         // sets the shooter state and the roller state to OFF in the beginning
         this._shooterState = ShooterState.OFF;
@@ -56,7 +53,7 @@ public class Shooter extends SubsystemBase {
 
     private void setState(ShooterState shooterState) {
         this._shooterState = shooterState;
-        this._leaderUpLeft.setReference(shooterState.velocity, ControlType.kVelocity);
+        this._leaderLeft.setReference(shooterState.velocity, ControlType.kVelocity);
 
         // prints the state change onto the SmartDashboard
         SmartDashboard.putString("shooter state:", this._shooterState.toString());
@@ -66,33 +63,34 @@ public class Shooter extends SubsystemBase {
         return new InstantCommand(() -> setState(targetState), this);
     }
 
-    public double getMotorVelocity() {
-        return this._leaderUpLeft.getVelocity();
+    private double getShooterVelocityMPS() {
+        return this._leaderLeft.getVelocity();
     }
 
     public boolean isAtTargetVelocity() {
-        return Within.range(this._shooterState.velocity, getMotorVelocity(), 0.01);
+        return Within.range(this._shooterState.velocity, getShooterVelocityMPS(), 0.1);
     }
 
     @Override
     public void periodic() {
-        /* gets the velocity value from the SmartDashboard. To use these lines for calibration remove final keyword from 
-        ShooterState.velocity and remember to put it back*/
-        // ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, rpm", 0);
-        SmartDashboard.putNumber("Shooter velocity", getMotorVelocity());
-        /*double curKP = SmartDashboard.getNumber("kp", 1);
-        // only updates when the values are changed
-        if (curKP != ShooterConstants.kpShooter){
-            this._sparkFlexLeftFollower.setupPIDF(
-                new PIDFGains(
-                    curKP, 
-                    0,
-                    0,
-                    ShooterConstants.kfShooter));
-        }*/
+        /*
+         * gets the velocity value from the SmartDashboard. To use these lines for
+         * calibration remove final keyword from
+         * ShooterState.velocity and remember to put it back
+         */
+        /*ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, mps", 0);
+        if (DriverStation.isEnabled()) {
+            // setState(ShooterState.ON);
+            // leaderUpLeft.set(0.5);
+        }
+        SmartDashboard.putNumber("velocity, mps", SmartDashboard.getNumber("velocity, mps", 0));*/
+        SmartDashboard.putNumber("Shooter velocity", getShooterVelocityMPS());
+        SmartDashboard.putNumber("shooter BL current", _leaderLeft.getOutputCurrent());
+        SmartDashboard.putNumber("shooter BR current", _followerRight.getOutputCurrent());
+
     }
 
     public void stop() {
-        _leaderUpLeft.set(0);
+        _leaderLeft.set(0);
     }
 }
