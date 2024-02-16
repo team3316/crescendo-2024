@@ -50,4 +50,9 @@ public class Intake extends SubsystemBase {
     public void stop() {
         setState(IntakeState.DISABLED);
     }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("intake current", _intakeMotor.getOutputCurrent());
+    }
 }
