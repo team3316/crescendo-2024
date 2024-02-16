@@ -32,7 +32,7 @@ public class Arm extends SubsystemBase {
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
-    private TalonFX _manipulatorJoint;
+    private TalonFX _wrist;
 
     private ArmFeedforward _armFeedforward;
 
@@ -62,13 +62,13 @@ public class Arm extends SubsystemBase {
         _leader.setSoftLimit(SoftLimitDirection.kForward, (float)ArmState.TRAP.armAngleDeg + 2); // TODO: check which side (fwd/rev) is soft and which is hard limit
         _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
         
-        _manipulatorJoint = new TalonFX(ArmConstants.jointCANID);
+        _wrist = new TalonFX(ArmConstants.wristCANID);
         TalonFXConfiguration jointConfig = new TalonFXConfiguration();
         jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-        jointConfig.Slot0.withKP(ArmConstants.manipulatorJointKp).withKV(ArmConstants.manipulatorJointKv).
+        jointConfig.Slot0.withKP(ArmConstants.wristKp).withKV(ArmConstants.wristKv).
         withKG(ArmConstants.armKg);
-        jointConfig.Feedback.withSensorToMechanismRatio(1 / ArmConstants.manipulatorJointPositionFactor);
-        _manipulatorJoint.getConfigurator().apply(jointConfig);
+        jointConfig.Feedback.withSensorToMechanismRatio(1 / ArmConstants.wristPositionFactor);
+        _wrist.getConfigurator().apply(jointConfig);
 
         _armFeedforward = new ArmFeedforward(ArmConstants.armKs, ArmConstants.armKg, ArmConstants.armKv, ArmConstants.armKa);
         
@@ -93,11 +93,11 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean isManipulatorFwdLimitSwitchClosed() {
-        return _manipulatorJoint.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
+        return _wrist.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
     }
 
     public boolean isManipulatorRevLimitSwitchClosed() {
-        return _manipulatorJoint.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
+        return _wrist.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
     }
 
     public double getArmPositionDeg() {
@@ -113,15 +113,15 @@ public class Arm extends SubsystemBase {
     }
 
     public double getMnaipulatorJointPositionDeg() {
-        return _manipulatorJoint.getPosition().getValueAsDouble();
+        return _wrist.getPosition().getValueAsDouble();
     }
 
-    public double getManipulatorJointVelocityDegPerSec() {
-        return _manipulatorJoint.getPosition().getValueAsDouble();
+    public double getWristVelocityDegPerSec() {
+        return _wrist.getPosition().getValueAsDouble();
     }
 
-    private State getManipulatorJointTrapezoidState() {
-        return new State(getMnaipulatorJointPositionDeg(), getManipulatorJointVelocityDegPerSec());
+    private State getWristTrapezoidState() {
+        return new State(getMnaipulatorJointPositionDeg(), getWristVelocityDegPerSec());
     }
 
     private void useArmState(TrapezoidProfile.State targetState) {
@@ -138,23 +138,23 @@ public class Arm extends SubsystemBase {
         // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
     }
 
-    private void useManipulatorJointState(TrapezoidProfile.State targetState) {
-        _manipulatorJoint.setControl(new PositionVoltage(
+    private void useWristState(TrapezoidProfile.State targetState) {
+        _wrist.setControl(new PositionVoltage(
             targetState.position, targetState.velocity, false, 0, 0, false, true, true));
         SmartDashboard.putNumber("target manipulator joint position (deg)", targetState.position);
         SmartDashboard.putNumber("target manipulator joint velocity (deg/sec)", targetState.velocity);
     }
 
-    private Command getSetManipulatorJointStateCommand(ArmState targetState) {
-        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.manipulatorJointProfileConstrains);
+    private Command getSetWristStateCommand(ArmState targetState) {
+        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.wristProfileConstrains);
         Supplier<State> targetSupplier = () -> (new State(targetState.manipulatorAngleDeg, 0));
-        return new TrapezoidProfileCommand(profile, this::useManipulatorJointState, targetSupplier, this::getManipulatorJointTrapezoidState, this);
+        return new TrapezoidProfileCommand(profile, this::useWristState, targetSupplier, this::getWristTrapezoidState, this);
     }
 
     public Command getSetStateCommand(ArmState targetState) {
         Command toReturn = Commands.parallel(
             getSetArmStateCommand(targetState),
-            getSetManipulatorJointStateCommand(targetState),
+            getSetWristStateCommand(targetState),
             new InstantCommand(() -> {_targetState = targetState;})
         );
         toReturn.addRequirements(this);
@@ -163,7 +163,7 @@ public class Arm extends SubsystemBase {
 
     public void stop() {
         _leader.set(0);
-        _manipulatorJoint.set(0);
+        _wrist.set(0);
     }
 
     private void updateSDB() {
@@ -171,7 +171,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("current arm position (deg)", getArmPositionDeg());
         SmartDashboard.putNumber("current arm velocity (deg/s)", getArmVelocityDegPerSec());
         SmartDashboard.putNumber("current manipulator joint position", getMnaipulatorJointPositionDeg());
-        SmartDashboard.putNumber("current manipulator joint velocity", getManipulatorJointVelocityDegPerSec());
+        SmartDashboard.putNumber("current manipulator joint velocity", getWristVelocityDegPerSec());
         SmartDashboard.putBoolean("arm rev limit", isArmRevLimitSwitchClosed());
         SmartDashboard.putBoolean("manipulator fwd limit", isManipulatorFwdLimitSwitchClosed());
         SmartDashboard.putBoolean("manipulator rev limit", isManipulatorRevLimitSwitchClosed());
@@ -184,10 +184,10 @@ public class Arm extends SubsystemBase {
                 _leader.setPosition(ArmState.COLLECT.armAngleDeg);
             }
             if (isManipulatorRevLimitSwitchClosed()) {
-                _manipulatorJoint.setPosition(ArmState.COLLECT.manipulatorAngleDeg);
+                _wrist.setPosition(ArmState.COLLECT.manipulatorAngleDeg);
             }
             else if (isManipulatorFwdLimitSwitchClosed()) {
-                _manipulatorJoint.setPosition(ArmState.TRAP.manipulatorAngleDeg);
+                _wrist.setPosition(ArmState.TRAP.manipulatorAngleDeg);
             }
         }
         updateSDB();
