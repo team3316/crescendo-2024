@@ -25,7 +25,7 @@ public class Shooter extends SubsystemBase {
         ON(ShooterConstants.SparkFlexShootingVelocity),
         OFF(ShooterConstants.SparkFlexUnShootingVelocity);
 
-        public double velocity;
+        public final double velocity;
 
         private ShooterState(double velocity) {
             this.velocity = velocity;
