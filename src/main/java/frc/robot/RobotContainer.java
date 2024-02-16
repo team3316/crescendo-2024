@@ -73,6 +73,8 @@ public class RobotContainer {
                 m_driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
+        this._autoFactory  = new AutoFactory(m_Drivetrain);
+        this.chooser = AutoBuilder.buildAutoChooser();
         // Configure the trigger bindings
         configureBindings();
         initChooser();
