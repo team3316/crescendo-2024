@@ -5,19 +5,18 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.autonomous.AutoFactory;
-import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
 import frc.robot.humanIO.CommandPS5Controller;
@@ -60,8 +59,8 @@ public class RobotContainer {
                 m_driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
-                this._autoFactory  = new AutoFactory(m_Drivetrain);
-                this.chooser = AutoBuilder.buildAutoChooser();
+        this._autoFactory  = new AutoFactory(m_Drivetrain);
+        this.chooser = AutoBuilder.buildAutoChooser();
         // Configure the trigger bindings
         configureBindings();
         initChooser();
