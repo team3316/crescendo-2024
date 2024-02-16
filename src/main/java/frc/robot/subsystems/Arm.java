@@ -152,13 +152,13 @@ public class Arm extends SubsystemBase {
     }
 
     public Command getSetStateCommand(ArmState targetState) {
-        Command toReturn = Commands.parallel(
+        return Commands.sequence(
+            getSetWristStateCommand(ArmState.COLLECT),
             getSetArmStateCommand(targetState),
-            getSetWristStateCommand(targetState),
+            getSetWristStateCommand(targetState)
+        ).alongWith(
             new InstantCommand(() -> {_targetState = targetState;})
         );
-        toReturn.addRequirements(this);
-        return toReturn;
     }
 
     public void stop() {
