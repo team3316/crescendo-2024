@@ -13,6 +13,9 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.RobotContainer;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
@@ -45,6 +48,7 @@ public class SwerveModule {
                 .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor));
 
         this._targetState = getState();
+        
     }
 
     private static TalonFXConfiguration getTalonConfig(PIDFGains gains,
@@ -186,4 +190,13 @@ public class SwerveModule {
     public double getVelocity() {
         return this._driveMotor.getVelocity().getValue();
     }
+
+    public void driveByVoltage(double voltage) {
+        _driveMotor.setVoltage(voltage);
+    }
+    
+    public double getDriveOutput() {
+        return _driveMotor.get() * RobotController.getBatteryVoltage();
+    }
+
 }

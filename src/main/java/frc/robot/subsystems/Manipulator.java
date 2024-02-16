@@ -18,15 +18,17 @@ public class Manipulator extends SubsystemBase {
     private ManipulatorState _state;
 
     public static enum ManipulatorState {
-        OFF(ManipulatorConstants.offPercentage),
-        COLLECT(ManipulatorConstants.collectingPercentage),
-        AMP(ManipulatorConstants.AMPPercentage),
-        TRAP(ManipulatorConstants.TRAPPercentage),
-        TO_SHOOTER(ManipulatorConstants.shooterPercentage);
+        OFF(ManipulatorConstants.offPercentage, ManipulatorConstants.offPercentage),
+        COLLECT(ManipulatorConstants.leftCollectingPercentage, ManipulatorConstants.rightCollectingPercentage),
+        AMP(ManipulatorConstants.AMPPercentage, ManipulatorConstants.AMPPercentage),
+        TRAP(ManipulatorConstants.TRAPPercentage, ManipulatorConstants.TRAPPercentage),
+        TO_SHOOTER(ManipulatorConstants.leftShooterPercentage, ManipulatorConstants.rightShooterPercentage);
 
-        public final double percentage;
-        private ManipulatorState(double percentage) {
-            this.percentage = percentage;
+        public double rightPercentage;
+        public double leftPercentage;
+        private ManipulatorState(double leftPercentage, double rightPercentage) {
+            this.rightPercentage = rightPercentage;
+            this.leftPercentage = leftPercentage;
         }
     }
 
@@ -39,13 +41,13 @@ public class Manipulator extends SubsystemBase {
         
         this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
-        this._follower.follow(this._leader, false);
+        //this._follower.follow(this._leader, false);
 
         this._state = ManipulatorState.OFF;
 
         // initialize values into the SDB
         SmartDashboard.putString("Manipulator State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
+       
     }
 
     public ManipulatorState getManipulatorState() {
@@ -54,16 +56,17 @@ public class Manipulator extends SubsystemBase {
 
     // TODO: Check if NC or NO
     public boolean hasNoteSwitch() {
-        return _hasNoteSwitch.get();
+        return !_hasNoteSwitch.get();
     }
 
     private void setState(ManipulatorState state) {
         this._state = state;
 
-        this._leader.set(this._state.percentage);
+        this._leader.set(state.leftPercentage);
+        this._follower.set(state.rightPercentage);
 
         SmartDashboard.putString("Manipulator State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
+      
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
@@ -72,5 +75,22 @@ public class Manipulator extends SubsystemBase {
 
     public void stop() {
         setState(ManipulatorState.OFF);
+    }
+
+    @Override
+    public void periodic() {
+        // ManipulatorState.COLLECT.rightPercentage = SmartDashboard.getNumber("manipulator collect right", 0);
+        // ManipulatorState.COLLECT.leftPercentage = SmartDashboard.getNumber("manipulator collect left", 0);
+        // ManipulatorState.TO_SHOOTER.rightPercentage = SmartDashboard.getNumber("manipulator to shooter right", 0);
+        // ManipulatorState.TO_SHOOTER.leftPercentage = SmartDashboard.getNumber("manipulator to shooter left", 0);
+        SmartDashboard.putBoolean("has note", hasNoteSwitch());
+        // SmartDashboard.putNumber("left current", _leader.getOutputCurrent());
+        // SmartDashboard.putNumber("right current", _follower.getOutputCurrent());
+        SmartDashboard.putNumber("right velocity rpm", _follower.getVelocity());
+        SmartDashboard.putNumber("left velocity rpm", _leader.getVelocity());
+        // SmartDashboard.putNumber("manipulator collect right", SmartDashboard.getNumber("manipulator collect right", 0));
+        // SmartDashboard.putNumber("manipulator collect left", SmartDashboard.getNumber("manipulator collect left", 0));
+        // SmartDashboard.putNumber("manipulator to shooter right", SmartDashboard.getNumber("manipulator to shooter right", 0));
+        // SmartDashboard.putNumber("manipulator to shooter left", SmartDashboard.getNumber("manipulator to shooter left", 0));
     }
 }
