@@ -39,13 +39,13 @@ public class Manipulator extends SubsystemBase {
         
         this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
-        this._follower.follow(this._leader, false);
+       // this._follower.follow(this._leader, false);
 
         this._state = ManipulatorState.OFF;
 
         // initialize values into the SDB
         SmartDashboard.putString("Manipulator State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
+     //   SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
     }
 
     public ManipulatorState getManipulatorState() {
@@ -63,7 +63,12 @@ public class Manipulator extends SubsystemBase {
         this._leader.set(this._state.percentage);
 
         SmartDashboard.putString("Manipulator State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
+       // SmartDashboard.putNumber("Manipulator Percentage", this._state.percentage);
+    }
+
+    public void moveByPercent(double leadpercent,double followpercent){
+        this._leader.set(leadpercent);
+        this._follower.set(followpercent);
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
@@ -72,5 +77,13 @@ public class Manipulator extends SubsystemBase {
 
     public void stop() {
         setState(ManipulatorState.OFF);
+    }
+
+    public void periodic() {
+        SmartDashboard.putNumber("Manipulator Percent", SmartDashboard.getNumber("Manipulator Percent", 0));
+        SmartDashboard.putNumber(" follower Manipulator", this._follower.getOutputCurrent());
+        SmartDashboard.putNumber(" leader Manipulator", this._leader.getOutputCurrent());
+        moveByPercent(0,0.6);
+        
     }
 }

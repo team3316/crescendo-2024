@@ -41,51 +41,51 @@ import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
  */
 public class RobotContainer {
 
-    private final Drivetrain m_Drivetrain = new Drivetrain();
-    /*private final Arm m_Arm = new Arm();
+//     private final Drivetrain m_Drivetrain = new Drivetrain();
+    //private final Arm m_Arm = new Arm();
     private final Manipulator m_Manipulator = new Manipulator();
-    private final Shooter m_Shooter = new Shooter();
-    private final Intake m_Intake = new Intake();
-    private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
+//     private final Shooter m_Shooter = new Shooter();
+//     private final Intake m_Intake = new Intake();
+//     private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
-    private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);*/
+//     private final CommandPS5Controller m_buttonController = new CommandPS5Controller(JoysticksConstants.operatorPort);*/
     private final CommandPS5Controller _driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
-    private boolean _fieldRelative = true;
+//     private boolean _fieldRelative = true;
 
-    private SwerveSysidCommands m_SysidCommands;
+//     private SwerveSysidCommands m_SysidCommands;
 
     public RobotContainer() {
-        m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
-                _driverController.getLeftY() *
-                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond*0.25,
-                _driverController.getLeftX() *
-                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond*0.25,
-                _driverController.getCombinedAxis() *
-                        DrivetrainConstants.maxRotationSpeedRadPerSec*0.25,
-                _fieldRelative), m_Drivetrain));
+        // m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+        //         _driverController.getLeftY() *
+        //                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond*0.25,
+        //         _driverController.getLeftX() *
+        //                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond*0.25,
+        //         _driverController.getCombinedAxis() *
+        //                 DrivetrainConstants.maxRotationSpeedRadPerSec*0.25,
+        //         _fieldRelative), m_Drivetrain));
 
-        m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
+        // m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
         // Configure the trigger bindings
         configureBindings();
     }
 
     public void stop() {
-        m_Drivetrain.disabledInit();
-        /*m_Arm.stop();
-        m_Intake.stop();
+        // m_Drivetrain.disabledInit();
+        //m_Arm.stop();
+       // m_Intake.stop();
         m_Manipulator.stop();
-        m_Shooter.stop();
-        m_Climber.stop();*/
+        // m_Shooter.stop();
+        // m_Climber.stop();*/
     }
 
     private void configureBindings() {
-        _driverController.options().onTrue(
-                new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
-        // relative mode
+        // _driverController.options().onTrue(
+        //         new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
+        // // relative mode
 
-        _driverController.share().onTrue(
-                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
+        // _driverController.share().onTrue(
+        //         new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
         /*m_buttonController.L1().onTrue(getCollectSequence());
         m_buttonController.R1().onTrue(getShootSequence());
@@ -98,9 +98,9 @@ public class RobotContainer {
          */
         //m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
 
-        _driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
+        // _driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
 
-        _driverController.circle().onTrue(m_Drivetrain.zeroCANCodersCommand());
+        // _driverController.circle().onTrue(m_Drivetrain.zeroCANCodersCommand());
     }
 
     /*private Command getCollectSequence() {
