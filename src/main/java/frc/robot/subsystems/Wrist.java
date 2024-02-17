@@ -14,16 +14,19 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
+import frc.robot.subsystems.Arm.ArmState;
 
-public class Wrist extends SubsystemBase{
-    
+public class Wrist extends SubsystemBase {
+
     private TalonFX _wristMotor;
 
     private WristState _targertState;
+    private ArmState _currentArmState;
 
     public static enum WristState {
         COLLECT(WristConstants.collectAngle),
@@ -36,17 +39,19 @@ public class Wrist extends SubsystemBase{
         private WristState(double angleDeg) {
             this.angleDeg = angleDeg;
         }
+
+        public double getAngleToGroundDeg(double armAngleDeg) {
+            return this.angleDeg + armAngleDeg;
+        }
     }
 
     public Wrist() {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
         TalonFXConfiguration jointConfig = new TalonFXConfiguration();
         jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-        jointConfig.Slot0.withKP(WristConstants.kp).withKV(WristConstants.kv).
-        withKG(ArmConstants.kg);
+        jointConfig.Slot0.withKP(WristConstants.kp).withKV(WristConstants.kv).withKG(ArmConstants.kg);
         jointConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
         _wristMotor.getConfigurator().apply(jointConfig);
-
     }
 
     public WristState getWristState() {
@@ -79,15 +84,19 @@ public class Wrist extends SubsystemBase{
 
     private void useState(TrapezoidProfile.State targetState) {
         _wristMotor.setControl(new PositionVoltage(
-            targetState.position, targetState.velocity, false, 0, 0, false, true, true));
+                targetState.position, targetState.velocity, false, 0, 0, false, true, true));
         SmartDashboard.putNumber("target manipulator joint position (deg)", targetState.position);
         SmartDashboard.putNumber("target manipulator joint velocity (deg/sec)", targetState.velocity);
     }
 
-    public Command getSetStateCommand(WristState targetState) {
+    public Command getSetStateCommand(WristState targetState, ArmState currentArmState) {
         TrapezoidProfile profile = new TrapezoidProfile(WristConstants.profileConstrains);
-        Supplier<State> targetSupplier = () -> (new State(targetState.angleDeg, 0));
-        return new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getTrapezoidState, this);
+        Supplier<State> targetSupplier = () -> (new State(targetState.getAngleToGroundDeg(currentArmState.armAngleDeg),
+                0));
+        return new InstantCommand(() -> {
+            _wristMotor.setPosition(targetState.getAngleToGroundDeg(currentArmState.armAngleDeg));
+        }).andThen(
+                new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getTrapezoidState, this));
     }
 
     public void stop() {
@@ -103,15 +112,7 @@ public class Wrist extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if (DriverStation.isEnabled()) {
-            if (isRevLimitSwitchClosed()) {
-                _wristMotor.setPosition(WristState.COLLECT.angleDeg);
-            }
-            else if (isFwdLimitSwitchClosed()) {
-                _wristMotor.setPosition(WristState.TRAP.angleDeg);
-            }
-        }
         updateSDB();
     }
-    
+
 }
