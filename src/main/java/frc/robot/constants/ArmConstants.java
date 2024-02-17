@@ -6,8 +6,8 @@ public class ArmConstants {
     public static final int leaderCANID = 0;
     public static final int followerCANID = 0;
 
-    public static final double collectAngle = 0; // deg
-    public static final double TRAPAngle = 0; // deg
+    public static final double collectAngle = -43.2; // deg
+    public static final double TRAPAngle = 96.42; // deg
     public static final double underChainAngle = 0; // deg
     public static final double AMPAngle = 0; // deg
     
