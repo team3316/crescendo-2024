@@ -50,20 +50,13 @@ public class RobotContainer {
 
   private void configureBindings() {
      
-                m_driverController.triangle().onTrue(new RunCommand(() -> m_Drivetrain.drive(
+                m_driverController.triangle().whileTrue(new RunCommand(() -> m_Drivetrain.drive(
                                 m_driverController.getLeftY() *
                                                 SwerveModuleConstants.freeSpeedMetersPerSecond,
                                 m_driverController.getLeftX() *
                                                 SwerveModuleConstants.freeSpeedMetersPerSecond,
-                                m_Drivetrain.getRotByVision(m_LimeLight.getXAngle(), m_LimeLight.hasTarget()),
-                                _fieldRelative), m_Drivetrain)).onFalse(new RunCommand(() -> m_Drivetrain.drive(
-                m_driverController.getLeftY() *
-                        SwerveModuleConstants.freeSpeedMetersPerSecond,
-                m_driverController.getLeftX() *
-                        SwerveModuleConstants.freeSpeedMetersPerSecond,
-                m_driverController.getCombinedAxis() *
-                        DrivetrainConstants.maxRotationSpeedRadPerSec,
-                _fieldRelative), m_Drivetrain));
+                                m_Drivetrain.getRotByVision(Math.toRadians(m_LimeLight.getXAngle()), m_LimeLight.hasTarget()),
+                                _fieldRelative), m_Drivetrain));
 
                 m_driverController.options().onTrue(
                 new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
