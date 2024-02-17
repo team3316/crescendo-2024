@@ -103,9 +103,11 @@ public class Wrist extends SubsystemBase {
         TrapezoidProfile profile = new TrapezoidProfile(WristConstants.profileConstrains);
         Supplier<State> targetSupplier = () -> (new State(targetState.getAngleToGroundDeg(_currentArmState.armAngleDeg),
                 0));
-        return new InstantCommand(() -> {
+        return (new InstantCommand(() -> {
             _wristMotor.setPosition(targetState.getAngleToGroundDeg(_currentArmState.armAngleDeg));
-        }).andThen(
+        }).alongWith(
+            new InstantCommand(() -> {_targertState = targetState;})
+        )).andThen(
                 new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getTrapezoidState, this));
     }
 

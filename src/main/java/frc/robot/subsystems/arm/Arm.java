@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.ArmConstants;
@@ -94,7 +95,9 @@ public class Arm extends SubsystemBase {
     public Command getSetStateCommand(ArmState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains);
         Supplier<State> targetSupplier = () -> (new State(targetState.armAngleDeg, 0));
-        return new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this);
+        return new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this).alongWith(
+            new InstantCommand(() -> {_targetState = targetState;})
+        );
         // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
     }
 
