@@ -47,7 +47,7 @@ public class Arm extends SubsystemBase {
         _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp), 
         ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
         _follower.follow(_leader, true); // TODO: verify inversion before testing
-        _leader.setSoftLimit(SoftLimitDirection.kForward, (float)ArmState.TRAP.armAngleDeg + 2); // TODO: check which side (fwd/rev) is soft and which is hard limit
+        _leader.setSoftLimit(SoftLimitDirection.kForward, (float)ArmState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle); // TODO: check which side (fwd/rev) is soft and which is hard limit
         _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
         
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);

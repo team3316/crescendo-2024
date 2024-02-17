@@ -26,4 +26,6 @@ public class ArmConstants {
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
     public static final double velocityFactor = 360 * gearRatio / 60; // (deg/sec)/RPM
 
+    public static final float softLimitExtraAngle = 10; // deg
+
 }

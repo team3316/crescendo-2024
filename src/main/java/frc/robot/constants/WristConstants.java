@@ -21,4 +21,6 @@ public class WristConstants {
     
     private static final double gearRatio = 1.0 / 64.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
+
+    public static final double softLimitExtraAngle = 10; // deg
 }

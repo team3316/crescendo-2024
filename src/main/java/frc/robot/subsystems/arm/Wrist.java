@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -46,11 +48,15 @@ public class Wrist extends SubsystemBase {
 
     public Wrist() {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
-        TalonFXConfiguration jointConfig = new TalonFXConfiguration();
+        _wristMotor.getConfigurator().apply(getConfigurator());
+    }
+
+    private TalonFXConfiguration getConfigurator() {
+TalonFXConfiguration jointConfig = new TalonFXConfiguration();
         jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
         jointConfig.Slot0.withKP(WristConstants.kp).withKV(WristConstants.kv).withKG(ArmConstants.kg);
         jointConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
-        _wristMotor.getConfigurator().apply(jointConfig);
+        return jointConfig;
     }
 
     public WristState getWristState() {
@@ -84,8 +90,8 @@ public class Wrist extends SubsystemBase {
     private void useState(TrapezoidProfile.State targetState) {
         _wristMotor.setControl(new PositionVoltage(
                 targetState.position, targetState.velocity, false, 0, 0, false, true, true));
-        SmartDashboard.putNumber("target manipulator joint position (deg)", targetState.position);
-        SmartDashboard.putNumber("target manipulator joint velocity (deg/sec)", targetState.velocity);
+        SmartDashboard.putNumber("target wrist position (deg)", targetState.position);
+        SmartDashboard.putNumber("target wrist velocity (deg/sec)", targetState.velocity);
     }
 
     public Command getSetStateCommand(WristState targetState) {
@@ -104,17 +110,32 @@ public class Wrist extends SubsystemBase {
 
     public void setCurrentArmState(ArmState currentState) {
         this._currentArmState = currentState;
+        TalonFXConfiguration config = getConfigurator();
+        SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
+        limitConfigs.withForwardSoftLimitThreshold(WristState.TRAP.getAngleToGroundDeg(_currentArmState.armAngleDeg) + WristConstants.softLimitExtraAngle);
+        limitConfigs.withForwardSoftLimitEnable(true);
+        limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.getAngleToGroundDeg(_currentArmState.armAngleDeg) - WristConstants.softLimitExtraAngle);
+        limitConfigs.withReverseSoftLimitEnable(true);
+        config.withSoftwareLimitSwitch(limitConfigs);
+        _wristMotor.getConfigurator().apply(config);
     }
 
     private void updateSDB() {
-        SmartDashboard.putBoolean("manipulator fwd limit", isFwdLimitSwitchClosed());
-        SmartDashboard.putBoolean("manipulator rev limit", isRevLimitSwitchClosed());
-        SmartDashboard.putNumber("current manipulator joint position", getPositionDeg());
-        SmartDashboard.putNumber("current manipulator joint velocity", getVelocityDegPerSec());
+        SmartDashboard.putBoolean("wrist fwd limit", isFwdLimitSwitchClosed());
+        SmartDashboard.putBoolean("wrist rev limit", isRevLimitSwitchClosed());
+        SmartDashboard.putNumber("current wrist position", getPositionDeg());
+        SmartDashboard.putNumber("current wrist velocity", getVelocityDegPerSec());
     }
 
     @Override
     public void periodic() {
+        if (DriverStation.isDisabled()) {
+            if (isFwdLimitSwitchClosed()) {
+                setSensorPosition((WristState.TRAP.getAngleToGroundDeg(_currentArmState.armAngleDeg)));
+            } else if (isRevLimitSwitchClosed()) {
+                setSensorPosition(WristState.COLLECT.getAngleToGroundDeg(_currentArmState.armAngleDeg));
+            }
+        }
         updateSDB();
     }
 
