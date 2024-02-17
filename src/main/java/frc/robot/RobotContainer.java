@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,6 +31,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmWristSuperStructure;
 import frc.robot.subsystems.arm.Wrist;
 import frc.robot.subsystems.arm.Arm.ArmState;
+import frc.robot.subsystems.arm.Wrist.WristState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 
@@ -44,7 +47,7 @@ import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 public class RobotContainer {
 
     private final Drivetrain m_Drivetrain = new Drivetrain();
-    private final ArmWristSuperStructure m_ArmWristSuperStructure = new ArmWristSuperStructure(new Arm(), new Wrist());
+    private final ArmWristSuperStructure m_ArmWristSuperStructure = new ArmWristSuperStructure();
     private final Manipulator m_Manipulator = new Manipulator();
     private final Shooter m_Shooter = new Shooter();
     private final Intake m_Intake = new Intake();
@@ -92,7 +95,12 @@ public class RobotContainer {
 
         m_driverController.L1().onTrue(getCollectSequence());
         m_driverController.R1().onTrue(getShootSequence());
-        m_driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
+       // m_driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
+        m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.AMP));//amp
+        m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.COLLECT));//amp
+        m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.UNDER_CHAIN));//amp
+        m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.TRAP));//amp
+
         // m_buttonController.cross().whileTrue(getAMPSequence());
         // m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
         // m_buttonController.triangle().onTrue(getClimbSequence());
@@ -103,6 +111,7 @@ public class RobotContainer {
         //// m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
 
         m_driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
+        m_driverController.options().onTrue(m_ArmWristSuperStructure.setEncodersToCollect().ignoringDisable(true));
     }
 
     private Command getCollectSequence() {
@@ -111,6 +120,7 @@ public class RobotContainer {
                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                new WaitCommand(0.02),
                 m_Intake.setStateCommand(IntakeState.DISABLED)
                         .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
         return sequence;
