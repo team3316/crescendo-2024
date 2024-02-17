@@ -10,7 +10,7 @@ public class WristConstants {
     public static final double TRAPAngle = 0; // deg
     public static final double underChainAngle = 0; // deg
 
-    private static final double gearRatio = 1.0 / 64.0;
+    private static final double gearRatio = 1.0 / 35.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
 
     private static final double maxVelocity = 0; // deg/sec
