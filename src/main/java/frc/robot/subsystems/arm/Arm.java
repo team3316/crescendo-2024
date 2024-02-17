@@ -13,12 +13,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
+import frc.robot.subsystems.arm.Wrist.WristState;
 
 public class Arm extends SubsystemBase {
 
@@ -95,8 +98,13 @@ public class Arm extends SubsystemBase {
     public Command getSetStateCommand(ArmState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains);
         Supplier<State> targetSupplier = () -> (new State(targetState.armAngleDeg, 0));
-        return new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this).alongWith(
-            new InstantCommand(() -> {_targetState = targetState;})
+        return (new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this)).alongWith(
+            new InstantCommand(() -> {_targetState = targetState;})).andThen(
+                Commands.either(
+                    Commands.runOnce(() -> {_leader.set(-0.03);}, this),
+                    Commands.none(),
+                    () -> targetState == ArmState.COLLECT
+                    ))
         );
         // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
     }

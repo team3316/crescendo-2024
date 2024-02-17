@@ -17,10 +17,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.arm.Arm.ArmState;
 
@@ -119,12 +119,18 @@ public class Wrist extends SubsystemBase {
         TrapezoidProfile profile = new TrapezoidProfile(WristConstants.profileConstrains);
         Supplier<State> targetSupplier = () -> (new State(targetState.angleDeg,
                 0));
-        return (new InstantCommand(() -> {
-            _wristMotor.setPosition(targetState.angleDeg);
-        }).alongWith(
-            new InstantCommand(() -> {_targetState = targetState;})
-        )).andThen(
-                new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getTrapezoidState, this));
+        return 
+            new InstantCommand(() -> {_targetState = targetState;}).andThen(
+                new InstantCommand(this::stop)
+            )
+        .andThen(
+                new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getTrapezoidState, this)).andThen(
+                    Commands.either(
+                    Commands.runOnce(() -> {_wristMotor.set(-0.03);}, this),
+                    Commands.none(),
+                    () -> targetState == WristState.COLLECT
+                    )
+                );
     }
 
     public void stop() {
