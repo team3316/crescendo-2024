@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.arm;
 
 import java.util.function.Supplier;
 
@@ -11,7 +11,6 @@ import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -19,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
-import frc.robot.subsystems.Arm.ArmState;
+import frc.robot.subsystems.arm.Arm.ArmState;
 
 public class Wrist extends SubsystemBase {
 
@@ -89,18 +88,22 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putNumber("target manipulator joint velocity (deg/sec)", targetState.velocity);
     }
 
-    public Command getSetStateCommand(WristState targetState, ArmState currentArmState) {
+    public Command getSetStateCommand(WristState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(WristConstants.profileConstrains);
-        Supplier<State> targetSupplier = () -> (new State(targetState.getAngleToGroundDeg(currentArmState.armAngleDeg),
+        Supplier<State> targetSupplier = () -> (new State(targetState.getAngleToGroundDeg(_currentArmState.armAngleDeg),
                 0));
         return new InstantCommand(() -> {
-            _wristMotor.setPosition(targetState.getAngleToGroundDeg(currentArmState.armAngleDeg));
+            _wristMotor.setPosition(targetState.getAngleToGroundDeg(_currentArmState.armAngleDeg));
         }).andThen(
                 new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getTrapezoidState, this));
     }
 
     public void stop() {
         _wristMotor.set(0);
+    }
+
+    public void setCurrentArmState(ArmState currentState) {
+        this._currentArmState = currentState;
     }
 
     private void updateSDB() {
