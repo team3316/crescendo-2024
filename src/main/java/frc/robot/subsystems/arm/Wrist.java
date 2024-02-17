@@ -27,7 +27,7 @@ public class Wrist extends SubsystemBase {
 
     private TalonFX _wristMotor;
 
-    private WristState _targertState;
+    private WristState _targetState;
     private ArmState _currentArmState;
 
     public static enum WristState {
@@ -65,7 +65,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public WristState getWristState() {
-        return _targertState;
+        return _targetState;
     }
 
     public double getPositionDeg() {
@@ -73,7 +73,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public double getVelocityDegPerSec() {
-        return _wristMotor.getPosition().getValueAsDouble();
+        return _wristMotor.getVelocity().getValueAsDouble();
     }
 
     private State getTrapezoidState() {
@@ -106,7 +106,7 @@ public class Wrist extends SubsystemBase {
         return (new InstantCommand(() -> {
             _wristMotor.setPosition(targetState.getAngleToGroundDeg(_currentArmState.armAngleDeg));
         }).alongWith(
-            new InstantCommand(() -> {_targertState = targetState;})
+            new InstantCommand(() -> {_targetState = targetState;})
         )).andThen(
                 new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getTrapezoidState, this));
     }
@@ -134,6 +134,7 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putBoolean("wrist rev limit", isRevLimitSwitchClosed());
         SmartDashboard.putNumber("current wrist position", getPositionDeg());
         SmartDashboard.putNumber("current wrist velocity", getVelocityDegPerSec());
+        SmartDashboard.putString("target wrist state", _targetState.toString());
     }
 
     @Override
