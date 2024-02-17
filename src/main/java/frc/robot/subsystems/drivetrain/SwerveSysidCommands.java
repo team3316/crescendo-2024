@@ -15,21 +15,21 @@ public class SwerveSysidCommands {
     private SysIdRoutine m_routine;
 
     public SwerveSysidCommands(Drivetrain swerve){
-        m_routine =  new SysIdRoutine(
-                new SysIdRoutine.Config(
-                    Volts.of(4).per(Seconds.of(5)),  // Default ramp rate is acceptable
-                    Volts.of(4), // Reduce dynamic voltage to 4 to prevent motor brownout
-                    Seconds.of(5), // Default timeout is acceptable
-                                        // Log state with Phoenix SignalLogger class
-                    (state)->SignalLogger.writeString("state", state.toString())),
-                new SysIdRoutine.Mechanism(
-                    (volts)-> {
-                        swerve.voltageDrive(volts);
-                    },
-                    null,
-                    swerve));
+        // m_routine =  new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //             Volts.of(4).per(Seconds.of(5)),  // Default ramp rate is acceptable
+        //             Volts.of(4), // Reduce dynamic voltage to 4 to prevent motor brownout
+        //             Seconds.of(5), // Default timeout is acceptable
+        //                                 // Log state with Phoenix SignalLogger class
+        //             (state)->SignalLogger.writeString("state", state.toString())),
+        //         new SysIdRoutine.Mechanism(
+        //             (volts)-> {
+        //                 swerve.voltageDrive(volts);
+        //             },
+        //             null,
+        //             swerve));
                     
-        SignalLogger.setPath("sysid");
+        // SignalLogger.setPath("sysid");
     }
 
 
