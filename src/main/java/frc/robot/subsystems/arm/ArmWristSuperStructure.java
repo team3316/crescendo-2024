@@ -35,7 +35,7 @@ public class ArmWristSuperStructure extends SubsystemBase {
     public Command getSetStateCommand(ArmState targetState) {
         return Commands.sequence(
             m_Wrist.getSetStateCommand(WristState.COLLECT),
-            getSetStateCommand(targetState),
+            m_Arm.getSetStateCommand(targetState),
             m_Wrist.getSetStateCommand(convertArmToWristState(targetState))
         );
     }
