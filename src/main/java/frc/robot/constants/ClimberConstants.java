@@ -2,8 +2,8 @@ package frc.robot.constants;
 
 public class ClimberConstants {
     // TODO: update the values in the whole class
-    public static final int rightSpoolPort = 0;
-    public static final int leftSpoolPort = 1;
+    public static final int rightSpoolPort = 7;
+    public static final int leftSpoolPort = 8;
 
     public static final double averageKp = 1; // voltage/meter
     public static final double averageKf = 1; // voltage/meter

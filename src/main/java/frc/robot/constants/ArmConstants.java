@@ -3,8 +3,8 @@ package frc.robot.constants;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class ArmConstants {
-    public static final int leaderCANID = 0;
-    public static final int followerCANID = 0;
+    public static final int leaderCANID = 8; // left
+    public static final int followerCANID = 7; // right
 
     public static final double collectAngle = -43.2; // deg
     public static final double TRAPAngle = 96.42; // deg

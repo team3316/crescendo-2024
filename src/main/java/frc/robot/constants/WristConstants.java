@@ -3,7 +3,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class WristConstants {
-    public static final int wristCANID = 0;
+    public static final int wristCANID = 25;
     
     public static final double collectAngle = 0; // deg
     public static final double AMPAngle = 0; // deg
