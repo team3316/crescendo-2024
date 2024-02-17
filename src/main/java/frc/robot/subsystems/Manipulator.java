@@ -10,7 +10,7 @@ import frc.robot.motors.DBugSparkMax;
 
 public class Manipulator extends SubsystemBase {
 
-    private DBugSparkMax _manipualtorMotor;
+    private DBugSparkMax _manipulatorMotor;
 
     private DigitalInput _hasNoteSwitch;
 
@@ -21,7 +21,7 @@ public class Manipulator extends SubsystemBase {
         COLLECT(ManipulatorConstants.collectingPercentage),
         AMP(ManipulatorConstants.AMPPercentage),
         TRAP(ManipulatorConstants.TRAPPercentage),
-        TO_SHOOTER(ManipulatorConstants.ToShooterPercentage);
+        TO_SHOOTER(ManipulatorConstants.toShooterPercentage);
 
         public double percentage;
         private ManipulatorState(double percentage) {
@@ -30,8 +30,8 @@ public class Manipulator extends SubsystemBase {
     }
 
     public Manipulator() {
-        this._manipualtorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID);
-        this._manipualtorMotor.setSmartCurrentLimit(20);
+        this._manipulatorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID);
+        this._manipulatorMotor.setSmartCurrentLimit(20);
         
         this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
@@ -54,7 +54,7 @@ public class Manipulator extends SubsystemBase {
     private void setState(ManipulatorState state) {
         this._state = state;
 
-        this._manipualtorMotor.set(state.percentage);
+        this._manipulatorMotor.set(state.percentage);
 
         SmartDashboard.putString("Manipulator State", this._state.toString());
       
@@ -71,7 +71,7 @@ public class Manipulator extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("has note", hasNoteSwitch());
-        SmartDashboard.putNumber("manipulator current current", _manipualtorMotor.getOutputCurrent());
+        SmartDashboard.putNumber("manipulator current current", _manipulatorMotor.getOutputCurrent());
         // SmartDashboard.putNumber("manipulator velocity rpm", _leader.getVelocity());
     }
 }
