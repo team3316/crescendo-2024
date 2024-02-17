@@ -2,7 +2,7 @@ package frc.robot.constants;
 
 public class ManipulatorConstants {
     // ports
-    public static final int sparkmaxCANID = 9;
+    public static final int sparkmaxCANID = 10;
     public static final int noteSwitchPort = 0;
 
     // motor percentages
