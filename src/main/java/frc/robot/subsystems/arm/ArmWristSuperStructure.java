@@ -3,6 +3,8 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.wpilibj.SynchronousInterrupt.WaitResult;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm.ArmState;
 import frc.robot.subsystems.arm.Wrist.WristState;
@@ -12,9 +14,9 @@ public class ArmWristSuperStructure extends SubsystemBase {
     private Arm m_Arm;
     private Wrist m_Wrist;
 
-    public ArmWristSuperStructure(Arm arm, Wrist wrist) {
-        this.m_Arm = arm;
-        this.m_Wrist = wrist;
+    public ArmWristSuperStructure() {
+        this.m_Arm = new Arm();
+        this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
     }
 
     private WristState convertArmToWristState(ArmState state) {
@@ -40,13 +42,22 @@ public class ArmWristSuperStructure extends SubsystemBase {
         );
     }
 
+    public Command setEncodersToCollect() {
+        return new InstantCommand(() -> m_Arm.setSensorPosition(ArmState.COLLECT.armAngleDeg)).alongWith(
+            new InstantCommand(() -> m_Wrist.setSensorPosition(WristState.COLLECT.angleDeg))).alongWith(
+                new PrintCommand("called")
+            );
+    }
+
+    public Command getArmSetState(ArmState targetState){
+       return  m_Arm.getSetStateCommand(targetState);
+    }
+
+    public Command getWristStateCommand(WristState targState){
+        return m_Wrist.getSetStateCommand(targState);
+    }
     public void stop() {
         m_Arm.stop();
         m_Wrist.stop();
-    }
-
-    @Override
-    public void periodic() {
-        m_Wrist.setCurrentArmState(m_Arm.getTargetState());
     }
 }
