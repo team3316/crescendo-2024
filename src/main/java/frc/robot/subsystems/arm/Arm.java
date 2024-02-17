@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkBase.ControlType;
@@ -14,14 +16,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
-import frc.robot.subsystems.arm.Wrist.WristState;
 
 public class Arm extends SubsystemBase {
 
@@ -71,6 +72,10 @@ public class Arm extends SubsystemBase {
         return _targetState;
     }
 
+    public void setSensorPosition(double position) {
+        _leader.setPosition(position);
+    }
+
     // TODO: check if switches are NC or NO
     public boolean isRevLimitSwitchClosed() {
         return _leader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
@@ -95,18 +100,23 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
     }
 
-    public Command getSetStateCommand(ArmState targetState) {
-        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains);
-        Supplier<State> targetSupplier = () -> (new State(targetState.armAngleDeg, 0));
-        return (new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, targetSupplier, this::getCurrentTrapezoidState, this)).alongWith(
+    private Command generateSetStateCommand(ArmState targetState) {
+        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains, new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
+        
+        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this)).alongWith(
             new InstantCommand(() -> {_targetState = targetState;})).andThen(
                 Commands.either(
                     Commands.runOnce(() -> {_leader.set(-0.03);}, this),
                     Commands.none(),
                     () -> targetState == ArmState.COLLECT
-                    ))
-        );
+                    ));
         // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
+    }
+
+    public Command getSetStateCommand(ArmState targetState) {
+        Set<Subsystem> requirements = new HashSet<>();
+        requirements.add(this);
+        return Commands.defer(() -> generateSetStateCommand(targetState), requirements);
     }
 
     public void stop() {
@@ -126,5 +136,14 @@ public class Arm extends SubsystemBase {
             _leader.setPosition(ArmState.COLLECT.armAngleDeg);
         }
         updateSDB();
+        // if (DriverStation.isEnabled()) {
+        //     _leader.setVoltage(SmartDashboard.getNumber("kg voltage", 0) * Math.cos(Math.toRadians(getPositionDeg())) + SmartDashboard.getNumber("kv voltage", 0));
+        // }
+        // if (DriverStation.isEnabled()) {
+        //     _leader.setVoltage(SmartDashboard.getNumber("arm voltage", 0));
+        // }
+        SmartDashboard.putNumber("kg voltage", SmartDashboard.getNumber("kg voltage", 0));
+        SmartDashboard.putNumber("ks voltage", SmartDashboard.getNumber("ks voltage", 0));
+        SmartDashboard.putNumber("kv voltage", SmartDashboard.getNumber("kv voltage", 0));
     }
 }
