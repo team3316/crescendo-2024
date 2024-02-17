@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,6 +30,8 @@ public class Wrist extends SubsystemBase {
 
     private WristState _targetState;
     private ArmState _currentArmState;
+
+    private ArmFeedforward _feedforward;
 
     public static enum WristState {
         COLLECT(WristConstants.collectAngle),
@@ -50,17 +53,29 @@ public class Wrist extends SubsystemBase {
     public Wrist() {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
         _wristMotor.getConfigurator().apply(getConfigurator());
+
+        _feedforward = new ArmFeedforward(0, WristConstants.kg, 0);
+        
+        _targetState = WristState.COLLECT;
     }
 
     private TalonFXConfiguration getConfigurator() {
         TalonFXConfiguration jointConfig = new TalonFXConfiguration();
         jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-        jointConfig.Slot0.withKP(WristConstants.kp).withKV(WristConstants.kv).withKG(ArmConstants.kg);
+        jointConfig.Slot0.withKP(WristConstants.kp).withKV(WristConstants.kv);
         jointConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
         CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
         currentConfigs.withStatorCurrentLimit(20);
         currentConfigs.withStatorCurrentLimitEnable(true);
         jointConfig.withCurrentLimits(currentConfigs);
+        SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
+        limitConfigs.withForwardSoftLimitThreshold(
+                WristState.TRAP.angleDeg + WristConstants.softLimitExtraAngle);
+        limitConfigs.withForwardSoftLimitEnable(true);
+        limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.angleDeg
+                        - WristConstants.softLimitExtraAngle);
+        limitConfigs.withReverseSoftLimitEnable(true);
+        jointConfig.withSoftwareLimitSwitch(limitConfigs);
         return jointConfig;
     }
 
@@ -93,18 +108,19 @@ public class Wrist extends SubsystemBase {
     }
 
     private void useState(TrapezoidProfile.State targetState) {
+        double gravityFeedforward = _feedforward.calculate(Math.toRadians(targetState.position + _currentArmState.armAngleDeg), Math.toRadians(targetState.velocity + _currentArmState.armAngleDeg));
         _wristMotor.setControl(new PositionVoltage(
-                targetState.position, targetState.velocity, false, 0, 0, false, true, true));
+                targetState.position, targetState.velocity, false, gravityFeedforward, 0, false, true, true));
         SmartDashboard.putNumber("target wrist position (deg)", targetState.position);
         SmartDashboard.putNumber("target wrist velocity (deg/sec)", targetState.velocity);
     }
 
     public Command getSetStateCommand(WristState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(WristConstants.profileConstrains);
-        Supplier<State> targetSupplier = () -> (new State(targetState.getAngleToGroundDeg(_currentArmState.armAngleDeg),
+        Supplier<State> targetSupplier = () -> (new State(targetState.angleDeg,
                 0));
         return (new InstantCommand(() -> {
-            _wristMotor.setPosition(targetState.getAngleToGroundDeg(_currentArmState.armAngleDeg));
+            _wristMotor.setPosition(targetState.angleDeg);
         }).alongWith(
             new InstantCommand(() -> {_targetState = targetState;})
         )).andThen(
@@ -117,16 +133,6 @@ public class Wrist extends SubsystemBase {
 
     public void setCurrentArmState(ArmState currentState) {
         this._currentArmState = currentState;
-        TalonFXConfiguration config = getConfigurator();
-        SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
-        limitConfigs.withForwardSoftLimitThreshold(
-                WristState.TRAP.getAngleToGroundDeg(_currentArmState.armAngleDeg) + WristConstants.softLimitExtraAngle);
-        limitConfigs.withForwardSoftLimitEnable(true);
-        limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.getAngleToGroundDeg(_currentArmState.armAngleDeg)
-                - WristConstants.softLimitExtraAngle);
-        limitConfigs.withReverseSoftLimitEnable(true);
-        config.withSoftwareLimitSwitch(limitConfigs);
-        _wristMotor.getConfigurator().apply(config);
     }
 
     private void updateSDB() {
@@ -141,9 +147,9 @@ public class Wrist extends SubsystemBase {
     public void periodic() {
         if (DriverStation.isDisabled()) {
             if (isFwdLimitSwitchClosed()) {
-                setSensorPosition((WristState.TRAP.getAngleToGroundDeg(_currentArmState.armAngleDeg)));
+                setSensorPosition((WristState.TRAP.angleDeg));
             } else if (isRevLimitSwitchClosed()) {
-                setSensorPosition(WristState.COLLECT.getAngleToGroundDeg(_currentArmState.armAngleDeg));
+                setSensorPosition(WristState.COLLECT.angleDeg);
             }
         }
         updateSDB();
