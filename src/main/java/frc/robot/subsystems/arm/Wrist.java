@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -56,6 +57,10 @@ public class Wrist extends SubsystemBase {
         jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
         jointConfig.Slot0.withKP(WristConstants.kp).withKV(WristConstants.kv).withKG(ArmConstants.kg);
         jointConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
+        CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
+        currentConfigs.withStatorCurrentLimit(20);
+        currentConfigs.withStatorCurrentLimitEnable(true);
+        jointConfig.withCurrentLimits(currentConfigs);
         return jointConfig;
     }
 

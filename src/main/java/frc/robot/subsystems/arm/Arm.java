@@ -49,6 +49,8 @@ public class Arm extends SubsystemBase {
         _follower.follow(_leader, true); // TODO: verify inversion before testing
         _leader.setSoftLimit(SoftLimitDirection.kForward, (float)ArmState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle); // TODO: check which side (fwd/rev) is soft and which is hard limit
         _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
+        _leader.setSmartCurrentLimit(20);
+        _follower.setSmartCurrentLimit(20);
         
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
         
