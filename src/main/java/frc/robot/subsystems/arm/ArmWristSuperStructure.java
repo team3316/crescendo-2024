@@ -14,7 +14,7 @@ public class ArmWristSuperStructure extends SubsystemBase {
 
     public ArmWristSuperStructure(Arm arm, Wrist wrist) {
         this.m_Arm = arm;
-        this.m_Wrist = m_Wrist;
+        this.m_Wrist = wrist;
     }
 
     private WristState convertArmToWristState(ArmState state) {
