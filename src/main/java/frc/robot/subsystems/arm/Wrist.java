@@ -52,7 +52,7 @@ public class Wrist extends SubsystemBase {
     }
 
     private TalonFXConfiguration getConfigurator() {
-TalonFXConfiguration jointConfig = new TalonFXConfiguration();
+        TalonFXConfiguration jointConfig = new TalonFXConfiguration();
         jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
         jointConfig.Slot0.withKP(WristConstants.kp).withKV(WristConstants.kv).withKG(ArmConstants.kg);
         jointConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
@@ -112,9 +112,11 @@ TalonFXConfiguration jointConfig = new TalonFXConfiguration();
         this._currentArmState = currentState;
         TalonFXConfiguration config = getConfigurator();
         SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
-        limitConfigs.withForwardSoftLimitThreshold(WristState.TRAP.getAngleToGroundDeg(_currentArmState.armAngleDeg) + WristConstants.softLimitExtraAngle);
+        limitConfigs.withForwardSoftLimitThreshold(
+                WristState.TRAP.getAngleToGroundDeg(_currentArmState.armAngleDeg) + WristConstants.softLimitExtraAngle);
         limitConfigs.withForwardSoftLimitEnable(true);
-        limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.getAngleToGroundDeg(_currentArmState.armAngleDeg) - WristConstants.softLimitExtraAngle);
+        limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.getAngleToGroundDeg(_currentArmState.armAngleDeg)
+                - WristConstants.softLimitExtraAngle);
         limitConfigs.withReverseSoftLimitEnable(true);
         config.withSoftwareLimitSwitch(limitConfigs);
         _wristMotor.getConfigurator().apply(config);
