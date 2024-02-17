@@ -14,6 +14,7 @@ import frc.robot.motors.PIDFGains;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 public class Climber extends SubsystemBase {
@@ -64,7 +65,7 @@ public class Climber extends SubsystemBase {
         return new RunCommand(this::climb, this);
     }
 
-    private void setPercentage(double left, double right) {
+    public void setPercentage(double left, double right) {
         _leftSpool.set(left);
         _rightSpool.set(right);
     }
@@ -80,6 +81,11 @@ public class Climber extends SubsystemBase {
     public void stop() {
         _leftSpool.set(0);
         _rightSpool.set(0);
+    }
+
+    public void brake(){
+        this._leftSpool.setIdleMode(IdleMode.kBrake);
+        this._rightSpool.setIdleMode(IdleMode.kBrake);
     }
 
     @Override

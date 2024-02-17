@@ -80,8 +80,10 @@ public class RobotContainer {
     m_buttonController.L1().onTrue(getCollectSequence());
     m_buttonController.R1().onTrue(getShootSequence());
     m_buttonController.cross().whileTrue(getAMPSequence());*/
-    _driverController.povUp().whileTrue(new StartEndCommand(() -> m_Climber.upClimbPercentage(), () -> m_Climber.stop(), m_Climber));
-    _driverController.povDown().whileTrue(new StartEndCommand(() -> m_Climber.downClimbPercentage(), () -> m_Climber.stop(), m_Climber));
+    m_Climber.setDefaultCommand(new RunCommand(()->m_Climber.setPercentage(_driverController.getLeftY()*0.2,_driverController.getRightY()*0.2), m_Climber));
+
+    
+    
 
     /* driver should press this before cross to save time, but cross still includes arm to amp in case of mistake */
     // m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
