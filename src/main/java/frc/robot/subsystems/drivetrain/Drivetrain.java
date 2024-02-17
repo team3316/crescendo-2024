@@ -2,7 +2,6 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
-import com.ctre.phoenix6.controls.VoltageOut;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,24 +11,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.UnitBuilder;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.LimelightConstants;
@@ -86,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
         thetaController.setSetpoint(DrivetrainConstants.installAngle.getDegrees());
 
         resetControllers();
-        calibrateSteering();
+calibrateSteering();
 
     }
 
@@ -100,13 +89,6 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
-         for (int i = 0; i < this._modules.length; i++) {
-            //][\SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
-           SmartDashboard.putNumber("input xspeed " + i, xSpeed);
-           SmartDashboard.putNumber("input yspeed " + i, ySpeed);
-           SmartDashboard.putNumber("input rotspeed " + i, rot);
-
-        }
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
@@ -122,12 +104,11 @@ public class Drivetrain extends SubsystemBase {
 
     public void setDesiredStates(SwerveModuleState[] moduleStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates,
-                DrivetrainConstants.SwerveModuleConstants.driveFreeSpeedMetersPerSecond);
+                DrivetrainConstants.SwerveModuleConstants.freeSpeedMetersPerSecond);
 
         for (int i = 0; i < this._modules.length; i++) {
             this._modules[i].setDesiredState(moduleStates[i]);
         }
-
     }
 
     public void periodic() {
@@ -156,14 +137,9 @@ public class Drivetrain extends SubsystemBase {
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
-           SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
-
         }
 
         SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
-        SmartDashboard.putNumber("Vx", SmartDashboard.getNumber("Vx", 0));
-        SmartDashboard.putNumber("Vy", SmartDashboard.getNumber("Vy", 0));
-        SmartDashboard.putNumber("Vrot", SmartDashboard.getNumber("Vrot", 0));
     }
 
     public Pose2d getPose() {
@@ -193,7 +169,7 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
-    private SwerveModulePosition[] getSwerveModulePositions() {
+    SwerveModulePosition[] getSwerveModulePositions() {
         SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[this._modules.length];
 
         for (int i = 0; i < swerveModulePositions.length; i++) {
@@ -252,6 +228,7 @@ public class Drivetrain extends SubsystemBase {
         if(hasTarget){
             t = angleController.calculate(angle);
         }
+        
 
         return angleController.atSetpoint() ? 0 : t;
 
@@ -269,27 +246,12 @@ public class Drivetrain extends SubsystemBase {
         this.drive(xSpeed, ySpeed, thetaController.calculate(this.getPose().getRotation().getRadians()), true);
     }
 
-    // TODO: check what are the real axises
     public double getPitch() {
         return _pigeon.getPitch();
-    }
-
-    public double getRoll() {
-        return _pigeon.getRoll();
-    }
-
-    public void oneModuleDrive(int i, double percent) {
-        _modules[i].DriveByPercent(percent);
     }
 
     public Command getRotateModulesCommand() {
         return new RunCommand(() -> drive(0, -0.1, 0, false)).withTimeout(0.2)
                 .finallyDo((interrupted) -> drive(0, 0, 0, false));
-    }
-
-    public void voltageDrive(Measure<Voltage> voltMeasure) {
-        for (SwerveModule module : _modules) {
-            module.driveByVoltage(voltMeasure.magnitude());
-        }
     }
 }
