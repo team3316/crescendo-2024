@@ -107,11 +107,8 @@ public class RobotContainer {
 
     private Command getCollectSequence() {
         Command sequence = Commands.sequence(
-                /*
-                 * m_Arm.getSetStateCommand(ArmState.COLLECT)
-                 * .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
-                 */
-                m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT),
+                m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT)
+                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                 m_Intake.setStateCommand(IntakeState.DISABLED)
@@ -122,7 +119,7 @@ public class RobotContainer {
     private Command getShootSequence() {
         Command sequence = new ConditionalCommand(
                 Commands.sequence(
-                        // m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to
+                        m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT), // in case of moving to
                         // amp and then regretting
                         m_Shooter.getSetStateCommand(ShooterState.ON),
                         new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
