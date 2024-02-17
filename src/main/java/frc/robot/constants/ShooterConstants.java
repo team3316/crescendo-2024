@@ -9,7 +9,7 @@ public class ShooterConstants {
 
 
     public static final double SparkFlexUnShootingVelocity = 0; // rpm
-    public static final double SparkFlexShootingVelocity = 1; // rpm
+    public static final double SparkFlexShootingVelocity = 7; // rpm
 
     private static final double wheelDiameter = 4 * 0.0254; // 4 inches in meters
     public static final double positionFactor = wheelDiameter; // meters / rotation
