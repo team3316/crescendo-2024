@@ -12,6 +12,7 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +30,9 @@ public class Arm extends SubsystemBase {
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
 
+    private DigitalInput _leftSwitch;
+    private DigitalInput _rightSwitch;
+
     private ArmFeedforward _armFeedforward;
 
     private ArmState _targetState;
@@ -37,6 +41,7 @@ public class Arm extends SubsystemBase {
         COLLECT(ArmConstants.collectAngle),
         AMP(ArmConstants.AMPAngle),
         UNDER_CHAIN(ArmConstants.underChainAngle),
+        ALIGN(ArmConstants.ALIGNAngle),
         TRAP(ArmConstants.TRAPAngle);
 
         public final double armAngleDeg;
@@ -57,12 +62,15 @@ public class Arm extends SubsystemBase {
         
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
         
+        _leftSwitch = new DigitalInput(ArmConstants.leftSwitchPort);
+        _rightSwitch = new DigitalInput(ArmConstants.rightSwitchPort);
+
         _targetState = getInitialState();
         _leader.setPosition(_targetState.armAngleDeg);
     }
 
     private ArmState getInitialState() {
-        if (isRevLimitSwitchClosed()) {
+        if (isLeftLimitSwitchClosed()) {
             return ArmState.COLLECT;
         }
         return ArmState.TRAP;
@@ -77,8 +85,12 @@ public class Arm extends SubsystemBase {
     }
 
     // TODO: check if switches are NC or NO
-    public boolean isRevLimitSwitchClosed() {
-        return _leader.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
+    public boolean isLeftLimitSwitchClosed() {
+        return _leftSwitch.get();
+    }
+
+    public boolean isRightLimitSwitchClosed() {
+        return _rightSwitch.get();
     }
 
     public double getPositionDeg() {
@@ -127,12 +139,13 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putString("target arm state", _targetState.toString());
         SmartDashboard.putNumber("current arm position (deg)", getPositionDeg());
         SmartDashboard.putNumber("current arm velocity (deg/s)", getVelocityDegPerSec());
-        SmartDashboard.putBoolean("arm rev limit", isRevLimitSwitchClosed());
+        SmartDashboard.putBoolean("arm left limit", isLeftLimitSwitchClosed());
+        SmartDashboard.putBoolean("arm right limit", isRightLimitSwitchClosed());
     }
 
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled() && isRevLimitSwitchClosed()) {
+        if (DriverStation.isDisabled() && (isLeftLimitSwitchClosed() || isRightLimitSwitchClosed())) {
             _leader.setPosition(ArmState.COLLECT.armAngleDeg);
         }
         updateSDB();

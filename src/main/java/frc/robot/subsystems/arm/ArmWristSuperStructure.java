@@ -21,6 +21,8 @@ public class ArmWristSuperStructure extends SubsystemBase {
 
     private WristState convertArmToWristState(ArmState state) {
         switch (state) {
+            case ALIGN:
+                return WristState.TRAP;
             case COLLECT:
                 return WristState.COLLECT;
             case AMP:
