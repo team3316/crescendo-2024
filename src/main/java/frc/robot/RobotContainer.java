@@ -96,10 +96,10 @@ public class RobotContainer {
         m_driverController.L1().onTrue(getCollectSequence());
         m_driverController.R1().onTrue(getShootSequence());
        // m_driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
-        m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.AMP));//amp
-        m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.COLLECT));//amp
-        m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.UNDER_CHAIN));//amp
-        m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.TRAP));//amp
+        m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.COLLECT));//amp
+        m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.COLLECT));//amp
+        m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.TRAP));//amp
+        m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.TRAP));//amp
 
         // m_buttonController.cross().whileTrue(getAMPSequence());
         // m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));

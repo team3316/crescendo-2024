@@ -13,14 +13,14 @@ public class WristConstants {
     private static final double gearRatio = 1.0 / 35.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
 
-    private static final double maxVelocity = 50; // deg/sec
-    private static final double maxAcceleration = 20; // deg/sec^2
+    private static final double maxVelocity = 200; // deg/sec
+    private static final double maxAcceleration = 200; // deg/sec^2
     public static final TrapezoidProfile.Constraints profileConstrains = new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration);
 
     public static final double kg = 0.15; // v
-    public static final double kv = 1 / (Math.toRadians(534.8 * positionFactor / 60)); // v/(rad/sec)
+    public static final double kv = 3 / (Math.PI * 275 / 180); // v/(rad/sec)
 
-    public static final double kp = 0; //v/deg
+    public static final double kp = 0.12; //v/deg
 
     public static final double softLimitExtraAngle = 10; // deg
 }
