@@ -7,8 +7,8 @@ public class WristConstants {
     
     public static final double collectAngle = -110.5; // deg
     public static final double AMPAngle = 0; // deg
-    public static final double TRAPAngle = -29.12; // deg
-    public static final double underChainAngle = 0; // deg
+    public static final double TRAPAngle = -32.68; // deg
+    public static final double underChainAngle = -110.5; // deg
 
     private static final double gearRatio = 1.0 / 35.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
