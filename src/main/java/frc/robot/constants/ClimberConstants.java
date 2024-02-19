@@ -10,8 +10,8 @@ public class ClimberConstants {
     public static final double differentialKp = 1.0; // motor percentage/meter
     public static final double differentialRatio = 0.5; // ratio between differential kp outputs
 
-    public static final double climbHeight = 0.22; // meters
-    public static final double climbTolerance = 0.1;
+    public static final double climbHeight = 0.45; // meters
+    public static final double climbTolerance = 0.01;
 
     private static final double spoolDiameter = 1 * 2.54 / 100; // meters
     private static final double gearRatio = 1.0 / 12.0;
