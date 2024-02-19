@@ -69,5 +69,6 @@ public class Intake extends SubsystemBase {
         // SmartDashboard.putNumber("intake percentage", SmartDashboard.getNumber("intake percentage", 0));
         // IntakeState.COLLECTING.percentage = SmartDashboard.getNumber("intake percentage", 0);
         SmartDashboard.putNumber("Intake velocity rpm", _intakeMotor.getVelocity());
+        SmartDashboard.putBoolean("intake switch", isNoteInIntake());
     }
 }
