@@ -178,7 +178,7 @@ public class RobotContainer {
         }
 
         private Command getClimbSequence() {
-                return m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand());
+                return m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand()).andThen(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
         }
 
         /**
