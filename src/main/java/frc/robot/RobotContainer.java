@@ -103,21 +103,29 @@ public class RobotContainer {
                 m_driverController.share().onTrue(
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
-                m_driverController.L1().onTrue(getCollectSequence());
-                m_driverController.R1().onTrue(getShootSequence());
+                m_operatorController.L1().onTrue(getCollectSequence());
+                m_operatorController.R1().onTrue(getShootSequence());
+                m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
+                m_operatorController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
+                m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED));
                 m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
                 m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
                 m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
-
-                m_operatorController.circle().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
+                m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));// amp
+                // m_operatorController.circle().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
+                // //
                 // m_driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
                 // m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
                 // m_operatorController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
-                // m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.COLLECT));// amp
-                // m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.COLLECT));// amp
-                // m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.TRAP));// amp
-                // m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.TRAP));// amp
-                m_operatorController.triangle().onTrue(getClimbSequence());
+                // m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.COLLECT));//
+                // amp
+                // m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.COLLECT));//
+                // amp
+                // m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.TRAP));//
+                // amp
+                // m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.TRAP));//
+                // amp
+                // m_operatorController.triangle().onTrue(getClimbSequence());
 
                 // m_buttonController.cross().whileTru
                 // e(getAMPSequence());
