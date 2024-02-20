@@ -85,12 +85,12 @@ public class RobotContainer {
 
         private void configureBindings() {
 
-                m_driverController.triangle().onTrue(new RunCommand(() -> m_Drivetrain.drive(
+                m_driverController.triangle().whileTrue(new RunCommand(() -> m_Drivetrain.drive(
                                 m_driverController.getLeftY() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond*SwerveModuleConstants.driveSpeedLimit,
                                 m_driverController.getLeftX() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond*SwerveModuleConstants.driveSpeedLimit,
-                                   m_Drivetrain.getRotByVision(Math.toRadians(m_limeLight.getXAngle()), m_limeLight.hasTarget()),
+                                   m_Drivetrain.getRotByVision(Math.toRadians(-m_limeLight.getXAngle()), m_limeLight.hasTarget()),
                                 _fieldRelative), m_Drivetrain));
 
                 m_driverController.options().onTrue(
