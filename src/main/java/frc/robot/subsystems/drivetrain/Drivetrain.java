@@ -74,7 +74,7 @@ public class Drivetrain extends SubsystemBase {
         vision_yController = new PIDController(LimelightConstants.yKp, 0, 0);
         thetaController = new PIDController(LimelightConstants.thetaKp, 0, 0);
 
-        angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
+        angleController = new PIDController(LimelightConstants.angleKp, LimelightConstants.angleKd, 0);
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
