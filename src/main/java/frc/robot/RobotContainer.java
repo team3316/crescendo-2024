@@ -8,6 +8,9 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Amps;
 
+import javax.sound.midi.Sequence;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -64,6 +67,7 @@ public class RobotContainer {
         private SwerveSysidCommands m_SysidCommands;
 
         public RobotContainer() {
+                CameraServer.startAutomaticCapture();
                 m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                                 m_driverController.getLeftY() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
