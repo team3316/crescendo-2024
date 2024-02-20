@@ -1,5 +1,4 @@
 
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -143,34 +142,30 @@ public class RobotContainer {
         }
 
         private Command getCollectSequence() {
+
                 Command sequence = Commands.sequence(
+                                m_Shooter.getSetStateCommand(ShooterState.OFF),
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-                                new WaitCommand(0.02),
+                                //new WaitCommand(0.02),
                                 m_Intake.setStateCommand(IntakeState.DISABLED)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
-                return sequence;
+                return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
         }
 
         private Command getShootSequence() {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
-                                                m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT), // in
-                                                                                                               // case
-                                                                                                               // of
-                                                                                                               // moving
-                                                                                                               // to
-                                                // amp and then regretting
                                                 m_Shooter.getSetStateCommand(ShooterState.ON),
                                                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
                                                 // new WaitCommand(0.2),
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
                                                 new WaitCommand(2),
-                                                m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
-                                                                .alongWith(m_Shooter
-                                                                                .getSetStateCommand(ShooterState.OFF))),
+                                                m_Shooter.getSetStateCommand(ShooterState.OFF)
+                                                                .andThen(m_Manipulator.getSetStateCommand(
+                                                                                ManipulatorState.OFF))),
                                 new InstantCommand(),
                                 () -> m_Manipulator.hasNoteSwitch());
                 return sequence;
@@ -190,7 +185,8 @@ public class RobotContainer {
         }
 
         private Command getClimbSequence() {
-                return m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand()).andThen(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
+                return m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP).andThen(m_Climber.getClimbCommand())
+                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
         }
 
         /**
