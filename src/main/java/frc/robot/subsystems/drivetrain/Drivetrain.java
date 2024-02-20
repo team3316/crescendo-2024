@@ -46,9 +46,7 @@ public class Drivetrain extends SubsystemBase {
     private SwerveDriveOdometry _odometry;
     private DoubleLogEntry m_logX, m_logY, m_logR;
 
-    private static PIDController vision_xController;
-    private static PIDController vision_yController;
-    private static PIDController thetaController;
+    private static PIDController angleController;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -68,17 +66,10 @@ public class Drivetrain extends SubsystemBase {
         m_logY = new DoubleLogEntry(log, "/drivetrain/position/y");
         m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
 
-        vision_xController = new PIDController(LimelightConstants.xKp, 0, 0);
-        vision_yController = new PIDController(LimelightConstants.yKp, 0, 0);
-        thetaController = new PIDController(LimelightConstants.thetaKp, 0, 0);
-        vision_xController.setTolerance(LimelightConstants.xTol);
-        vision_yController.setTolerance(LimelightConstants.yTol);
-        thetaController.setTolerance(LimelightConstants.thetaTol);
-        vision_xController.setSetpoint(0); // arbitrary. Overriedden when setting internal state.
-        vision_yController.setSetpoint(0);
-        thetaController.setSetpoint(DrivetrainConstants.installAngle.getDegrees());
+        angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
+        angleController.setTolerance(LimelightConstants.angleTol);
+        angleController.setSetpoint(0);
 
-        resetControllers();
         calibrateSteering();
 
     }
@@ -93,11 +84,11 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
-         for (int i = 0; i < this._modules.length; i++) {
-            //][\SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
-           SmartDashboard.putNumber("input xspeed " + i, xSpeed);
-           SmartDashboard.putNumber("input yspeed " + i, ySpeed);
-           SmartDashboard.putNumber("input rotspeed " + i, rot);
+        for (int i = 0; i < this._modules.length; i++) {
+            // ][\SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
+            SmartDashboard.putNumber("input xspeed " + i, xSpeed);
+            SmartDashboard.putNumber("input yspeed " + i, ySpeed);
+            SmartDashboard.putNumber("input rotspeed " + i, rot);
 
         }
 
@@ -150,7 +141,7 @@ public class Drivetrain extends SubsystemBase {
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
-           SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
+            SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
 
         }
 
@@ -216,40 +207,14 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-    public void resetControllers() {
-        vision_xController.reset();
-        vision_yController.reset();
-        thetaController.reset();
-    }
-
-    public void setXSetpoint(double xGoal) {
-        vision_xController.setSetpoint(xGoal);
-    }
-
-    public void driveByVisionControllers(double xDistance, double yDistance, boolean hasTarget) {
-        double x = 0;
-        double y = 0;
-        double t = thetaController.calculate(this.getPose().getRotation().getDegrees());
-
-        if (Math.abs(this.getPose().getRotation().getDegrees()
-                - DrivetrainConstants.installAngle.getDegrees()) < LimelightConstants.spinToleranceDegrees
-                && hasTarget) {
-            x = vision_xController.calculate(xDistance);
-            y = vision_yController.calculate(yDistance);
+    public double getRotByVision(double angle, boolean hasTarget) {
+        double t = 0;
+        if (hasTarget) {
+            t = angleController.calculate(angle);
         }
 
-        this.drive(vision_xController.atSetpoint() ? 0 : x, vision_yController.atSetpoint() ? 0 : y, t, true);
-    }
+        return angleController.atSetpoint() ? 0 : t;
 
-    public void setKeepHeading(Rotation2d rotation) {
-        thetaController.reset();
-        thetaController.setTolerance(LimelightConstants.thetaTol);
-        thetaController.setSetpoint(rotation.getRadians());
-    }
-
-    public void driveAndKeepHeading(double xSpeed, double ySpeed) {
-        // the setpoint is set with `this::setKeepHeading`
-        this.drive(xSpeed, ySpeed, thetaController.calculate(this.getPose().getRotation().getRadians()), true);
     }
 
     // TODO: check what are the real axises
