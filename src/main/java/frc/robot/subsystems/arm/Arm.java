@@ -118,7 +118,7 @@ public class Arm extends SubsystemBase {
         return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this)).alongWith(
             new InstantCommand(() -> {_targetState = targetState;})).andThen(
                 Commands.either(
-                    Commands.runOnce(() -> {_leader.set(-0.03);}, this),
+                    Commands.runOnce(() -> {_leader.set(-0.05);}, this),
                     Commands.none(),
                     () -> targetState == ArmState.COLLECT
                     ));
