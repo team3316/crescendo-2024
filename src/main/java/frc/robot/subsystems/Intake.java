@@ -1,16 +1,20 @@
 package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.ManipulatorConstants;
 import frc.robot.motors.DBugSparkMax;
 
 public class Intake extends SubsystemBase {
     
     private DBugSparkMax _intakeMotor;
+
+    private DigitalInput _hasNoteSwitch;
 
     private IntakeState _state;
 
@@ -27,10 +31,17 @@ public class Intake extends SubsystemBase {
     }
 
     public Intake(){
+                this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensor_port);
+
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
         _intakeMotor.setSmartCurrentLimit(15);
 
         this._state = IntakeState.DISABLED; 
+    }
+
+    public boolean isNoteInIntake(){
+        return !_hasNoteSwitch.get();
+
     }
 
     public IntakeState getState(){
@@ -58,5 +69,6 @@ public class Intake extends SubsystemBase {
         // SmartDashboard.putNumber("intake percentage", SmartDashboard.getNumber("intake percentage", 0));
         // IntakeState.COLLECTING.percentage = SmartDashboard.getNumber("intake percentage", 0);
         SmartDashboard.putNumber("Intake velocity rpm", _intakeMotor.getVelocity());
+        SmartDashboard.putBoolean("intake switch", isNoteInIntake());
     }
 }

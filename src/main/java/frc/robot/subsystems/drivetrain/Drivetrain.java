@@ -120,6 +120,7 @@ public class Drivetrain extends SubsystemBase {
 
         updateSDB();
         SmartDashboard.putNumber("pitch", this.getPitch());
+        SmartDashboard.putNumber("roll", getRoll());
         // printEverything();
     }
 
