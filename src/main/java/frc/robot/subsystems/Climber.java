@@ -2,11 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.motors.DBugSparkMax;
@@ -66,8 +63,7 @@ public class Climber extends SubsystemBase {
         this._rightSpool.setReference(ClimberConstants.climbHeight, ControlType.kPosition, 0,
                 weakenIfPositive(-balanceFeedforward), ArbFFUnits.kPercentOut);
 
-        // putting values into the Smart Dashboard
-        SmartDashboard.putNumber("Error Angle, degrees", gyroRotation2d.getDegrees());
+        
     }
 
     public void setPercentage(double left, double right) {
@@ -87,7 +83,6 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Left Spool Position, meters", getLeftPosition());
-        SmartDashboard.putNumber("Right Spool Position, meters", getRightPosition());
+        
     }
 }
