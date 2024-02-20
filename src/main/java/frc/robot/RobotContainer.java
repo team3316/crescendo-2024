@@ -105,13 +105,16 @@ public class RobotContainer {
 
                 m_operatorController.L1().onTrue(getCollectSequence());
                 m_operatorController.R1().onTrue(getShootSequence());
-                m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
+                // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
+                m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
                 m_operatorController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
                 m_operatorController.povRight()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
                 m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
                 m_operatorController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
+                // m_o[]\]ratorController.square().onTrue(getAMPSequence());
+                m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP));
 
                 m_driverController.touchpad()
                                 .onTrue(m_ArmWristSuperStructure.setEncodersToCollect().ignoringDisable(true));// calibrate
