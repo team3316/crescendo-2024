@@ -40,15 +40,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 import frc.robot.subsystems.vision.LimeLight;
 
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
+
 public class RobotContainer {
 
         private final Drivetrain m_Drivetrain = new Drivetrain();
@@ -58,7 +50,6 @@ public class RobotContainer {
         private final Intake m_Intake = new Intake();
         private final LimeLight m_limeLight = new LimeLight();
         private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
-
 
         private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
                         JoysticksConstants.operatorPort);
@@ -80,7 +71,7 @@ public class RobotContainer {
                                 _fieldRelative), m_Drivetrain));
 
                 m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
-                // Configure the trigger bindings
+       
                 configureBindings();
         }
 
@@ -94,22 +85,20 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
-
-
-                m_driverController.triangle().whileTrue(new RunCommand(() -> m_Drivetrain.drive(
+                m_driverController.cross().whileTrue(new RunCommand(() -> m_Drivetrain.drive(
                                 m_driverController.getLeftY() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond*SwerveModuleConstants.driveSpeedLimit,
+                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond
+                                                * SwerveModuleConstants.driveSpeedLimit,
                                 m_driverController.getLeftX() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond*SwerveModuleConstants.driveSpeedLimit,
-                                   m_Drivetrain.getRotByVision(Math.toRadians(-m_limeLight.getXAngle()), m_limeLight.hasTarget()),
-                                _fieldRelative), m_Drivetrain));
-                m_Climber.setDefaultCommand(
-                                new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
-                                                m_operatorController.getRightY() * 0.2), m_Climber));
+                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond
+                                                * SwerveModuleConstants.driveSpeedLimit,
+                                m_Drivetrain.getRotByVision(Math.toRadians(-m_limeLight.getXAngle()),
+                                                m_limeLight.hasTarget()),
+                                _fieldRelative), m_Drivetrain));// auto aim
 
                 m_driverController.options().onTrue(
-                                new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
-                // relative mode
+                                new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field relative
+                                                                                             // mode
 
                 m_driverController.share().onTrue(
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
@@ -118,50 +107,28 @@ public class RobotContainer {
                 m_operatorController.R1().onTrue(getShootSequence());
                 m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
                 m_operatorController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
-                m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED));
-                m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
-                m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
-                m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
-                m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));// amp
-                // m_operatorController.circle().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
-                // //
-                // m_driverController.povDown().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
-                // m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
-                // m_operatorController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
-                // m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.COLLECT));//
-                // amp
-                // m_driverController.povRight().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.COLLECT));//
-                // amp
-                // m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getWristStateCommand(WristState.TRAP));//
-                // amp
-                // m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getArmSetState(ArmState.TRAP));//
-                // amp
-                // m_operatorController.triangle().onTrue(getClimbSequence());
+                m_operatorController.povRight()
+                                .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
+                m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
+                m_operatorController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
+                m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
 
-                // m_buttonController.cross().whileTru
-                // e(getAMPSequence());
-                // m_buttonController.square().onTrue(m_Arm.getSetStateCommand(ArmState.UNDER_CHAIN));
-                // m_buttonController.triangle().onTrue(getClimbSequence());
-                /*
-                 * driver should press this before cross to save time, but cross still includes
-                 * arm to amp in case of mistake
-                 */
-                //// m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
-
-                m_driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
                 m_driverController.touchpad()
-                                .onTrue(m_ArmWristSuperStructure.setEncodersToCollect().ignoringDisable(true));
+                                .onTrue(m_ArmWristSuperStructure.setEncodersToCollect().ignoringDisable(true));// calibrate
+                                                                                                               // arm
+
+                m_Climber.setDefaultCommand(
+                                new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
+                                                m_operatorController.getRightY() * 0.2), m_Climber));// stupid climb
         }
 
         private Command getCollectSequence() {
-
                 Command sequence = Commands.sequence(
                                 m_Shooter.getSetStateCommand(ShooterState.OFF),
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-                                //new WaitCommand(0.02),
                                 m_Intake.setStateCommand(IntakeState.DISABLED)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
@@ -172,7 +139,6 @@ public class RobotContainer {
                                 Commands.sequence(
                                                 m_Shooter.getSetStateCommand(ShooterState.ON),
                                                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-                                                // new WaitCommand(0.2),
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
                                                 new WaitCommand(2),
                                                 m_Shooter.getSetStateCommand(ShooterState.OFF)
@@ -184,16 +150,13 @@ public class RobotContainer {
         }
 
         private Command getAMPSequence() {
-                Command start = m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP)
-                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
-                Command end = m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
-                                .andThen(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
-                return new StartEndCommand(() -> {
-                        start.schedule();
-                }, () -> {
-                        start.cancel();
-                        end.schedule();
-                });
+                Command sequence = new StartEndCommand(
+                                () -> m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP)
+                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP)),
+                                () -> m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
+                                                .andThen(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT)),
+                                m_Climber);
+                return sequence;
         }
 
         private Command getClimbSequence() {
