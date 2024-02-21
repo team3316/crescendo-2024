@@ -4,7 +4,7 @@
     - [x] Field Oriented Holonomic Movement **MVP**
     - [x] Robot Oriented Asymuthal Direction **MVP**
     - [ ] Field Oriented Asymuthal Direction **P1**
-  - [ ] Robot Homing **MVP**
+  - [ ] Robot Homing **MVP** @yoav
   - [ ] Collection
     - [x] Collect NOTE **MVP**
     - [ ] Collect Single NOTE **P2**
@@ -12,18 +12,21 @@
     - [ ] NOTE Jam Sequence **P1**
   - [ ] Shooting
     - [x] Spin Up and Trigger **MVP**
-    - [ ] Spin Up **P1**
-    - [ ] Trigger **P1**
+    - [ ] Spin Up **P1** @uri
+    - [ ] Trigger **P1** @uri
     - [x] Automatic Alignment to Speaker **P1**
   - [ ] Amp
-    - [ ] Score Amp Sequence **MVP**
+    - [ ] Score Amp Sequence **MVP** @yoav
     - [ ] Automatic Alignment to Amp **P2**
-  - [ ] Climb & Trap Sequence **MVP**
+  - [ ] Climb & Trap Sequence **MVP** @itamar
 - [ ] Autonomous
-  - [ ] Leave **MVP**
+  - [ ] Leave **MVP** @itamar
+    - [ ] Robot Characterization
+    - [ ] Straight Line Auto
   - [ ] Shoot & Leave
     - [ ] Primary Position **P1**
     - [ ] Secondary Position **P2**
+      - [ ] S-Curve Auto
   - [ ] Shoot & Leave & Collect & Shoot
     - [ ] Primary Position **P2**
     - [ ] Secondary Position **P3**
