@@ -21,7 +21,8 @@ public class Manipulator extends SubsystemBase {
         COLLECT(ManipulatorConstants.collectingPercentage),
         AMP(ManipulatorConstants.AMPPercentage),
         TRAP(ManipulatorConstants.TRAPPercentage),
-        TO_SHOOTER(ManipulatorConstants.toShooterPercentage);
+        PRE_TRAP(ManipulatorConstants.PreTrapPercentage),
+       TO_SHOOTER(ManipulatorConstants.toShooterPercentage);
 
         public double percentage;
         private ManipulatorState(double percentage) {

@@ -11,5 +11,6 @@ public class ManipulatorConstants {
     public static final double TRAPPercentage = 0.5;
     public static final double toShooterPercentage = 0.35;
     public static final double collectingPercentage = 0.6;
+    public static final double PreTrapPercentage = -0.2;
     
 }
