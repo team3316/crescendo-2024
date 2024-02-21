@@ -15,7 +15,6 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
@@ -25,6 +24,9 @@ import frc.robot.constants.LimelightConstants;
  * Drivetrain
  */
 public class Drivetrain extends SubsystemBase {
+
+    private static final boolean UPDATE_TELEMETRY = false;
+    private static final boolean UPDATE_DASHBOARD = false;
 
     private SwerveModule[] _modules;
 
@@ -105,6 +107,12 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), getSwerveModulePositions());
+
+        // TODO: Move to seperate loop to not hold up main loop
+        if (UPDATE_TELEMETRY)
+            updateTelemetry();
+        if (UPDATE_DASHBOARD)
+            updateSDB();
     }
 
     public void disabledInit() {
@@ -120,14 +128,6 @@ public class Drivetrain extends SubsystemBase {
     private void calibrateSteering() {
         for (SwerveModule swerveModule : _modules) {
             swerveModule.calibrateSteering();
-        }
-    }
-
-    @SuppressWarnings({ "unused" })
-    private void setModulesAngle(double angle) {
-        SwerveModuleState state = new SwerveModuleState(0, Rotation2d.fromDegrees(angle));
-        for (int i = 0; i < _modules.length; i++) {
-            _modules[i].setAngle(state);
         }
     }
 
@@ -150,11 +150,6 @@ public class Drivetrain extends SubsystemBase {
         return swerveModulePositions;
     }
 
-    @SuppressWarnings({ "unused" })
-    private void oneModuleDrive(int i, double percent) {
-        _modules[i].DriveByPercent(percent);
-    }
-
     /***************************
      * Telemetry and Dashboard *
      ***************************/
@@ -166,7 +161,6 @@ public class Drivetrain extends SubsystemBase {
         m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
     }
 
-    @SuppressWarnings({ "unused" })
     private void updateTelemetry() {
         Pose2d pose = _odometry.getPoseMeters();
         m_logX.append(pose.getX());
@@ -174,36 +168,13 @@ public class Drivetrain extends SubsystemBase {
         m_logR.append(pose.getRotation().getDegrees());
     }
 
-    @SuppressWarnings({ "unused" })
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
             SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
-
         }
 
         SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
-        SmartDashboard.putNumber("Vx", SmartDashboard.getNumber("Vx", 0));
-        SmartDashboard.putNumber("Vy", SmartDashboard.getNumber("Vy", 0));
-        SmartDashboard.putNumber("Vrot", SmartDashboard.getNumber("Vrot", 0));
-    }
-
-    @SuppressWarnings({ "unused" })
-    private void printEverything() {
-        String printString = new String();
-        printString += Timer.getFPGATimestamp() + ",";
-        ChassisSpeeds speeds = DrivetrainConstants.kinematics.toChassisSpeeds(_modules[0].getState(),
-                _modules[1].getState(),
-                _modules[2].getState(), _modules[3].getState());
-        printString += speeds.vxMetersPerSecond + "," + speeds.vyMetersPerSecond + ",";
-        for (int i = 0; i < this._modules.length; i++) {
-            printString += ",speed," + _modules[i].getState().speedMetersPerSecond;
-            printString += ",angle," + _modules[i].getState().angle.getDegrees();
-            printString += ",desSpeed," + _modules[i].getTargetState().speedMetersPerSecond;
-            printString += ",desAngle," + _modules[i].getTargetState().angle.getDegrees();
-        }
-
-        System.out.println(printString);
     }
 
     /******************************
@@ -216,10 +187,6 @@ public class Drivetrain extends SubsystemBase {
 
     private Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
-    }
-
-    public double getPitch() {
-        return _pigeon.getPitch();
     }
 
     public double getRoll() {
