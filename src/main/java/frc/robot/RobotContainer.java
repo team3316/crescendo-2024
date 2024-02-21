@@ -40,7 +40,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 import frc.robot.subsystems.vision.LimeLight;
 
-
 public class RobotContainer {
 
         private final Drivetrain m_Drivetrain = new Drivetrain();
@@ -71,7 +70,7 @@ public class RobotContainer {
                                 _fieldRelative), m_Drivetrain));
 
                 m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
-       
+
                 configureBindings();
         }
 
@@ -132,8 +131,10 @@ public class RobotContainer {
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-                                m_Intake.setStateCommand(IntakeState.DISABLED)
-                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                                m_Intake.setStateCommand(IntakeState.EJECT)
+                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
+                                new WaitCommand(2),
+                                m_Intake.setStateCommand(IntakeState.DISABLED));
                 return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
         }
 
@@ -146,7 +147,10 @@ public class RobotContainer {
                                                 new WaitCommand(2),
                                                 m_Shooter.getSetStateCommand(ShooterState.OFF)
                                                                 .andThen(m_Manipulator.getSetStateCommand(
-                                                                                ManipulatorState.OFF))),
+                                                                                ManipulatorState.OFF)))
+                                                .alongWith(
+                                                                new WaitCommand(2),
+                                                                m_Intake.setStateCommand(IntakeState.DISABLED)),
                                 new InstantCommand(),
                                 () -> m_Manipulator.hasNoteSwitch());
                 return sequence;
