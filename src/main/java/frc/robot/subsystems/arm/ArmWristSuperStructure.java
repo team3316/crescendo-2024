@@ -4,73 +4,61 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.arm.Arm.ArmState;
-import frc.robot.subsystems.arm.Wrist.WristState;
+import frc.robot.constants.ArmConstants;
+import frc.robot.constants.WristConstants;
 
 public class ArmWristSuperStructure extends SubsystemBase {
 
-    private Arm m_Arm;
-    private Wrist m_Wrist;
+    private final Arm m_Arm;
+    private final Wrist m_Wrist;
 
     public ArmWristSuperStructure() {
         this.m_Arm = new Arm();
         this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
     }
 
-    private WristState convertArmToWristState(ArmState state) {
-        switch (state) {
-            case ALIGN:
-                return WristState.TRAP;
-            case COLLECT:
-                return WristState.COLLECT;
-            case AMP:
-                return WristState.AMP;
-            case TRAP:
-                return WristState.TRAP;
-            case UNDER_CHAIN:
-                return WristState.UNDER_CHAIN;
-            default:
-                return WristState.COLLECT;
+    public static enum ArmWristState {
+        COLLECT(ArmConstants.collectAngle, WristConstants.collectAngle),
+        AMP(ArmConstants.AMPAngle, WristConstants.AMPAngle),
+        UNDER_CHAIN(ArmConstants.underChainAngle, WristConstants.underChainAngle),
+        ALIGN(ArmConstants.ALIGNAngle, WristConstants.TRAPAngle),
+        TRAP(ArmConstants.TRAPAngle, WristConstants.TRAPAngle);
+
+        public final double armAngleDeg;
+        public final double wristAngleDeg;
+
+        private ArmWristState(double armAngleDeg, double wristAngleDeg) {
+            this.armAngleDeg = armAngleDeg;
+            this.wristAngleDeg = wristAngleDeg;
         }
     }
 
-    public Command getSetStateCommand(ArmState targetState) {
+    public Command getSetStateCommand(ArmWristState targetState) {
         return Commands.sequence(
-            m_Wrist.getSetStateCommand(WristState.COLLECT),
-            m_Arm.getSetStateCommand(targetState),
-            m_Wrist.getSetStateCommand(convertArmToWristState(targetState))
-        );
+                m_Wrist.getSetStateCommand(ArmWristState.COLLECT),
+                m_Arm.getSetStateCommand(targetState),
+                m_Wrist.getSetStateCommand(targetState));
     }
 
-    public Command setEncodersToCollect() {
-        return new InstantCommand(() -> m_Arm.setSensorPosition(ArmState.COLLECT.armAngleDeg)).alongWith(
-            new InstantCommand(() -> m_Wrist.setSensorPosition(WristState.COLLECT.angleDeg))).alongWith(
-                new PrintCommand("called")
-            );
+    private void setEncodersToCollect() {
+        m_Arm.setSensorPosition(ArmWristState.COLLECT.armAngleDeg);
+        m_Wrist.setSensorPosition(ArmWristState.COLLECT.wristAngleDeg);
     }
 
-    public Command getArmSetState(ArmState targetState){
-       return  m_Arm.getSetStateCommand(targetState);
+    public Command getSetEncodersToCollectCommand() {
+        return new InstantCommand(() -> setEncodersToCollect());
     }
 
-    public Command getWristStateCommand(WristState targState){
-        return m_Wrist.getSetStateCommand(targState);
-    }
     public void stop() {
         m_Arm.stop();
         m_Wrist.stop();
     }
 
-    public ArmState getArmState() {
-        return m_Arm.getTargetState();
-    }
-
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled() && (m_Arm.isLeftLimitSwitchClosed() || m_Arm.isRightLimitSwitchClosed())) {
-            m_Wrist.setSensorPosition(WristState.COLLECT.angleDeg);
+        if (DriverStation.isDisabled() && (m_Arm.anyLimitSwitchClosed())) {
+            setEncodersToCollect();
         }
     }
 }

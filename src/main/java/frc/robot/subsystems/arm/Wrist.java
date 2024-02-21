@@ -22,33 +22,18 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.WristConstants;
+import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 
 public class Wrist extends SubsystemBase {
 
+    private static final boolean UPDATE_DASHBOARD = false;
+
     private TalonFX _wristMotor;
 
-    private WristState _targetState;
     private Supplier<Double> _armAngleDeg;
     private final PositionVoltage request;
 
     private ArmFeedforward _feedforward;
-
-    public static enum WristState {
-        COLLECT(WristConstants.collectAngle),
-        AMP(WristConstants.AMPAngle),
-        TRAP(WristConstants.TRAPAngle),
-        UNDER_CHAIN(WristConstants.underChainAngle);
-
-        public final double angleDeg;
-
-        private WristState(double angleDeg) {
-            this.angleDeg = angleDeg;
-        }
-
-        public double getAngleToGroundDeg(double armAngleDeg) {
-            return this.angleDeg + armAngleDeg;
-        }
-    }
 
     public Wrist(Supplier<Double> armAngleDeg) {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
@@ -58,7 +43,6 @@ public class Wrist extends SubsystemBase {
         _feedforward = new ArmFeedforward(0, WristConstants.kg, WristConstants.kv);
         _armAngleDeg = armAngleDeg;
 
-        _targetState = WristState.COLLECT;
         request = new PositionVoltage(0);
     }
 
@@ -73,28 +57,24 @@ public class Wrist extends SubsystemBase {
         wristConfig.withCurrentLimits(currentConfigs);
         SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
         limitConfigs.withForwardSoftLimitThreshold(
-                WristState.TRAP.angleDeg + WristConstants.softLimitExtraAngle);
+                ArmWristState.TRAP.wristAngleDeg + WristConstants.softLimitExtraAngle);
         limitConfigs.withForwardSoftLimitEnable(true);
-        limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.angleDeg
+        limitConfigs.withReverseSoftLimitThreshold(ArmWristState.COLLECT.wristAngleDeg
                 - WristConstants.softLimitExtraAngle);
         limitConfigs.withReverseSoftLimitEnable(true);
         wristConfig.withSoftwareLimitSwitch(limitConfigs);
         return wristConfig;
     }
 
-    public WristState getWristState() {
-        return _targetState;
-    }
-
-    public double getPositionDeg() {
+    private double getPositionDeg() {
         return _wristMotor.getPosition().getValueAsDouble();
     }
 
-    public double getAbsolutePositionDeg() {
+    private double getAbsolutePositionDeg() {
         return getPositionDeg() + _armAngleDeg.get();
     }
 
-    public double getVelocityDegPerSec() {
+    private double getVelocityDegPerSec() {
         return _wristMotor.getVelocity().getValueAsDouble();
     }
 
@@ -109,19 +89,19 @@ public class Wrist extends SubsystemBase {
     private void useState(TrapezoidProfile.State targetState) {
         double feedforward = _feedforward.calculate(Math.toRadians(targetState.position + _armAngleDeg.get()),
                 Math.toRadians(targetState.velocity));
-        _wristMotor.setControl(request.withPosition(targetState.position).withVelocity(targetState.velocity).withFeedForward(feedforward)
-                .withEnableFOC(false).withLimitForwardMotion(false).withLimitReverseMotion(false));
+
+        _wristMotor.setControl(request.withPosition(targetState.position)
+                .withVelocity(targetState.velocity)
+                .withFeedForward(feedforward));
+
         SmartDashboard.putNumber("target wrist position (deg)", targetState.position);
         SmartDashboard.putNumber("target wrist velocity (deg/sec)", targetState.velocity);
     }
 
-    private Command generateSetStateCommand(WristState targetState) {
+    private Command generateSetStateCommand(ArmWristState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(WristConstants.profileConstrains,
-                new State(targetState.angleDeg, 0), getTrapezoidState());
-        return new InstantCommand(() -> {
-            _targetState = targetState;
-        }).andThen(
-                new InstantCommand(this::stop))
+                new State(targetState.armAngleDeg, 0), getTrapezoidState());
+        return new InstantCommand(this::stop)
                 .andThen(
                         new TrapezoidProfileCommand(profile, this::useState, this))
                 .andThen(
@@ -130,10 +110,10 @@ public class Wrist extends SubsystemBase {
                                     _wristMotor.set(-0.03);
                                 }, this),
                                 Commands.none(),
-                                () -> targetState == WristState.COLLECT));
+                                () -> targetState == ArmWristState.COLLECT));
     }
 
-    public Command getSetStateCommand(WristState targetState) {
+    public Command getSetStateCommand(ArmWristState targetState) {
         Set<Subsystem> requirements = new HashSet<>();
         requirements.add(this);
         return Commands.defer(() -> generateSetStateCommand(targetState), requirements);
@@ -144,26 +124,17 @@ public class Wrist extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("abs pos", this.getPositionDeg() + _armAngleDeg.get());
-
         SmartDashboard.putNumber("current wrist position", getPositionDeg());
         SmartDashboard.putNumber("current wrist velocity", getVelocityDegPerSec());
-        SmartDashboard.putString("target wrist state", _targetState.toString());
         SmartDashboard.putNumber("wrist absolute position", getAbsolutePositionDeg());
         SmartDashboard.putNumber("wrist applied voltage", _wristMotor.getMotorVoltage().getValueAsDouble());
     }
 
     @Override
     public void periodic() {
-        
-        // if (DriverStation.isEnabled()) {
-        // _wristMotor.setVoltage(SmartDashboard.getNumber("wrist kg", 0) *
-        // Math.cos(Math.toRadians(getAbsolutePositionDeg())) + SmartDashboard.getNumber("voltage to apply", 0));
-        // }
-         
-        SmartDashboard.putNumber("wrist kg", SmartDashboard.getNumber("wrist kg", 0));
-        SmartDashboard.putNumber("voltage to apply", SmartDashboard.getNumber("voltage to apply", 0));
-        updateSDB();
+        if (UPDATE_DASHBOARD) {
+            updateSDB();
+        }
     }
 
 }

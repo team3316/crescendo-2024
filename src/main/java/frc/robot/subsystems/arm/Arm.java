@@ -11,7 +11,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,8 +21,11 @@ import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
+import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 
 public class Arm extends SubsystemBase {
+
+    private static final boolean UPDATE_DASHBOARD = false;
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
@@ -33,49 +35,29 @@ public class Arm extends SubsystemBase {
 
     private ArmFeedforward _armFeedforward;
 
-    private ArmState _targetState;
-
-    public static enum ArmState {
-        COLLECT(ArmConstants.collectAngle),
-        AMP(ArmConstants.AMPAngle),
-        UNDER_CHAIN(ArmConstants.underChainAngle),
-        ALIGN(ArmConstants.ALIGNAngle),
-        TRAP(ArmConstants.TRAPAngle);
-
-        public final double armAngleDeg;
-
-        private ArmState(double angleDeg) {
-            this.armAngleDeg = angleDeg;
-        }
-    }
-
     public Arm() {
-        _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp), 
-        ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
-        _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp), 
-        ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
-        _follower.follow(_leader, true); // TODO: verify inversion before testing
-        _leader.setSoftLimit(SoftLimitDirection.kForward, (float)ArmState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle); // TODO: check which side (fwd/rev) is soft and which is hard limit
+        _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
+                ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
+        _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp),
+                ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
+        _follower.follow(_leader, true);
+        _leader.setSoftLimit(SoftLimitDirection.kForward,
+                (float) ArmWristState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle);
         _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
-        
+
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
-        
+
         _leftSwitch = new DigitalInput(ArmConstants.leftSwitchPort);
         _rightSwitch = new DigitalInput(ArmConstants.rightSwitchPort);
 
-        _targetState = getInitialState();
-        _leader.setPosition(_targetState.armAngleDeg);
+        _leader.setPosition(getInitialState().armAngleDeg);
     }
 
-    private ArmState getInitialState() {
-        if (isLeftLimitSwitchClosed()) {
-            return ArmState.COLLECT;
+    private ArmWristState getInitialState() {
+        if (anyLimitSwitchClosed()) {
+            return ArmWristState.COLLECT;
         }
-        return ArmState.TRAP;
-    }
-
-    public ArmState getTargetState() {
-        return _targetState;
+        return ArmWristState.TRAP;
     }
 
     public void setSensorPosition(double position) {
@@ -83,19 +65,15 @@ public class Arm extends SubsystemBase {
     }
 
     // TODO: check if switches are NC or NO
-    public boolean isLeftLimitSwitchClosed() {
-        return _leftSwitch.get();
-    }
-
-    public boolean isRightLimitSwitchClosed() {
-        return _rightSwitch.get();
+    public boolean anyLimitSwitchClosed() {
+        return _leftSwitch.get() || _rightSwitch.get();
     }
 
     public double getPositionDeg() {
         return _leader.getPosition();
     }
 
-    public double getVelocityDegPerSec() {
+    private double getVelocityDegPerSec() {
         return _leader.getVelocity();
     }
 
@@ -104,26 +82,28 @@ public class Arm extends SubsystemBase {
     }
 
     private void useState(TrapezoidProfile.State targetState) {
-        double feedforward = _armFeedforward.calculate(Math.toRadians(targetState.position), Math.toRadians(targetState.velocity));
+        double feedforward = _armFeedforward.calculate(Math.toRadians(targetState.position),
+                Math.toRadians(targetState.velocity));
         _leader.setReference(targetState.position, ControlType.kPosition, 0, feedforward, ArbFFUnits.kVoltage);
         SmartDashboard.putNumber("target arm position (deg)", targetState.position);
         SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
     }
 
-    private Command generateSetStateCommand(ArmState targetState) {
-        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains, new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
-        
-        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this)).alongWith(
-            new InstantCommand(() -> {_targetState = targetState;})).andThen(
-                Commands.either(
-                    Commands.runOnce(() -> {_leader.set(-0.05);}, this),
-                    Commands.none(),
-                    () -> targetState == ArmState.COLLECT
-                    ));
-        // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
+    private Command generateSetStateCommand(ArmWristState targetState) {
+        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains,
+                new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
+
+        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this))
+                .andThen(
+                        Commands.either(
+                                Commands.runOnce(() -> {
+                                    _leader.set(-0.05);
+                                }, this),
+                                Commands.none(),
+                                () -> targetState == ArmWristState.COLLECT));
     }
 
-    public Command getSetStateCommand(ArmState targetState) {
+    public Command getSetStateCommand(ArmWristState targetState) {
         Set<Subsystem> requirements = new HashSet<>();
         requirements.add(this);
         return Commands.defer(() -> generateSetStateCommand(targetState), requirements);
@@ -134,27 +114,15 @@ public class Arm extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putString("target arm state", _targetState.toString());
         SmartDashboard.putNumber("current arm position (deg)", getPositionDeg());
         SmartDashboard.putNumber("current arm velocity (deg/s)", getVelocityDegPerSec());
-        SmartDashboard.putBoolean("arm left limit", isLeftLimitSwitchClosed());
-        SmartDashboard.putBoolean("arm right limit", isRightLimitSwitchClosed());
+        SmartDashboard.putBoolean("arm limit", anyLimitSwitchClosed());
     }
 
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled() && (isLeftLimitSwitchClosed() || isRightLimitSwitchClosed())) {
-            _leader.setPosition(ArmState.COLLECT.armAngleDeg);
+        if (UPDATE_DASHBOARD) {
+            updateSDB();
         }
-        updateSDB();
-        // if (DriverStation.isEnabled()) {
-        //     _leader.setVoltage(SmartDashboard.getNumber("kg voltage", 0) * Math.cos(Math.toRadians(getPositionDeg())) + SmartDashboard.getNumber("kv voltage", 0));
-        // }
-        // if (DriverStation.isEnabled()) {
-        //     _leader.setVoltage(SmartDashboard.getNumber("arm voltage", 0));
-        // }
-        SmartDashboard.putNumber("kg voltage", SmartDashboard.getNumber("kg voltage", 0));
-        SmartDashboard.putNumber("ks voltage", SmartDashboard.getNumber("ks voltage", 0));
-        SmartDashboard.putNumber("kv voltage", SmartDashboard.getNumber("kv voltage", 0));
     }
 }
