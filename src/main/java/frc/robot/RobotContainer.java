@@ -5,10 +5,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Amps;
-
-import javax.sound.midi.Sequence;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -31,11 +26,8 @@ import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorState;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmWristSuperStructure;
-import frc.robot.subsystems.arm.Wrist;
 import frc.robot.subsystems.arm.Arm.ArmState;
-import frc.robot.subsystems.arm.Wrist.WristState;
+import frc.robot.subsystems.arm.ArmWristSuperStructure;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 import frc.robot.subsystems.vision.LimeLight;
@@ -110,12 +102,12 @@ public class RobotContainer {
                 m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
                 m_driverController.povRight()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
-                m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
-                m_driverController.povLeft()
-                        .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP)
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
-                        .andThen(new WaitCommand(2.2))
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
+                m_operatorController.povLeft()
+                                .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP)
+                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
+                                                .andThen(new WaitCommand(2))
+                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
                 // m_operatorController.square().onTrue(getAMPSequence());
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP)

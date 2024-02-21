@@ -2,11 +2,9 @@ package frc.robot.subsystems.arm;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
-import com.revrobotics.SparkLimitSwitch.Type;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
