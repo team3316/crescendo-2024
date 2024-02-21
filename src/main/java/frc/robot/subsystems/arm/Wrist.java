@@ -68,14 +68,14 @@ public class Wrist extends SubsystemBase {
     }
 
     private TalonFXConfiguration getConfigurator() {
-        TalonFXConfiguration jointConfig = new TalonFXConfiguration();
-        jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-        jointConfig.Slot0.withKP(WristConstants.kp);
-        jointConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
+        TalonFXConfiguration wristConfig = new TalonFXConfiguration();
+        wristConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+        wristConfig.Slot0.withKP(WristConstants.kp);
+        wristConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
         CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
         currentConfigs.withStatorCurrentLimit(20);
         currentConfigs.withStatorCurrentLimitEnable(true);
-        jointConfig.withCurrentLimits(currentConfigs);
+        wristConfig.withCurrentLimits(currentConfigs);
         SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
         limitConfigs.withForwardSoftLimitThreshold(
                 WristState.TRAP.angleDeg + WristConstants.softLimitExtraAngle);
@@ -83,8 +83,8 @@ public class Wrist extends SubsystemBase {
         limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.angleDeg
                 - WristConstants.softLimitExtraAngle);
         limitConfigs.withReverseSoftLimitEnable(true);
-        jointConfig.withSoftwareLimitSwitch(limitConfigs);
-        return jointConfig;
+        wristConfig.withSoftwareLimitSwitch(limitConfigs);
+        return wristConfig;
     }
 
     public WristState getWristState() {
