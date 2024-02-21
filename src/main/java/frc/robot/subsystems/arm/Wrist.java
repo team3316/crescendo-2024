@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.ArmConstants;
@@ -87,6 +88,10 @@ public class Wrist extends SubsystemBase {
         return jointConfig;
     }
 
+    public Command calibrateAngle() {
+        return new StartEndCommand(() -> _wristMotor.set(-0.1), this::stop, this);
+    }
+
     public WristState getWristState() {
         return _targetState;
     }
@@ -105,14 +110,6 @@ public class Wrist extends SubsystemBase {
 
     private State getTrapezoidState() {
         return new State(getPositionDeg(), getVelocityDegPerSec());
-    }
-
-    public boolean isFwdLimitSwitchClosed() {
-        return _wristMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
-    }
-
-    public boolean isRevLimitSwitchClosed() {
-        return _wristMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
     }
 
     public void setSensorPosition(double angleDeg) {
@@ -159,8 +156,6 @@ public class Wrist extends SubsystemBase {
     private void updateSDB() {
         SmartDashboard.putNumber("abs pos", this.getPositionDeg() + _armAngleDeg.get());
 
-        SmartDashboard.putBoolean("wrist fwd limit", isFwdLimitSwitchClosed());
-        SmartDashboard.putBoolean("wrist rev limit", isRevLimitSwitchClosed());
         SmartDashboard.putNumber("current wrist position", getPositionDeg());
         SmartDashboard.putNumber("current wrist velocity", getVelocityDegPerSec());
         SmartDashboard.putString("target wrist state", _targetState.toString());
@@ -170,13 +165,6 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled()) {
-            if (isFwdLimitSwitchClosed()) {
-                setSensorPosition((WristState.TRAP.angleDeg));
-            } else if (isRevLimitSwitchClosed()) {
-                setSensorPosition(WristState.COLLECT.angleDeg);
-            }
-        }
         
         // if (DriverStation.isEnabled()) {
         // _wristMotor.setVoltage(SmartDashboard.getNumber("wrist kg", 0) *

@@ -17,10 +17,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
@@ -37,6 +39,8 @@ public class Arm extends SubsystemBase {
 
     private ArmState _targetState;
 
+    private boolean _calibratedAngle = false;
+
     public static enum ArmState {
         COLLECT(ArmConstants.collectAngle),
         AMP(ArmConstants.AMPAngle),
@@ -52,28 +56,37 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp), 
-        ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
-        _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp), 
-        ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
+        _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
+                ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
+        _follower = DBugSparkMax.create(ArmConstants.followerCANID, new PIDFGains(ArmConstants.kp),
+                ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
         _follower.follow(_leader, true); // TODO: verify inversion before testing
-        _leader.setSoftLimit(SoftLimitDirection.kForward, (float)ArmState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle); // TODO: check which side (fwd/rev) is soft and which is hard limit
+        _leader.setSoftLimit(SoftLimitDirection.kForward,
+                (float) ArmState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle); // TODO: check which side
+                                                                                       // (fwd/rev) is soft and which is
+                                                                                       // hard limit
         _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
-        
+
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
-        
+
         _leftSwitch = new DigitalInput(ArmConstants.leftSwitchPort);
         _rightSwitch = new DigitalInput(ArmConstants.rightSwitchPort);
 
-        _targetState = getInitialState();
-        _leader.setPosition(_targetState.armAngleDeg);
+        _targetState = ArmState.COLLECT;
+        if (isLeftLimitSwitchClosed() || isRightLimitSwitchClosed()) {
+            _leader.setPosition(_targetState.armAngleDeg);
+            this._calibratedAngle = true;
+        }
+
     }
 
-    private ArmState getInitialState() {
-        if (isLeftLimitSwitchClosed()) {
-            return ArmState.COLLECT;
-        }
-        return ArmState.TRAP;
+    public Command calibrateAngle() {
+        return new ConditionalCommand(new InstantCommand(),
+                Commands.sequence(new InstantCommand(() -> _leader.set(-0.1), this),
+                        new WaitUntilCommand(() -> isLeftLimitSwitchClosed() || isRightLimitSwitchClosed()),
+                        new InstantCommand(this::stop, this),
+                        new InstantCommand(() -> _calibratedAngle = true)),
+                () -> _calibratedAngle);
     }
 
     public ArmState getTargetState() {
@@ -106,23 +119,31 @@ public class Arm extends SubsystemBase {
     }
 
     private void useState(TrapezoidProfile.State targetState) {
-        double feedforward = _armFeedforward.calculate(Math.toRadians(targetState.position), Math.toRadians(targetState.velocity));
+        double feedforward = _armFeedforward.calculate(Math.toRadians(targetState.position),
+                Math.toRadians(targetState.velocity));
         _leader.setReference(targetState.position, ControlType.kPosition, 0, feedforward, ArbFFUnits.kVoltage);
         SmartDashboard.putNumber("target arm position (deg)", targetState.position);
         SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
     }
 
     private Command generateSetStateCommand(ArmState targetState) {
-        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains, new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
-        
-        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this)).alongWith(
-            new InstantCommand(() -> {_targetState = targetState;})).andThen(
-                Commands.either(
-                    Commands.runOnce(() -> {_leader.set(-0.05);}, this),
-                    Commands.none(),
-                    () -> targetState == ArmState.COLLECT
-                    ));
-        // no need for dynamic command as the new TrapezoidProfileCommand gets the start and goal states as Suppliers
+        TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains,
+                new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
+
+        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this))
+                .alongWith(
+                        new InstantCommand(() -> {
+                            _targetState = targetState;
+                        }))
+                .andThen(
+                        Commands.either(
+                                Commands.runOnce(() -> {
+                                    _leader.set(-0.05);
+                                }, this),
+                                Commands.none(),
+                                () -> targetState == ArmState.COLLECT));
+        // no need for dynamic command as the new TrapezoidProfileCommand gets the start
+        // and goal states as Suppliers
     }
 
     public Command getSetStateCommand(ArmState targetState) {
@@ -150,10 +171,12 @@ public class Arm extends SubsystemBase {
         }
         updateSDB();
         // if (DriverStation.isEnabled()) {
-        //     _leader.setVoltage(SmartDashboard.getNumber("kg voltage", 0) * Math.cos(Math.toRadians(getPositionDeg())) + SmartDashboard.getNumber("kv voltage", 0));
+        // _leader.setVoltage(SmartDashboard.getNumber("kg voltage", 0) *
+        // Math.cos(Math.toRadians(getPositionDeg())) + SmartDashboard.getNumber("kv
+        // voltage", 0));
         // }
         // if (DriverStation.isEnabled()) {
-        //     _leader.setVoltage(SmartDashboard.getNumber("arm voltage", 0));
+        // _leader.setVoltage(SmartDashboard.getNumber("arm voltage", 0));
         // }
         SmartDashboard.putNumber("kg voltage", SmartDashboard.getNumber("kg voltage", 0));
         SmartDashboard.putNumber("ks voltage", SmartDashboard.getNumber("ks voltage", 0));
