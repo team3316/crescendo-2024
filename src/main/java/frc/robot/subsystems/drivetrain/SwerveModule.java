@@ -13,7 +13,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
@@ -120,6 +120,16 @@ public class SwerveModule {
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
     }
 
+    private SwerveModuleState getState() {
+        return new SwerveModuleState(
+                this._driveMotor.getVelocity().getValue(),
+                new Rotation2d().rotateBy(Rotation2d.fromDegrees(this._steerMotor.getPosition())));
+    }
+
+    /****************************
+     * Swerve Module Interfaces *
+     ****************************/
+
     public void calibrateSteering() {
         double currentAngle = this._steerMotor.getPosition();
         double angleDiff = (getAbsAngle() - currentAngle) % 360;
@@ -172,35 +182,25 @@ public class SwerveModule {
         this._driveMotor.setControl(new DutyCycleOut(percent));
     }
 
-    /**************************************
-     * Swerve Module Get State Interfaces *
-     **************************************/
-
-    public SwerveModuleState getState() {
-        return new SwerveModuleState(
-                this._driveMotor.getVelocity().getValue(),
-                new Rotation2d().rotateBy(Rotation2d.fromDegrees(this._steerMotor.getPosition())));
-    }
+    /*************
+     * Telemetry *
+     *************/
 
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(_driveMotor.getPosition().getValue(), Rotation2d.fromDegrees(getAbsAngle()));
     }
 
-    /*************
-     * Telemetry *
-     *************/
+    public void updateSDB(int moduleIdx) {
+        var prefix = "module[" + moduleIdx + "] ";
+        var state = getState();
 
-    // TODO: Replace all these with a telemetry / dashboard method called externally
-    public SwerveModuleState getTargetState() {
-        return _targetState;
-    }
-
-    public double getDriveOutput() {
-        return _driveMotor.get() * RobotController.getBatteryVoltage();
-    }
-
-    public double getStatorCurrent() {
-        return this._driveMotor.getStatorCurrent().getValue();
+        SmartDashboard.putNumber(prefix + "drive speed", state.speedMetersPerSecond);
+        SmartDashboard.putNumber(prefix + "target drive speed", _targetState.speedMetersPerSecond);
+        SmartDashboard.putNumber(prefix + "drive voltage", _driveMotor.getMotorVoltage().getValue());
+        SmartDashboard.putNumber(prefix + "drive current", _driveMotor.getStatorCurrent().getValue());
+        SmartDashboard.putNumber(prefix + "steer angle", state.angle.getDegrees());
+        SmartDashboard.putNumber(prefix + "target steer angle", _targetState.angle.getDegrees());
+        SmartDashboard.putNumber(prefix + "steer abs angle", getAbsAngle());
     }
 
 }

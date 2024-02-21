@@ -170,8 +170,7 @@ public class Drivetrain extends SubsystemBase {
 
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
-            SmartDashboard.putNumber("abs " + i, this._modules[i].getSwerveModulePosition().angle.getDegrees());
-            SmartDashboard.putNumber("speed " + i, this._modules[i].getState().speedMetersPerSecond);
+            _modules[i].updateSDB(i);
         }
 
         SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
