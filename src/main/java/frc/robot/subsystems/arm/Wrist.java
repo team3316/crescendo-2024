@@ -68,14 +68,14 @@ public class Wrist extends SubsystemBase {
     }
 
     private TalonFXConfiguration getConfigurator() {
-        TalonFXConfiguration jointConfig = new TalonFXConfiguration();
-        jointConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
-        jointConfig.Slot0.withKP(WristConstants.kp);
-        jointConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
+        TalonFXConfiguration wristConfig = new TalonFXConfiguration();
+        wristConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+        wristConfig.Slot0.withKP(WristConstants.kp);
+        wristConfig.Feedback.withSensorToMechanismRatio(1 / WristConstants.positionFactor);
         CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
         currentConfigs.withStatorCurrentLimit(20);
         currentConfigs.withStatorCurrentLimitEnable(true);
-        jointConfig.withCurrentLimits(currentConfigs);
+        wristConfig.withCurrentLimits(currentConfigs);
         SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
         limitConfigs.withForwardSoftLimitThreshold(
                 WristState.TRAP.angleDeg + WristConstants.softLimitExtraAngle);
@@ -83,8 +83,8 @@ public class Wrist extends SubsystemBase {
         limitConfigs.withReverseSoftLimitThreshold(WristState.COLLECT.angleDeg
                 - WristConstants.softLimitExtraAngle);
         limitConfigs.withReverseSoftLimitEnable(true);
-        jointConfig.withSoftwareLimitSwitch(limitConfigs);
-        return jointConfig;
+        wristConfig.withSoftwareLimitSwitch(limitConfigs);
+        return wristConfig;
     }
 
     public WristState getWristState() {
@@ -105,14 +105,6 @@ public class Wrist extends SubsystemBase {
 
     private State getTrapezoidState() {
         return new State(getPositionDeg(), getVelocityDegPerSec());
-    }
-
-    public boolean isFwdLimitSwitchClosed() {
-        return _wristMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
-    }
-
-    public boolean isRevLimitSwitchClosed() {
-        return _wristMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
     }
 
     public void setSensorPosition(double angleDeg) {
@@ -159,8 +151,6 @@ public class Wrist extends SubsystemBase {
     private void updateSDB() {
         SmartDashboard.putNumber("abs pos", this.getPositionDeg() + _armAngleDeg.get());
 
-        SmartDashboard.putBoolean("wrist fwd limit", isFwdLimitSwitchClosed());
-        SmartDashboard.putBoolean("wrist rev limit", isRevLimitSwitchClosed());
         SmartDashboard.putNumber("current wrist position", getPositionDeg());
         SmartDashboard.putNumber("current wrist velocity", getVelocityDegPerSec());
         SmartDashboard.putString("target wrist state", _targetState.toString());
@@ -170,13 +160,6 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled()) {
-            if (isFwdLimitSwitchClosed()) {
-                setSensorPosition((WristState.TRAP.angleDeg));
-            } else if (isRevLimitSwitchClosed()) {
-                setSensorPosition(WristState.COLLECT.angleDeg);
-            }
-        }
         
         // if (DriverStation.isEnabled()) {
         // _wristMotor.setVoltage(SmartDashboard.getNumber("wrist kg", 0) *
