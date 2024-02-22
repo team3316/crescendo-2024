@@ -70,8 +70,7 @@ public class Drivetrain extends SubsystemBase {
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
-                    _odometry.getPoseMeters().getRotation());
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
         }
@@ -176,6 +175,17 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
     }
 
+    /************************
+     * Autonomous Interface *
+     ************************/
+    public Pose2d getPose() {
+        return _odometry.getPoseMeters();
+    }
+
+    public void resetPose(Pose2d pose) {
+        _odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
+    }
+
     /******************************
      * Pigeon Methods *
      ******************************/
@@ -193,7 +203,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetYaw() {
-        _odometry.resetPosition(getRotation2d(), getSwerveModulePositions(),
-                new Pose2d(_odometry.getPoseMeters().getTranslation(), new Rotation2d()));
+        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
 }
