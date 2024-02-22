@@ -39,6 +39,20 @@ public class Drivetrain extends SubsystemBase {
 
     private static PIDController angleController;
 
+    public static enum DIRECTIONS {
+        AMP(0),
+        LEFT_CLIMB(0),
+        RIGHT_CLIMB(0),
+        DRIVER(0);
+
+        public final double angleDeg;
+
+        private DIRECTIONS(double angleDeg) {
+            this.angleDeg = angleDeg;
+        }
+    }
+
+
     public Drivetrain() {
         this._modules = new SwerveModule[] {
                 new SwerveModule(DrivetrainConstants.TRModule),
