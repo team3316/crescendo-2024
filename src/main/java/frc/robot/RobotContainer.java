@@ -170,12 +170,9 @@ public class RobotContainer {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                                                new WaitCommand(2),m_Manipulator.getSetStateCommand(ManipulatorState.OFF))
-                                                .alongWith(
-                                                                new WaitCommand(2),
-                                                                m_Intake.setStateCommand(IntakeState.DISABLED)),
+                                                new WaitCommand(2),m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
                                 new InstantCommand(),
-                                () -> m_Manipulator.hasNoteSwitch() && m_Shooter.isAtTargetVelocity());
+                                () -> m_ArmWristSuperStructure.getArmState() == ArmState.COLLECT && m_Shooter.isAtTargetVelocity());
                 return sequence;
         }
 
