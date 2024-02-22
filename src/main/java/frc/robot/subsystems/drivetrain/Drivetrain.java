@@ -5,6 +5,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -13,7 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,7 +34,8 @@ public class Drivetrain extends SubsystemBase {
     private PigeonIMU _pigeon;
 
     private SwerveDriveOdometry _odometry;
-    private DoubleLogEntry m_logX, m_logY, m_logR;
+
+    private StructLogEntry<Pose2d> m_poseLog;
 
     private static PIDController angleController;
 
@@ -155,16 +157,11 @@ public class Drivetrain extends SubsystemBase {
 
     private void initTelemetry() {
         DataLog log = DataLogManager.getLog();
-        m_logX = new DoubleLogEntry(log, "/drivetrain/position/x");
-        m_logY = new DoubleLogEntry(log, "/drivetrain/position/y");
-        m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
+        m_poseLog = StructLogEntry.create(log, "/drivetrain/position", new Pose2dStruct());
     }
 
     private void updateTelemetry() {
-        Pose2d pose = _odometry.getPoseMeters();
-        m_logX.append(pose.getX());
-        m_logY.append(pose.getY());
-        m_logR.append(pose.getRotation().getDegrees());
+        m_poseLog.append(getPose());
     }
 
     private void updateSDB() {
