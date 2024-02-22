@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.LimelightConstants;
+import frc.robot.subsystems.vision.LimelightHelpers;
 
 /**
  * Drivetrain
@@ -111,13 +112,12 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @param xSpeed        speed in the right direction (negative is left)
      * @param ySpeed        speed in the front direction (negative is back)
-     * @param angleRad      relative angle to rotate to in radians (CW is positive)
-     * @param hasTarget     does vision have a target
      * @param fieldRelative treat x-y relative odometry pose
      */
-    public void driveByVision(double xSpeed, double ySpeed, double angleRad, boolean hasTarget, boolean fieldRelative) {
+    public void driveByVision(double xSpeed, double ySpeed, boolean fieldRelative) {
         // If vision doesn't have a target, or we reached our setpoint, don't rotate.
-        var rot = !hasTarget || angleController.atSetpoint() ? 0 : angleController.calculate(angleRad);
+        var rot = !LimelightHelpers.getTV(null) || angleController.atSetpoint() ? 0
+                : angleController.calculate(Math.toRadians(LimelightHelpers.getTX(null)));
 
         drive(xSpeed, ySpeed, rot, fieldRelative);
     }

@@ -6,7 +6,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.LimelightConstants;
 
 public class LimeLight extends SubsystemBase {
     /** Creates a new LimeLight. */
@@ -14,18 +13,15 @@ public class LimeLight extends SubsystemBase {
         LimelightHelpers.setPipelineIndex(null, 0);
     }
 
-    public boolean hasTarget() {
-        return LimelightHelpers.getTV(null);
-    }
-
-    public double getXAngle() {
-        return LimelightConstants.AlignLimeLightToPigeonPhase * LimelightHelpers.getTX(null);
-    }
-
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("hasTarget", hasTarget());
-        if (hasTarget())
-            SmartDashboard.putNumber("getXAngle", getXAngle());
+        if (LimelightHelpers.getTV(null)) {
+            SmartDashboard.putBoolean("tv", true);
+            SmartDashboard.putNumber("tx", LimelightHelpers.getTX(null));
+        } else if (SmartDashboard.getBoolean("hasTarget", false)) {
+            // Zero data when we lose the target.
+            SmartDashboard.putBoolean("tv", false);
+            SmartDashboard.putNumber("tx", 0.0);
+        }
     }
 }
