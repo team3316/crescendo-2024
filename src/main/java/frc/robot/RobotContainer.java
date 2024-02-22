@@ -103,7 +103,7 @@ public class RobotContainer {
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
                 m_operatorController.L1().onTrue(getCollectSequence());
-                m_operatorController.R1().whileTrue(m_Shooter.getShooterSpinCommand());
+                m_operatorController.R1().whileTrue(this.getShooterSpinCommand()); 
                 m_operatorController.R2().onTrue(getShooterTriggerCommand());
                 // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
                 m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
@@ -164,7 +164,12 @@ public class RobotContainer {
                 return sequence;
         }
 
+        private Command getShooterSpinCommand(){
+                return new ConditionalCommand(m_Shooter.getShooterSpinCommand(),
+                        new InstantCommand(),
+                        () -> m_Manipulator.getManipulatorState() != ManipulatorState.COLLECT);
 
+        }
 
         private Command getShooterTriggerCommand(){
                 Command sequence = new ConditionalCommand(
