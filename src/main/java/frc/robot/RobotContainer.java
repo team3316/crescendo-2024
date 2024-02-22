@@ -101,13 +101,13 @@ public class RobotContainer {
                 m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
                 m_operatorController.povDown()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
-                m_operatorController.povRight()
+                m_driverController.povRight()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.UNDER_CHAIN));
-                m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.ALIGN));
-                m_operatorController.povLeft()
+                m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.ALIGN));
+                m_driverController.povLeft()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
                                                 .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
-                                                .andThen(new WaitCommand(2))
+                                                .andThen(new WaitCommand(2.2))
                                                 .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
                 // m_operatorController.square().onTrue(getAMPSequence());
@@ -115,6 +115,13 @@ public class RobotContainer {
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP))
                         .andThen(new WaitCommand(1.8))
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                m_operatorController.L2().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP)
+                        .andThen(new WaitCommand(2.4))
+                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+
+                // ADAM LINES
+                m_operatorController.cross().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP));
+                m_operatorController.cross().onFalse(m_Manipulator.getSetStateCommand(ManipulatorState.OFF));
 
                 m_Climber.setDefaultCommand(
                                 new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
