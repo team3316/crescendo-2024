@@ -11,7 +11,7 @@ public class ArmConstants {
     public static final double collectAngle = -43.2; // deg
     public static final double TRAPAngle = 96.42; // deg
     public static final double underChainAngle = 0; // deg
-    public static final double AMPAngle = 49.7; // deg
+    public static final double AMPAngle = 46.7; // deg
     public static final double ALIGNAngle = 36.86; // deg
     
     private static final double gearRatio = 1.0 / 64.0;
