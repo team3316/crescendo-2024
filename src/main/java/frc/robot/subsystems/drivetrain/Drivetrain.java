@@ -5,6 +5,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -13,12 +14,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.LimelightConstants;
@@ -28,12 +26,16 @@ import frc.robot.constants.LimelightConstants;
  */
 public class Drivetrain extends SubsystemBase {
 
+    private static final boolean UPDATE_TELEMETRY = false;
+    private static final boolean UPDATE_DASHBOARD = false;
+
     private SwerveModule[] _modules;
 
     private PigeonIMU _pigeon;
 
     private SwerveDriveOdometry _odometry;
-    private DoubleLogEntry m_logX, m_logY, m_logR;
+
+    private StructLogEntry<Pose2d> m_poseLog;
 
     private static PIDController angleController;
 
@@ -45,15 +47,12 @@ public class Drivetrain extends SubsystemBase {
                 new SwerveModule(DrivetrainConstants.BLModule)
         };
 
-        _pigeon = new PigeonIMU(DrivetrainConstants.pigeonId); // We need the talon; not anymore
+        _pigeon = new PigeonIMU(DrivetrainConstants.pigeonId);
 
-        this._odometry = new SwerveDriveOdometry(DrivetrainConstants.kinematics, getRotation2d(),
+        _odometry = new SwerveDriveOdometry(DrivetrainConstants.kinematics, getRotation2d(),
                 getSwerveModulePositions());
 
-        DataLog log = DataLogManager.getLog();
-        m_logX = new DoubleLogEntry(log, "/drivetrain/position/x");
-        m_logY = new DoubleLogEntry(log, "/drivetrain/position/y");
-        m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
+        initTelemetry();
 
         angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
         angleController.setTolerance(LimelightConstants.angleTol);
@@ -63,17 +62,14 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-    public void setModulesAngle(double angle) {
-        SwerveModuleState state = new SwerveModuleState(0, Rotation2d.fromDegrees(angle));
-        for (int i = 0; i < _modules.length; i++) {
-            _modules[i].setAngle(state);
-        }
-    }
+    /************************
+     * Drivetrain Interface *
+     ************************/
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
-       
+
         ChassisSpeeds speeds;
         if (fieldRelative) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
@@ -86,27 +82,38 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
     }
 
-    public void setDesiredStates(SwerveModuleState[] moduleStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates,
-                DrivetrainConstants.SwerveModuleConstants.driveFreeSpeedMetersPerSecond);
+    /**
+     * Drives by X and Y inputs, maintaining given target angle given from vision
+     * target
+     * 
+     * @param xSpeed        speed in the right direction (negative is left)
+     * @param ySpeed        speed in the front direction (negative is back)
+     * @param angleRad      relative angle to rotate to in radians (CW is positive)
+     * @param hasTarget     does vision have a target
+     * @param fieldRelative treat x-y relative odometry pose
+     */
+    public void driveByVision(double xSpeed, double ySpeed, double angleRad, boolean hasTarget, boolean fieldRelative) {
+        // If vision doesn't have a target, or we reached our setpoint, don't rotate.
+        var rot = !hasTarget || angleController.atSetpoint() ? 0 : angleController.calculate(angleRad);
 
-        for (int i = 0; i < this._modules.length; i++) {
-            this._modules[i].setDesiredState(moduleStates[i]);
+        drive(xSpeed, ySpeed, rot, fieldRelative);
+    }
+
+    public void voltageDrive(Measure<Voltage> voltMeasure) {
+        for (SwerveModule module : _modules) {
+            module.driveByVoltage(voltMeasure.magnitude());
         }
-
     }
 
     public void periodic() {
         // Update the odometry in the periodic block
-        this._odometry.update(getRotation2d(), getSwerveModulePositions());
-        
-    }
+        _odometry.update(getRotation2d(), getSwerveModulePositions());
 
-    public void updateTelemetry() {
-        Pose2d pose = _odometry.getPoseMeters();
-        m_logX.append(pose.getX());
-        m_logY.append(pose.getY());
-        m_logR.append(pose.getRotation().getDegrees());
+        // TODO: Move to seperate loop to not hold up main loop
+        if (UPDATE_TELEMETRY)
+            updateTelemetry();
+        if (UPDATE_DASHBOARD)
+            updateSDB();
     }
 
     public void disabledInit() {
@@ -115,44 +122,22 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
-    @SuppressWarnings({ "unused" })
-    private void updateSDB() {
-        for (int i = 0; i < this._modules.length; i++) {
-            SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
-            SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
+    /************************
+     * SwerveModule Methods *
+     ************************/
 
-        }
-
-        SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
-        SmartDashboard.putNumber("Vx", SmartDashboard.getNumber("Vx", 0));
-        SmartDashboard.putNumber("Vy", SmartDashboard.getNumber("Vy", 0));
-        SmartDashboard.putNumber("Vrot", SmartDashboard.getNumber("Vrot", 0));
-    }
-
-    public Pose2d getPose() {
-        return this._odometry.getPoseMeters();
-    }
-
-    public double getHeading() {
-        return this._pigeon.getFusedHeading();
-    }
-
-    public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(getHeading());
-    }
-
-    public void resetYaw() {
-        Pose2d pose = getPose();
-        this.resetPose(new Pose2d(pose.getTranslation(), new Rotation2d()));
-    }
-
-    public void resetPose(Pose2d pose) {
-        this._odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
-    }
-
-    public void calibrateSteering() {
+    private void calibrateSteering() {
         for (SwerveModule swerveModule : _modules) {
             swerveModule.calibrateSteering();
+        }
+    }
+
+    private void setDesiredStates(SwerveModuleState[] moduleStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates,
+                DrivetrainConstants.SwerveModuleConstants.driveFreeSpeedMetersPerSecond);
+
+        for (int i = 0; i < this._modules.length; i++) {
+            this._modules[i].setDesiredState(moduleStates[i]);
         }
     }
 
@@ -166,52 +151,55 @@ public class Drivetrain extends SubsystemBase {
         return swerveModulePositions;
     }
 
-    @SuppressWarnings({ "unused" })
-    private void printEverything() {
-        String printString = new String();
-        printString += Timer.getFPGATimestamp() + ",";
-        ChassisSpeeds speeds = DrivetrainConstants.kinematics.toChassisSpeeds(_modules[0].getState(),
-                _modules[1].getState(),
-                _modules[2].getState(), _modules[3].getState());
-        printString += speeds.vxMetersPerSecond + "," + speeds.vyMetersPerSecond + ",";
+    /***************************
+     * Telemetry and Dashboard *
+     ***************************/
+
+    private void initTelemetry() {
+        DataLog log = DataLogManager.getLog();
+        m_poseLog = StructLogEntry.create(log, "/drivetrain/position", new Pose2dStruct());
+    }
+
+    private void updateTelemetry() {
+        m_poseLog.append(getPose());
+    }
+
+    private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
-            printString += ",speed," + _modules[i].getState().speedMetersPerSecond;
-            printString += ",angle," + _modules[i].getState().angle.getDegrees();
-            printString += ",desSpeed," + _modules[i].getTargetState().speedMetersPerSecond;
-            printString += ",desAngle," + _modules[i].getTargetState().angle.getDegrees();
+            _modules[i].updateSDB(i);
         }
 
-        System.out.println(printString);
-
+        SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
     }
 
-    public double getRotByVision(double angle, boolean hasTarget) {
-        double t = 0;
-        if (hasTarget) {
-            t = angleController.calculate(angle);
-        }
-
-        return angleController.atSetpoint() ? 0 : t;
-
+    /************************
+     * Autonomous Interface *
+     ************************/
+    public Pose2d getPose() {
+        return _odometry.getPoseMeters();
     }
 
-    // TODO: check what are the real axises
-    public double getPitch() {
-        return _pigeon.getPitch();
+    public void resetPose(Pose2d pose) {
+        _odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
+    }
+
+    /******************************
+     * Pigeon Methods *
+     ******************************/
+
+    // TODO: Verify Pigeon axis are aligned with robot in position and direction
+    // - Front is shooter's direction
+    // - CW Yaw is positive
+
+    private Rotation2d getRotation2d() {
+        return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
     }
 
     public double getRoll() {
         return _pigeon.getRoll();
     }
 
-    public void oneModuleDrive(int i, double percent) {
-        _modules[i].DriveByPercent(percent);
-    }
-
-   
-    public void voltageDrive(Measure<Voltage> voltMeasure) {
-        for (SwerveModule module : _modules) {
-            module.driveByVoltage(voltMeasure.magnitude());
-        }
+    public void resetYaw() {
+        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
 }
