@@ -100,7 +100,7 @@ public class Wrist extends SubsystemBase {
 
     private Command generateSetStateCommand(ArmWristState targetState) {
         TrapezoidProfile profile = new TrapezoidProfile(WristConstants.profileConstrains,
-                new State(targetState.armAngleDeg, 0), getTrapezoidState());
+                new State(targetState.wristAngleDeg, 0), getTrapezoidState());
         return new InstantCommand(this::stop)
                 .andThen(
                         new TrapezoidProfileCommand(profile, this::useState, this))
