@@ -16,6 +16,11 @@ public class LimelightConstants {
     public static final double thetaTol = 1; // in degrees
     public static final double maxVisionVelMpS = 1;
 
+    public static final double angleKp = 14;
+    public static final double angleKd = 8;
+    
+    public static final double angleTol = 0.01;
+
     public static class AutoAlignConstants {
         public double xGoal, hDiff;
 

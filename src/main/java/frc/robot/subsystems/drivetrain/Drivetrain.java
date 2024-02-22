@@ -2,8 +2,6 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
-import com.ctre.phoenix6.controls.VoltageOut;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,26 +10,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.UnitBuilder;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.constants.DrivetrainConstants;
-import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.LimelightConstants;
 
 /**
@@ -46,9 +35,7 @@ public class Drivetrain extends SubsystemBase {
     private SwerveDriveOdometry _odometry;
     private DoubleLogEntry m_logX, m_logY, m_logR;
 
-    private static PIDController vision_xController;
-    private static PIDController vision_yController;
-    private static PIDController thetaController;
+    private static PIDController angleController;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -68,17 +55,10 @@ public class Drivetrain extends SubsystemBase {
         m_logY = new DoubleLogEntry(log, "/drivetrain/position/y");
         m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
 
-        vision_xController = new PIDController(LimelightConstants.xKp, 0, 0);
-        vision_yController = new PIDController(LimelightConstants.yKp, 0, 0);
-        thetaController = new PIDController(LimelightConstants.thetaKp, 0, 0);
-        vision_xController.setTolerance(LimelightConstants.xTol);
-        vision_yController.setTolerance(LimelightConstants.yTol);
-        thetaController.setTolerance(LimelightConstants.thetaTol);
-        vision_xController.setSetpoint(0); // arbitrary. Overriedden when setting internal state.
-        vision_yController.setSetpoint(0);
-        thetaController.setSetpoint(DrivetrainConstants.installAngle.getDegrees());
+        angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
+        angleController.setTolerance(LimelightConstants.angleTol);
+        angleController.setSetpoint(0);
 
-        resetControllers();
         calibrateSteering();
 
     }
@@ -93,14 +73,7 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
-         for (int i = 0; i < this._modules.length; i++) {
-            //][\SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
-           SmartDashboard.putNumber("input xspeed " + i, xSpeed);
-           SmartDashboard.putNumber("input yspeed " + i, ySpeed);
-           SmartDashboard.putNumber("input rotspeed " + i, rot);
-
-        }
-
+       
         ChassisSpeeds speeds;
         if (fieldRelative) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
@@ -126,10 +99,7 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         // Update the odometry in the periodic block
         this._odometry.update(getRotation2d(), getSwerveModulePositions());
-
-        updateSDB();
-        SmartDashboard.putNumber("pitch", this.getPitch());
-        // printEverything();
+        
     }
 
     public void updateTelemetry() {
@@ -149,7 +119,7 @@ public class Drivetrain extends SubsystemBase {
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
-           SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
+            SmartDashboard.putNumber("speed " + i, this._modules[i].getVelocity());
 
         }
 
@@ -215,40 +185,14 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-    public void resetControllers() {
-        vision_xController.reset();
-        vision_yController.reset();
-        thetaController.reset();
-    }
-
-    public void setXSetpoint(double xGoal) {
-        vision_xController.setSetpoint(xGoal);
-    }
-
-    public void driveByVisionControllers(double xDistance, double yDistance, boolean hasTarget) {
-        double x = 0;
-        double y = 0;
-        double t = thetaController.calculate(this.getPose().getRotation().getDegrees());
-
-        if (Math.abs(this.getPose().getRotation().getDegrees()
-                - DrivetrainConstants.installAngle.getDegrees()) < LimelightConstants.spinToleranceDegrees
-                && hasTarget) {
-            x = vision_xController.calculate(xDistance);
-            y = vision_yController.calculate(yDistance);
+    public double getRotByVision(double angle, boolean hasTarget) {
+        double t = 0;
+        if (hasTarget) {
+            t = angleController.calculate(angle);
         }
 
-        this.drive(vision_xController.atSetpoint() ? 0 : x, vision_yController.atSetpoint() ? 0 : y, t, true);
-    }
+        return angleController.atSetpoint() ? 0 : t;
 
-    public void setKeepHeading(Rotation2d rotation) {
-        thetaController.reset();
-        thetaController.setTolerance(LimelightConstants.thetaTol);
-        thetaController.setSetpoint(rotation.getRadians());
-    }
-
-    public void driveAndKeepHeading(double xSpeed, double ySpeed) {
-        // the setpoint is set with `this::setKeepHeading`
-        this.drive(xSpeed, ySpeed, thetaController.calculate(this.getPose().getRotation().getRadians()), true);
     }
 
     // TODO: check what are the real axises
@@ -264,11 +208,7 @@ public class Drivetrain extends SubsystemBase {
         _modules[i].DriveByPercent(percent);
     }
 
-    public Command getRotateModulesCommand() {
-        return new RunCommand(() -> drive(0, -0.1, 0, false)).withTimeout(0.2)
-                .finallyDo((interrupted) -> drive(0, 0, 0, false));
-    }
-
+   
     public void voltageDrive(Measure<Voltage> voltMeasure) {
         for (SwerveModule module : _modules) {
             module.driveByVoltage(voltMeasure.magnitude());
