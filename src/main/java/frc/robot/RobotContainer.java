@@ -116,11 +116,6 @@ public class RobotContainer {
                         .andThen(new WaitCommand(1.8))
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
 
-                m_driverController.touchpad()
-                                .onTrue(m_ArmWristSuperStructure.getSetEncodersToCollectCommand()
-                                                .ignoringDisable(true));// calibrate
-                // arm
-
                 m_Climber.setDefaultCommand(
                                 new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
                                                 m_operatorController.getRightY() * 0.2), m_Climber));// stupid climb
