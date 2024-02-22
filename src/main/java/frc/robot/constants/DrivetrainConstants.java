@@ -59,6 +59,11 @@ public class DrivetrainConstants {
                 }
         }
 
+        public static final double rightJoystickDeadband = 0.85;
+        public static final double rightJoystickAngleErrorDeg = 15;
+
+        public static final double goToDirectionKp = 0.01;
+
         public static final double maxRotationSpeedRadPerSec = 11.5;
 
         public static final double frontWheelDistMeters = 0.7403;
