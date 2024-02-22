@@ -107,14 +107,17 @@ public class RobotContainer {
                 m_operatorController.povLeft()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
                                                 .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
-                                                .andThen(new WaitCommand(2))
+                                                .andThen(new WaitCommand(2.1))
                                                 .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
+                m_operatorController.L2().onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP), new WaitCommand(3), m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 // m_operatorController.square().onTrue(getAMPSequence());
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP))
                         .andThen(new WaitCommand(1.8))
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+
+                m_driverController.povUp().onTrue(m_Climber.getClimbCommand());
 
                 m_Climber.setDefaultCommand(
                                 new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
