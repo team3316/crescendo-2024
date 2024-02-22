@@ -119,7 +119,7 @@ public class SwerveModule {
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
     }
 
-    private SwerveModuleState getState() {
+    public SwerveModuleState getState() {
         return new SwerveModuleState(
                 this._driveMotor.getVelocity().getValue(),
                 new Rotation2d().rotateBy(Rotation2d.fromDegrees(this._steerMotor.getPosition())));
@@ -179,6 +179,10 @@ public class SwerveModule {
 
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(_driveMotor.getPosition().getValue(), Rotation2d.fromDegrees(getAbsAngle()));
+    }
+
+        public SwerveModuleState getWantedState() {
+            return this._targetState;
     }
 
     public void updateSDB(int moduleIdx) {
