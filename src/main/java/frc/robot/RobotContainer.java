@@ -59,7 +59,7 @@ public class RobotContainer {
         private SwerveSysidCommands m_SysidCommands;
 
         public RobotContainer() {
-                CameraServer.startAutomaticCapture();
+                CameraServer.startAutomaticCapture().setResolution(320, 180);
                 m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                                 m_driverController.getLeftY() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
@@ -103,21 +103,25 @@ public class RobotContainer {
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
                 m_operatorController.L1().onTrue(getCollectSequence());
-                m_operatorController.R1().onTrue(getShootSequence());
+                m_operatorController.R1().onTrue(getShooterSpinCommand());
+                m_operatorController.R2().onTrue(getShooterTriggerCommand());
                 // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
-                m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
-                m_operatorController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
-                m_operatorController.povRight()
+                m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
+                m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
+                m_driverController.povRight()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
-                m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
-                m_operatorController.povLeft()
+                m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
+                m_driverController.povLeft()
                         .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP)
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
-                        .andThen(new WaitCommand(2))
+                        .andThen(new WaitCommand(2.2))
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
-                // m_o[]\]ratorController.square().onTrue(getAMPSequence());
-                m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP));
+                // m_operatorController.square().onTrue(getAMPSequence());
+                m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP)
+                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP))
+                        .andThen(new WaitCommand(1.8))
+                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
 
                 m_driverController.touchpad()
                                 .onTrue(m_ArmWristSuperStructure.setEncodersToCollect().ignoringDisable(true));// calibrate
@@ -146,6 +150,27 @@ public class RobotContainer {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
                                                 m_Shooter.getSetStateCommand(ShooterState.ON),
+                                                new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
+                                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                                new WaitCommand(2),
+                                                m_Shooter.getSetStateCommand(ShooterState.OFF)
+                                                                .andThen(m_Manipulator.getSetStateCommand(
+                                                                                ManipulatorState.OFF)))
+                                                .alongWith(
+                                                                new WaitCommand(2),
+                                                                m_Intake.setStateCommand(IntakeState.DISABLED)),
+                                new InstantCommand(),
+                                () -> m_Manipulator.hasNoteSwitch());
+                return sequence;
+        }
+
+        private Command getShooterSpinCommand(){
+                return new ConditionalCommand(m_Shooter.getSetStateCommand(ShooterState.ON), m_Shooter.getSetStateCommand(ShooterState.OFF), () -> m_Shooter.getShooterState() == ShooterState.OFF);
+        }
+
+        private Command getShooterTriggerCommand(){
+                Command sequence = new ConditionalCommand(
+                                Commands.sequence(
                                                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
                                                 new WaitCommand(2),
