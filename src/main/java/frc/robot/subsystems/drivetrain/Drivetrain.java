@@ -255,10 +255,6 @@ public class Drivetrain extends SubsystemBase {
         return _pigeon.getRoll();
     }
 
-    public double getHeading() {
-        return this._pigeon.getFusedHeading();
-    }
-
     public void resetYaw() {
         resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
