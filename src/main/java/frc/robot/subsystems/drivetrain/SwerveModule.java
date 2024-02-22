@@ -2,7 +2,6 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -170,16 +169,8 @@ public class SwerveModule {
         _targetState = desiredState;
     }
 
-    public void setAngle(SwerveModuleState desiredState) {
-        this._steerMotor.setReference(desiredState.angle.getDegrees(), ControlType.kPosition);
-    }
-
     public void driveByVoltage(double voltage) {
         _driveMotor.setVoltage(voltage);
-    }
-
-    public void driveByPercent(double percent) {
-        this._driveMotor.setControl(new DutyCycleOut(percent));
     }
 
     /*************
