@@ -11,6 +11,7 @@ import javax.sound.midi.Sequence;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -67,7 +68,7 @@ public class RobotContainer {
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                                 m_driverController.getCombinedAxis() *
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
-                                _fieldRelative), m_Drivetrain));
+                                _fieldRelative,new Translation2d(-m_driverController.getRightX(), m_driverController.getRightY())), m_Drivetrain));
 
                 m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
 
