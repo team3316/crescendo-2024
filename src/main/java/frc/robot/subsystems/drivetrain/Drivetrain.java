@@ -133,7 +133,7 @@ public class Drivetrain extends SubsystemBase {
                 goToDirectionController.setSetpoint(targetDirection.angleDeg);
             }
 
-            rot = Math.toRadians(goToDirectionController.calculate(getHeading()));
+            rot = goToDirectionController.calculate(getRotation2d().getRadians());
         }
         drive(xSpeed, ySpeed, rot, fieldRelative);
     }
