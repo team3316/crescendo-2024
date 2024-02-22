@@ -3,8 +3,8 @@
   - [ ] Drivetrain
     - [x] Field Oriented Holonomic Movement **MVP**
     - [x] Robot Oriented Asymuthal Direction **MVP**
-    - [ ] Field Oriented Asymuthal Direction **P1**
-  - [ ] Robot Homing **MVP** @yoav
+    - [ ] Field Oriented Asymuthal Direction **P1** @Yoav
+  - [ ] Robot Homing **MVP** Stuck on Guy to verify that bottom MS are always pressed!
   - [ ] Collection
     - [x] Collect NOTE **MVP**
     - [ ] Collect Single NOTE **P2**
@@ -16,7 +16,7 @@
     - [ ] Trigger **P1** @uri
     - [x] Automatic Alignment to Speaker **P1**
   - [ ] Amp
-    - [ ] Score Amp Sequence **MVP** @yoav
+    - [ ] Score Amp Sequence **MVP** PR #23
     - [ ] Automatic Alignment to Amp **P2**
   - [ ] Climb & Trap Sequence **MVP** @itamar
 - [ ] Autonomous
