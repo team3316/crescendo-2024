@@ -17,6 +17,7 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
@@ -109,6 +110,14 @@ public class Drivetrain extends SubsystemBase {
 
         if (rightJoystickMag >= DrivetrainConstants.rightJoystickDeadband) {
             for (DIRECTIONS d : DIRECTIONS.values()) {
+                if(d == DIRECTIONS.AMP){
+                    if(DriverStation.getAlliance().toString() == "blue"){
+                        rightJoystickAngleDeg = Math.abs(rightJoystickAngleDeg);//Because when you mevw the joystick all the way to the left the value changes from 180 to -180
+                    }
+                    else{
+                        rightJoystickAngleDeg = Math.abs(rightJoystickAngleDeg)-180;
+                    }
+                }
                 if (Math.abs(d.angleDeg - rightJoystickAngleDeg) <= DrivetrainConstants.rightJoystickAngleErrorDeg) {
                     targetDirection = d;
                     break;
