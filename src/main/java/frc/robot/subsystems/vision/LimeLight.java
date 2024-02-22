@@ -29,7 +29,8 @@ public class LimeLight extends SubsystemBase {
 
     private void addVisionMeasurement() {
         // Only add vision measurement every VISION_MEASUREMENT_PERIOD
-        if (Timer.getFPGATimestamp() - _lastVisionMeasurement < VISION_MEASUREMENT_PERIOD)
+        double now = Timer.getFPGATimestamp();
+        if (now - _lastVisionMeasurement < VISION_MEASUREMENT_PERIOD)
             return;
 
         double[] result = DriverStation.getAlliance().get() == Alliance.Blue
@@ -42,12 +43,14 @@ public class LimeLight extends SubsystemBase {
         Pose2d visionPose = new Pose2d(result[0], result[1], new Rotation2d(Units.degreesToRadians(result[5])));
         double latency = result[6];
 
-        _visionMeasurementConsumer.accept(visionPose, Timer.getFPGATimestamp() - (latency / 1000));
+        _visionMeasurementConsumer.accept(visionPose, now - (latency / 1000));
 
         SmartDashboard.putNumber("visionX", visionPose.getX());
         SmartDashboard.putNumber("visionY", visionPose.getY());
         SmartDashboard.putNumber("visionRotation", visionPose.getRotation().getDegrees());
         SmartDashboard.putNumber("visionLatency", latency);
+
+        _lastVisionMeasurement = now;
     }
 
     @Override
