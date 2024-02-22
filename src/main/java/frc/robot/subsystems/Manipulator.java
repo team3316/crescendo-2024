@@ -45,7 +45,6 @@ public class Manipulator extends SubsystemBase {
         private NotePosition(double position) {
             this.position = position;
         }
-
     }
 
     public Manipulator() {
@@ -114,8 +113,8 @@ public class Manipulator extends SubsystemBase {
         resetNotePositionPeriodic();
 
         SmartDashboard.putBoolean("has note", hasNoteSwitch());
-        if (hasNoteSwitch())
-            SmartDashboard.putNumber("manipulator note position", getNotePosition());
+        // if (hasNoteSwitch())
+        SmartDashboard.putNumber("manipulator note position", getNotePosition());
 
         SmartDashboard.putNumber("manipulator current current", _manipulatorMotor.getOutputCurrent());
     }
