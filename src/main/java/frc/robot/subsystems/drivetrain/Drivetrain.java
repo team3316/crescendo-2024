@@ -39,6 +39,8 @@ public class Drivetrain extends SubsystemBase {
 
     private static PIDController angleController;
 
+    private static PIDController goToDirectionController;
+
     public static enum DIRECTIONS {
         LEFT_CLIMB(0),
         RIGHT_CLIMB(0),
@@ -71,6 +73,9 @@ public class Drivetrain extends SubsystemBase {
         angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
+
+        goToDirectionController = new PIDController(DrivetrainConstants.goToDirectionKp, 0, 0);
+        goToDirectionController.enableContinuousInput(-180, 180);
 
         calibrateSteering();
 
