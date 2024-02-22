@@ -25,6 +25,7 @@ public class Manipulator extends SubsystemBase {
        TO_SHOOTER(ManipulatorConstants.toShooterPercentage);
 
         public double percentage;
+
         private ManipulatorState(double percentage) {
             this.percentage = percentage;
         }
@@ -33,21 +34,19 @@ public class Manipulator extends SubsystemBase {
     public Manipulator() {
         this._manipulatorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID);
         this._manipulatorMotor.setSmartCurrentLimit(20);
-        
+
         this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
         this._state = ManipulatorState.OFF;
 
         // initialize values into the SDB
         SmartDashboard.putString("Manipulator State", this._state.toString());
-       
     }
 
     public ManipulatorState getManipulatorState() {
         return this._state;
     }
 
-    // TODO: Check if NC or NO
     public boolean hasNoteSwitch() {
         return !_hasNoteSwitch.get();
     }
@@ -58,7 +57,6 @@ public class Manipulator extends SubsystemBase {
         this._manipulatorMotor.set(state.percentage);
 
         SmartDashboard.putString("Manipulator State", this._state.toString());
-      
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
@@ -73,6 +71,5 @@ public class Manipulator extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("has note", hasNoteSwitch());
         SmartDashboard.putNumber("manipulator current current", _manipulatorMotor.getOutputCurrent());
-        // SmartDashboard.putNumber("manipulator velocity rpm", _leader.getVelocity());
     }
 }
