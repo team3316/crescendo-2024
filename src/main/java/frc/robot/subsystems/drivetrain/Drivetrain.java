@@ -40,10 +40,10 @@ public class Drivetrain extends SubsystemBase {
     private static PIDController angleController;
 
     public static enum DIRECTIONS {
-        AMP(0),
         LEFT_CLIMB(0),
         RIGHT_CLIMB(0),
-        DRIVER(0);
+        DRIVER(0),
+        AMP(0);
 
         public final double angleDeg;
 
