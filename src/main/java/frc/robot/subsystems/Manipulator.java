@@ -32,7 +32,6 @@ public class Manipulator extends SubsystemBase {
 
     public Manipulator() {
         this._manipulatorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID);
-        this._manipulatorMotor.setSmartCurrentLimit(20);
         
         this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
