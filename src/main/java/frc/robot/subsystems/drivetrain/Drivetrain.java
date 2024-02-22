@@ -101,6 +101,33 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
     }
 
+    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d rightJoystick) {
+        DIRECTIONS targetDirection = null;
+        double rightJoystickMag = rightJoystick.getNorm();
+        double rightJoystickAngleDeg = rightJoystick.getAngle().getDegrees();
+
+        if (rightJoystickMag >= DrivetrainConstants.rightJoystickDeadband) {
+            for (DIRECTIONS d : DIRECTIONS.values()) {
+                if (Math.abs(d.angleDeg - rightJoystickAngleDeg) <= DrivetrainConstants.rightJoystickAngleErrorDeg) {
+                    targetDirection = d;
+                    break;
+                }
+            }
+        }
+
+        SmartDashboard.putNumber("Joystick Mag", rightJoystickMag);
+        SmartDashboard.putNumber("Joystick Angle", rightJoystickAngleDeg);
+
+        if(targetDirection!=null){
+            if(goToDirectionController.getSetpoint() != targetDirection.angleDeg){
+                goToDirectionController.setSetpoint(targetDirection.angleDeg);
+            }
+
+            rot = Math.toRadians(goToDirectionController.calculate(getHeading()));
+        }
+        drive(xSpeed, ySpeed, rot, fieldRelative);
+    }
+
     /**
      * Drives by X and Y inputs, maintaining given target angle given from vision
      * target
