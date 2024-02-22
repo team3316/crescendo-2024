@@ -47,7 +47,7 @@ public class RobotContainer {
         private final Manipulator m_Manipulator = new Manipulator();
         private final Shooter m_Shooter = new Shooter();
         private final Intake m_Intake = new Intake();
-        private final LimeLight m_limeLight = new LimeLight();
+        private final LimeLight m_limeLight = new LimeLight(m_Drivetrain::addVisionMeasurement);
         private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
         private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
