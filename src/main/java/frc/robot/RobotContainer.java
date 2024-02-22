@@ -103,7 +103,7 @@ public class RobotContainer {
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
                 m_operatorController.L1().onTrue(getCollectSequence());
-                m_operatorController.R1().onTrue(getShooterSpinCommand());
+                m_operatorController.R1().whileTrue(m_Shooter.getShooterSpinCommand());
                 m_operatorController.R2().onTrue(getShooterTriggerCommand());
                 // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
                 m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
@@ -164,24 +164,18 @@ public class RobotContainer {
                 return sequence;
         }
 
-        private Command getShooterSpinCommand(){
-                return new ConditionalCommand(m_Shooter.getSetStateCommand(ShooterState.ON), m_Shooter.getSetStateCommand(ShooterState.OFF), () -> m_Shooter.getShooterState() == ShooterState.OFF);
-        }
+
 
         private Command getShooterTriggerCommand(){
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
-                                                new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                                                new WaitCommand(2),
-                                                m_Shooter.getSetStateCommand(ShooterState.OFF)
-                                                                .andThen(m_Manipulator.getSetStateCommand(
-                                                                                ManipulatorState.OFF)))
+                                                new WaitCommand(2),m_Manipulator.getSetStateCommand(ManipulatorState.OFF))
                                                 .alongWith(
                                                                 new WaitCommand(2),
                                                                 m_Intake.setStateCommand(IntakeState.DISABLED)),
                                 new InstantCommand(),
-                                () -> m_Manipulator.hasNoteSwitch());
+                                () -> m_Manipulator.hasNoteSwitch() && m_Shooter.isAtTargetVelocity());
                 return sequence;
         }
 

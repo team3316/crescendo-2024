@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.motors.DBugSparkFlex;
@@ -61,6 +62,10 @@ public class Shooter extends SubsystemBase {
 
     public Command getSetStateCommand(ShooterState targetState) {
         return new InstantCommand(() -> setState(targetState), this);
+    }
+
+    public Command getShooterSpinCommand(){
+        return new StartEndCommand(() -> setState(ShooterState.ON), () -> setState(ShooterState.OFF), this);
     }
 
     private double getShooterVelocityMPS() {
