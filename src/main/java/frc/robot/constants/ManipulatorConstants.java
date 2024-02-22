@@ -8,7 +8,7 @@ public class ManipulatorConstants {
     public static final int noteSwitchPort = 0;
 
     // gains
-    public static final PIDFGains gains = new PIDFGains(0.1); // TODO: Calibrate
+    public static final PIDFGains gains = new PIDFGains(3.0); // TODO: Calibrate
 
     // positioning
     private static final double gearRatio = 1.0 / 9.0;
@@ -18,8 +18,8 @@ public class ManipulatorConstants {
 
     public class NotePosition { // TODO: Calibrate
         public static final double extract = 0.0; // extract from shooter. in meters
-        public static final double amp = 0.25; // install in amp. in meters
-        public static final double trap = 0.25; // install in trap. in meters
+        public static final double amp = -0.34; // install in amp. in meters
+        public static final double trap = -0.34; // install in trap. in meters
     }
 
     // motor percentages

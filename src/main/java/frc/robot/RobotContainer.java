@@ -115,7 +115,8 @@ public class RobotContainer {
                                 .alongWith(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP)));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP)
-                                .alongWith(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)));
+                                .alongWith(Commands.sequence(new WaitCommand(1),
+                                m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))));
 
                 m_driverController.touchpad()
                                 .onTrue(m_ArmWristSuperStructure.setEncodersToCollect().ignoringDisable(true));// calibrate
