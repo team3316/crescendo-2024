@@ -104,13 +104,16 @@ public class Wrist extends SubsystemBase {
         return new InstantCommand(this::stop)
                 .andThen(
                         new TrapezoidProfileCommand(profile, this::useState, this))
-                .andThen(
-                        Commands.either(
-                                Commands.runOnce(() -> {
-                                    _wristMotor.set(-0.03);
-                                }, this),
-                                Commands.none(),
-                                () -> targetState == ArmWristState.COLLECT));
+                .andThen(getHoldCommand(targetState));
+    }
+
+    private Command getHoldCommand(ArmWristState targetState) {
+        if (targetState == ArmWristState.COLLECT) {
+            return new InstantCommand(() -> {
+                _wristMotor.set(-0.03);
+            }, this);
+        }
+        return new InstantCommand();
     }
 
     public Command getSetStateCommand(ArmWristState targetState) {

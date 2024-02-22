@@ -94,13 +94,16 @@ public class Arm extends SubsystemBase {
                 new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
 
         return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this))
-                .andThen(
-                        Commands.either(
-                                Commands.runOnce(() -> {
-                                    _leader.set(-0.05);
-                                }, this),
-                                Commands.none(),
-                                () -> targetState == ArmWristState.COLLECT));
+                .andThen(getHoldCommand(targetState));
+    }
+
+    private Command getHoldCommand(ArmWristState targetState) {
+        if (targetState == ArmWristState.COLLECT) {
+            return new InstantCommand(() -> {
+                _leader.set(-0.05);
+            }, this);
+        }
+        return new InstantCommand();
     }
 
     public Command getSetStateCommand(ArmWristState targetState) {
