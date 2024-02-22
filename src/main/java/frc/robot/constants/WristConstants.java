@@ -6,8 +6,8 @@ public class WristConstants {
     public static final int wristCANID = 9;
     
     public static final double collectAngle = -110.5; // deg
-    public static final double AMPAngle = -32.68; // deg
-    public static final double TRAPAngle = -32.68; // deg
+    public static final double AMPAngle = -34.68; // deg
+    public static final double TRAPAngle = -34.68; // deg
     public static final double underChainAngle = -110.5; // deg
 
     private static final double gearRatio = 1.0 / 35.0;

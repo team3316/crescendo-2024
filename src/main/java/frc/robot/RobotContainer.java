@@ -106,6 +106,7 @@ public class RobotContainer {
                 m_operatorController.L1().onTrue(getCollectSequence());
                 m_operatorController.R1().onTrue(getShooterSpinCommand());
                 m_operatorController.R2().onTrue(getShooterTriggerCommand());
+                
                 m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
                 m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.COLLECT));
                 m_driverController.povRight()
