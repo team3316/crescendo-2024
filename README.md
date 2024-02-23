@@ -7,24 +7,27 @@
   - [ ] Robot Homing **MVP** Stuck on Guy to verify that bottom MS are always pressed!
   - [ ] Collection
     - [x] Collect NOTE **MVP**
-    - [ ] Collect Single NOTE **P2**
+    - [ ] Collect Single NOTE **P1** @uri
     - [ ] Reject NOTEs **P2**
-    - [ ] NOTE Jam Sequence **P1**
+    - [ ] NOTE Jam Sequence **P2**
   - [ ] Shooting
     - [x] Spin Up and Trigger **MVP**
-    - [ ] Spin Up **P1** @uri
-    - [ ] Trigger **P1** @uri
+    - [ ] Spin Up **P1** @uri #26
+    - [ ] Trigger **P1** @uri #26
     - [x] Automatic Alignment to Speaker **P1**
   - [ ] Amp
-    - [ ] Score Amp Sequence **MVP** PR #23
+    - [ ] Score Amp Sequence **MVP** #23
+    - [ ] Improved Score Amp Sequence (requires mechanical changes) **P2**
     - [ ] Automatic Alignment to Amp **P2**
-  - [ ] Climb & Trap Sequence **MVP** @itamar
+  - [ ] Climb & Trap
+    - [x] Basic Sequence **MVP** @itamar
+    - [ ] Improved sequence (with physical alignment assistance) **P1** @itamar
 - [ ] Autonomous
   - [ ] Leave **MVP** @itamar
-    - [ ] Robot Characterization
-    - [ ] Straight Line Auto
+    - [x] Robot Characterization
+    - [x] Straight Line Auto
   - [ ] Shoot & Leave
-    - [ ] Primary Position **P1**
+    - [ ] Primary Position **P1** @itamar
     - [ ] Secondary Position **P2**
       - [ ] S-Curve Auto
   - [ ] Shoot & Leave & Collect & Shoot
