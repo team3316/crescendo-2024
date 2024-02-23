@@ -11,9 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.struct.SwerveModuleStateStruct;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StructArrayLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +38,9 @@ public class Drivetrain extends SubsystemBase {
     private SwerveDriveOdometry _odometry;
 
     private StructLogEntry<Pose2d> m_poseLog;
+
+    private StructArrayLogEntry<SwerveModuleState> m_modulesCurrentStateLog;
+    private StructArrayLogEntry<SwerveModuleState> m_modulesWantedStateLog;
 
     private static PIDController angleController;
 
@@ -158,10 +163,25 @@ public class Drivetrain extends SubsystemBase {
     private void initTelemetry() {
         DataLog log = DataLogManager.getLog();
         m_poseLog = StructLogEntry.create(log, "/drivetrain/position", new Pose2dStruct());
+        m_modulesCurrentStateLog = StructArrayLogEntry.create(log, "/drivetrain/modules/currentState",
+                new SwerveModuleStateStruct());
+        m_modulesWantedStateLog = StructArrayLogEntry.create(log, "/drivetrain/modules/wantedState",
+                new SwerveModuleStateStruct());
     }
 
     private void updateTelemetry() {
         m_poseLog.append(getPose());
+
+        SwerveModuleState[] currentStates = new SwerveModuleState[4];
+        SwerveModuleState[] wantedStates = new SwerveModuleState[4];
+
+        for (int i = 0; i < _modules.length; i++) {
+            currentStates[i] = _modules[i].getState();
+            wantedStates[i] = _modules[i].getWantedState();
+        }
+
+        m_modulesCurrentStateLog.append(currentStates);
+        m_modulesWantedStateLog.append(wantedStates);
     }
 
     private void updateSDB() {

@@ -29,7 +29,6 @@ import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.arm.ArmWristSuperStructure;
 import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 import frc.robot.subsystems.vision.LimeLight;
 
 public class RobotContainer {
@@ -48,8 +47,6 @@ public class RobotContainer {
 
         private boolean _fieldRelative = true;
 
-        private SwerveSysidCommands m_SysidCommands;
-
         public RobotContainer() {
                 CameraServer.startAutomaticCapture().setResolution(320, 180);
                 m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
@@ -60,8 +57,6 @@ public class RobotContainer {
                                 m_driverController.getCombinedAxis() *
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
-
-                m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
 
                 configureBindings();
         }

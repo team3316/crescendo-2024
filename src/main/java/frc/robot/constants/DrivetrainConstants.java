@@ -10,12 +10,6 @@ import frc.robot.motors.PIDFGains;
  */
 public class DrivetrainConstants {
         public static class SwerveModuleConstants {
-                // TODO: update pidf gains
-                public static final double driveKp = 0; // voltage / (m/sec)
-                public static final double driveKd = 0; // voltage / (m/sec^2)
-                public static final double driveKv = 9 / 4.16; // voltage / (m/sec)
-                public static final double steeringKp = 0.0124; // in 1 / wheel degrees
-
                 public static final double krakenFreeSpeed = 6000; // RPM
                 private static final double driveRatio = 1.0 / 6.12;
                 private static final double steeringRatio = 1.0 / 12.8;
@@ -35,6 +29,12 @@ public class DrivetrainConstants {
                 public static final double driveFreeSpeedMetersPerSecond = krakenFreeSpeed / 60 * drivePositionConversionFactor;
 
                 public static final double driveSpeedLimit = 0.25;
+
+                // TODO: update pidf gains
+                public static final double driveKp = 1; // voltage / (m/sec)
+                public static final double driveKd = 0; // voltage / (m/sec^2)
+                public static final double driveKv = 12/driveFreeSpeedMetersPerSecond; // voltage / (m/sec)
+                public static final double steeringKp = 0.0124; // in 1 / wheel degrees
                 
                 public final Translation2d position;
                 public final int idDrive;
