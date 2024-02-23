@@ -113,7 +113,7 @@ public class RobotContainer {
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
                 m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
                 m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP)
-                                .alongWith(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP)));
+                                .alongWith(new WaitCommand(2).andThen(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP))));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP)
                                 .alongWith(Commands.sequence(new WaitCommand(1),
