@@ -5,6 +5,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -18,6 +19,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StructArrayLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
@@ -44,6 +46,22 @@ public class Drivetrain extends SubsystemBase {
 
     private static PIDController angleController;
 
+    private static PIDController goToDirectionController;
+
+    public static enum DIRECTIONS {
+        LEFT_CLIMB(0),
+        RIGHT_CLIMB(0),
+        DRIVER(0),
+        AMP(0);
+
+        public final double angleDeg;
+
+        private DIRECTIONS(double angleDeg) {
+            this.angleDeg = angleDeg;
+        }
+    }
+
+
     public Drivetrain() {
         this._modules = new SwerveModule[] {
                 new SwerveModule(DrivetrainConstants.TRModule),
@@ -62,6 +80,9 @@ public class Drivetrain extends SubsystemBase {
         angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
+
+        goToDirectionController = new PIDController(DrivetrainConstants.goToDirectionKp, 0, 0);
+        goToDirectionController.enableContinuousInput(-180, 180);
 
         calibrateSteering();
 
@@ -85,6 +106,41 @@ public class Drivetrain extends SubsystemBase {
         var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
 
         setDesiredStates(moduleStates);
+    }
+
+    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d rightJoystick) {
+        DIRECTIONS targetDirection = null;
+        double rightJoystickMag = rightJoystick.getNorm();
+        double rightJoystickAngleDeg = rightJoystick.getAngle().getDegrees();
+
+        if (rightJoystickMag >= DrivetrainConstants.rightJoystickDeadband) {
+            for (DIRECTIONS d : DIRECTIONS.values()) {
+                if(d == DIRECTIONS.AMP){
+                    if(DriverStation.getAlliance().toString() == "blue"){
+                        rightJoystickAngleDeg = Math.abs(rightJoystickAngleDeg);//Because when you mevw the joystick all the way to the left the value changes from 180 to -180
+                    }
+                    else{
+                        rightJoystickAngleDeg = Math.abs(rightJoystickAngleDeg)-180;
+                    }
+                }
+                if (Math.abs(d.angleDeg - rightJoystickAngleDeg) <= DrivetrainConstants.rightJoystickAngleErrorDeg) {
+                    targetDirection = d;
+                    break;
+                }
+            }
+        }
+
+        SmartDashboard.putNumber("Joystick Mag", rightJoystickMag);
+        SmartDashboard.putNumber("Joystick Angle", rightJoystickAngleDeg);
+
+        if(targetDirection!=null){
+            if(goToDirectionController.getSetpoint() != targetDirection.angleDeg){
+                goToDirectionController.setSetpoint(targetDirection.angleDeg);
+            }
+
+            rot = goToDirectionController.calculate(getRotation2d().getRadians());
+        }
+        drive(xSpeed, ySpeed, rot, fieldRelative);
     }
 
     /**
