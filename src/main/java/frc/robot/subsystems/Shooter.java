@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.motors.DBugSparkFlex;
@@ -63,6 +64,10 @@ public class Shooter extends SubsystemBase {
         return new InstantCommand(() -> setState(targetState), this);
     }
 
+    public Command getShooterSpinCommand(){
+        return new StartEndCommand(() -> setState(ShooterState.ON), () -> setState(ShooterState.OFF), this);
+    }
+
     private double getShooterVelocityMPS() {
         return this._leaderLeft.getVelocity();
     }
@@ -87,6 +92,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter velocity", getShooterVelocityMPS());
         SmartDashboard.putNumber("shooter BL current", _leaderLeft.getOutputCurrent());
         SmartDashboard.putNumber("shooter BR current", _followerRight.getOutputCurrent());
+        SmartDashboard.putBoolean("Is at target velocity", isAtTargetVelocity());
 
     }
 
