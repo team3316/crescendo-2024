@@ -163,10 +163,6 @@ public class SwerveModule {
         _targetState = desiredState;
     }
 
-    public void driveByVoltage(double voltage) {
-        _driveMotor.setVoltage(voltage);
-    }
-
     /*************
      * Telemetry *
      *************/

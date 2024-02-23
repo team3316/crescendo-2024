@@ -104,12 +104,6 @@ public class Drivetrain extends SubsystemBase {
         drive(xSpeed, ySpeed, rot, fieldRelative);
     }
 
-    public void voltageDrive(Measure<Voltage> voltMeasure) {
-        for (SwerveModule module : _modules) {
-            module.driveByVoltage(voltMeasure.magnitude());
-        }
-    }
-
     public void periodic() {
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), getSwerveModulePositions());
