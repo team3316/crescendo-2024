@@ -173,11 +173,11 @@ public class RobotContainer {
 
         private Command getShooterTriggerCommand(){
                 Command sequence = new ConditionalCommand(
-                                Commands.sequence(
-                                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                                                new WaitCommand(2),m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
-                                new InstantCommand(),
-                                () -> m_ArmWristSuperStructure.getArmState() == ArmState.COLLECT && m_Shooter.isAtTargetVelocity());
+                        Commands.sequence(
+                                        m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                        new WaitCommand(2),m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
+                        new InstantCommand(),
+                        () -> m_ArmWristSuperStructure.getArmState() == ArmState.COLLECT && m_Shooter.isAtTargetVelocity() && m_Shooter.getShooterState() == ShooterState.ON);
                 return sequence;
         }
 

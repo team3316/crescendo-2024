@@ -92,6 +92,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter velocity", getShooterVelocityMPS());
         SmartDashboard.putNumber("shooter BL current", _leaderLeft.getOutputCurrent());
         SmartDashboard.putNumber("shooter BR current", _followerRight.getOutputCurrent());
+        SmartDashboard.putBoolean("Is at target velocity", isAtTargetVelocity());
 
     }
 
