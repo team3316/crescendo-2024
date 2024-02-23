@@ -56,8 +56,6 @@ public class RobotContainer {
 
         private boolean _fieldRelative = true;
 
-        private SwerveSysidCommands m_SysidCommands;
-
         public RobotContainer() {
                 CameraServer.startAutomaticCapture();
                 m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
@@ -68,8 +66,6 @@ public class RobotContainer {
                                 m_driverController.getCombinedAxis() *
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
-
-                m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
 
                 configureBindings();
         }
@@ -112,7 +108,7 @@ public class RobotContainer {
                 m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
                 m_operatorController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
-                // m_o[]\]ratorController.square().onTrue(getAMPSequence());
+                // m_oratorController.square().onTrue(getAMPSequence());
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP));
 
                 m_driverController.touchpad()
