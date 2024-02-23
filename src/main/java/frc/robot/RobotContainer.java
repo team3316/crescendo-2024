@@ -49,8 +49,6 @@ public class RobotContainer {
 
     private boolean _fieldRelative = true;
 
-    private SwerveSysidCommands m_SysidCommands;
-
     public RobotContainer() {
         m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                 m_driverController.getLeftY() *
@@ -95,8 +93,6 @@ public class RobotContainer {
          * arm to amp in case of mistake
          */
         //// m_buttonController.circle().onTrue(m_Arm.getSetStateCommand(ArmState.AMP));
-
-        m_driverController.cross().onTrue(m_SysidCommands.fullSysidRun());
     }
 
     private Command getCollectSequence() {
@@ -151,8 +147,6 @@ public class RobotContainer {
 
     private void initChooser() {
         SmartDashboard.putData("Auto Chooser", chooser);
-        chooser.addOption("testauto", _autoFactory.createAuto("testauto"));
-
     }
 
     /**
