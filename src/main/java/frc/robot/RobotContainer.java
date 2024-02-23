@@ -7,6 +7,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Amps;
 
+import java.util.function.BooleanSupplier;
+
 import javax.sound.midi.Sequence;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -61,14 +63,27 @@ public class RobotContainer {
 
         public RobotContainer() {
                 CameraServer.startAutomaticCapture().setResolution(320, 180);
-                m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
-                                m_driverController.getLeftY() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                                m_driverController.getLeftX() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                                m_driverController.getCombinedAxis() *
-                                                DrivetrainConstants.maxRotationSpeedRadPerSec,
-                                _fieldRelative,new Translation2d(-m_driverController.getRightX(), m_driverController.getRightY())), m_Drivetrain));
+                m_Drivetrain.setDefaultCommand(
+                        new ConditionalCommand(
+                            new RunCommand(
+                                () -> m_Drivetrain.drive(
+                                    m_driverController.getLeftY() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                                    m_driverController.getLeftX() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                                    m_driverController.getCombinedAxis() * DrivetrainConstants.maxRotationSpeedRadPerSec,
+                                    _fieldRelative),
+                                m_Drivetrain),
+                            new RunCommand(
+                                () -> m_Drivetrain.driveAbsAngle(
+                                    m_driverController.getLeftY() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                                    m_driverController.getLeftX() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                                    new Translation2d(-m_driverController.getRightX(), m_driverController.getRightY()),
+                                    _fieldRelative),
+                                m_Drivetrain),
+                            () -> new Translation2d(-m_driverController.getRightX(), m_driverController.getRightY())
+                                .getNorm() < DrivetrainConstants.rightJoystickDeadband
+                        )
+                    );
+                ;
 
                 m_SysidCommands = new SwerveSysidCommands(m_Drivetrain);
 
@@ -113,16 +128,16 @@ public class RobotContainer {
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.UNDER_CHAIN));
                 m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.ALIGN));
                 m_driverController.povLeft()
-                        .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP)
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
-                        .andThen(new WaitCommand(2.2))
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                                .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.TRAP)
+                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
+                                                .andThen(new WaitCommand(2.2))
+                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
                 // m_operatorController.square().onTrue(getAMPSequence());
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmState.AMP)
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP))
-                        .andThen(new WaitCommand(1.8))
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP))
+                                .andThen(new WaitCommand(1.8))
+                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
 
                 m_driverController.touchpad()
                                 .onTrue(m_ArmWristSuperStructure.setEncodersToCollect().ignoringDisable(true));// calibrate
@@ -165,11 +180,13 @@ public class RobotContainer {
                 return sequence;
         }
 
-        private Command getShooterSpinCommand(){
-                return new ConditionalCommand(m_Shooter.getSetStateCommand(ShooterState.ON), m_Shooter.getSetStateCommand(ShooterState.OFF), () -> m_Shooter.getShooterState() == ShooterState.OFF);
+        private Command getShooterSpinCommand() {
+                return new ConditionalCommand(m_Shooter.getSetStateCommand(ShooterState.ON),
+                                m_Shooter.getSetStateCommand(ShooterState.OFF),
+                                () -> m_Shooter.getShooterState() == ShooterState.OFF);
         }
 
-        private Command getShooterTriggerCommand(){
+        private Command getShooterTriggerCommand() {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
                                                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
