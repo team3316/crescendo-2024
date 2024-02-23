@@ -89,7 +89,7 @@ public class RobotContainer {
                 m_driverController.share().onTrue(
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
-                m_operatorController.L1().onTrue(getCollectSequence());
+                m_operatorController.L1().onTrue(getCollectSingleNoteSequence());
                 m_operatorController.R1().onTrue(getShooterSpinCommand());
                 m_operatorController.R2().onTrue(getShooterTriggerCommand());
                 // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
@@ -128,6 +128,22 @@ public class RobotContainer {
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
                                 new WaitCommand(2),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
+                return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
+        }
+
+        private Command getCollectSingleNoteSequence(){
+                Command sequence = Commands.sequence(
+                        m_Shooter.getSetStateCommand(ShooterState.OFF),
+                        m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
+                        m_Intake.setStateCommand(IntakeState.COLLECTING),
+                        new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
+                        new WaitUntilCommand(() -> !m_Intake.isNoteInIntake()).andThen(
+                                        m_Intake.setStateCommand(IntakeState.EJECT))
+                                .alongWith(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()).andThen(
+                                        m_Manipulator.getSetStateCommand(ManipulatorState.OFF))),
+                        new WaitCommand(2),
+                        m_Intake.setStateCommand(IntakeState.DISABLED));
                 return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
         }
 
