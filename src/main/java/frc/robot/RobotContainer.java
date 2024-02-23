@@ -101,10 +101,10 @@ public class RobotContainer {
                 m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
                 m_operatorController.povDown()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
-                m_operatorController.povRight()
+                m_driverController.povRight()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.UNDER_CHAIN));
-                m_operatorController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.ALIGN));
-                m_operatorController.povLeft()
+                m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.ALIGN));
+                m_driverController.povLeft()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
                                                 .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
                                                 .andThen(new WaitCommand(2.1))
@@ -116,8 +116,6 @@ public class RobotContainer {
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP))
                         .andThen(new WaitCommand(1.8))
                         .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
-
-                m_driverController.povUp().onTrue(m_Climber.getClimbCommand());
 
                 m_Climber.setDefaultCommand(
                                 new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
@@ -186,12 +184,6 @@ public class RobotContainer {
                                                                 .getSetStateCommand(ArmWristState.COLLECT)),
                                 m_Climber);
                 return sequence;
-        }
-
-        private Command getClimbSequence() {
-                return m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
-                                .andThen(m_Climber.getClimbCommand())
-                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP));
         }
 
         /**
