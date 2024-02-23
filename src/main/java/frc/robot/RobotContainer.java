@@ -7,8 +7,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Amps;
 
-import java.util.function.BooleanSupplier;
-
 import javax.sound.midi.Sequence;
 
 import edu.wpi.first.cameraserver.CameraServer;
