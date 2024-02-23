@@ -41,20 +41,8 @@ public class Drivetrain extends SubsystemBase {
 
     private static PIDController angleController;
 
-    private static PIDController goToDirectionController;
+   
 
-    public static enum DIRECTIONS {
-        LEFT_CLIMB(0),
-        RIGHT_CLIMB(0),
-        DRIVER(0),
-        AMP(0);
-
-        public final double angleDeg;
-
-        private DIRECTIONS(double angleDeg) {
-            this.angleDeg = angleDeg;
-        }
-    }
 
 
     public Drivetrain() {
@@ -103,34 +91,16 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
     }
 
-    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d rightJoystick) {
-        DIRECTIONS targetDirection = null;
-        double rightJoystickMag = rightJoystick.getNorm();
-        double rightJoystickAngleDeg = rightJoystick.getAngle().getDegrees();
+    
 
-        if (rightJoystickMag >= DrivetrainConstants.rightJoystickDeadband) {
-            for (DIRECTIONS d : DIRECTIONS.values()) {
-                if(d == DIRECTIONS.AMP){
-                    if(DriverStation.getAlliance().toString() == "blue"){
-                        rightJoystickAngleDeg = Math.abs(rightJoystickAngleDeg);//Because when you mevw the joystick all the way to the left the value changes from 180 to -180
-                    }
-                    else{
-                        rightJoystickAngleDeg = Math.abs(rightJoystickAngleDeg)-180;
-                    }
-                }
-                if (Math.abs(d.angleDeg - rightJoystickAngleDeg) <= DrivetrainConstants.rightJoystickAngleErrorDeg) {
-                    targetDirection = d;
-                    break;
-                }
-            }
-        }
-
-        SmartDashboard.putNumber("Joystick Mag", rightJoystickMag);
-        SmartDashboard.putNumber("Joystick Angle", rightJoystickAngleDeg);
-
-        if(targetDirection!=null){
-            if(goToDirectionController.getSetpoint() != targetDirection.angleDeg){
-                goToDirectionController.setSetpoint(targetDirection.angleDeg);
+    private double snapToTargetAngles(double inputAngle) {
+        if(-135 < inputAngle && inputAngle < -45) return -90;//forward
+        else if(150 < inputAngle && inputAngle < -135) return 180;//blue amp
+        else if(-45 < inputAngle && inputAngle < 30) return 0;//red amp
+        else if(30 < inputAngle && inputAngle < 90) return 60; // climb right stage
+        else if(90 < inputAngle && inputAngle < 150) return 120;//climb left stage
+        return -1;
+    }
             }
 
             rot = goToDirectionController.calculate(getRotation2d().getRadians());
