@@ -163,17 +163,19 @@ public class Drivetrain extends SubsystemBase {
     private void initTelemetry() {
         DataLog log = DataLogManager.getLog();
         m_poseLog = StructLogEntry.create(log, "/drivetrain/position", new Pose2dStruct());
-        m_modulesCurrentStateLog = StructArrayLogEntry.create(log, "/drivetrain/modules/currentState", new SwerveModuleStateStruct());
-        m_modulesWantedStateLog = StructArrayLogEntry.create(log, "/drivetrain/modules/wantedState", new SwerveModuleStateStruct());
+        m_modulesCurrentStateLog = StructArrayLogEntry.create(log, "/drivetrain/modules/currentState",
+                new SwerveModuleStateStruct());
+        m_modulesWantedStateLog = StructArrayLogEntry.create(log, "/drivetrain/modules/wantedState",
+                new SwerveModuleStateStruct());
     }
 
     private void updateTelemetry() {
         m_poseLog.append(getPose());
-        
+
         SwerveModuleState[] currentStates = new SwerveModuleState[4];
         SwerveModuleState[] wantedStates = new SwerveModuleState[4];
-        
-        for(int i = 0 ; i < _modules.length ; i++) {
+
+        for (int i = 0; i < _modules.length; i++) {
             currentStates[i] = _modules[i].getState();
             wantedStates[i] = _modules[i].getWantedState();
         }
