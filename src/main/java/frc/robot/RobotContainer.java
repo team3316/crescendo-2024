@@ -6,6 +6,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,6 +60,7 @@ public class RobotContainer {
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
         this._autoFactory = new AutoFactory(m_Drivetrain);
+        NamedCommands.registerCommand("Shoot", getShootSequence());
         this.chooser = AutoBuilder.buildAutoChooser();
         initChooser();
         // Configure the trigger bindings

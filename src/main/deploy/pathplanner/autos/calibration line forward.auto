@@ -20,6 +20,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "calibration",
   "choreoAuto": false
 }
