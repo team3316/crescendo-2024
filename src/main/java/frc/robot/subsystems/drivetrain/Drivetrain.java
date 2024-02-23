@@ -43,7 +43,7 @@ public class Drivetrain extends SubsystemBase {
 
    
 
-
+  
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -64,9 +64,7 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
-        goToDirectionController = new PIDController(DrivetrainConstants.goToDirectionKp, 0, 0);
-        goToDirectionController.enableContinuousInput(-180, 180);
-
+      
         calibrateSteering();
 
     }
@@ -101,11 +99,16 @@ public class Drivetrain extends SubsystemBase {
         else if(90 < inputAngle && inputAngle < 150) return 120;//climb left stage
         return -1;
     }
-            }
 
-            rot = goToDirectionController.calculate(getRotation2d().getRadians());
+    public void driveAbsAngle(double xSpeed, double ySpeed, Translation2d direction, boolean fieldRelative) {
+        double targetDirection = snapToTargetAngles(direction.getAngle().getDegrees());
+        if (angleController.getSetpoint() != targetDirection) {
+            angleController.setSetpoint(targetDirection);
         }
-        drive(xSpeed, ySpeed, rot, fieldRelative);
+
+      var  rot = targetDirection != -1 || angleController.atSetpoint() ? 0 : angleController.calculate(getRotation2d().getRadians());
+       drive(xSpeed, ySpeed, rot, fieldRelative);
+
     }
 
     /**
