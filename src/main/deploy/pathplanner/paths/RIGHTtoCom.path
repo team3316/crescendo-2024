@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3576779647621067,
-        "y": 6.542087763510444
+        "x": 0.7141939224496041,
+        "y": 6.659084862112717
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3576779647621064,
-        "y": 6.542087763510444
+        "x": 1.7141939224496054,
+        "y": 6.659084862112717
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.595897258302831,
-        "y": 6.542087763510444
+        "x": 2.9078895212422267,
+        "y": 7.010076157919538
       },
       "prevControl": {
-        "x": 1.595897258302831,
-        "y": 6.542087763510444
+        "x": 1.9078895212422267,
+        "y": 7.010076157919538
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "ShootAndCom",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 59.67639313745004,
     "velocity": 0
   },
   "useDefaultConstraints": true
