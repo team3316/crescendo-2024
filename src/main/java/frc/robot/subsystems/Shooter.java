@@ -45,7 +45,7 @@ public class Shooter extends SubsystemBase {
 
         // sets the shooter state and the roller state to OFF in the beginning
         this._shooterState = ShooterState.OFF;
-        SmartDashboard.putString("Shooter/shooter state:", "OFF");
+        SmartDashboard.putString("Shooter/state:", "OFF");
 
     }
 
@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase {
         this._leaderLeft.setReference(shooterState.velocity, ControlType.kVelocity);
 
         // prints the state change onto the SmartDashboard
-        SmartDashboard.putString("Shooter/shooter state:", this._shooterState.toString());
+        SmartDashboard.putString("Shooter/state:", this._shooterState.toString());
     }
 
     public Command getSetStateCommand(ShooterState targetState) {
@@ -74,9 +74,9 @@ public class Shooter extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("Shooter/Shooter velocity", getShooterVelocityMPS());
-        SmartDashboard.putNumber("Shooter/shooter BL current", _leaderLeft.getOutputCurrent());
-        SmartDashboard.putNumber("Shooter/shooter BR current", _followerRight.getOutputCurrent());
+        SmartDashboard.putNumber("Shooter/velocity", getShooterVelocityMPS());
+        SmartDashboard.putNumber("Shooter/BL current", _leaderLeft.getOutputCurrent());
+        SmartDashboard.putNumber("Shooter/BR current", _followerRight.getOutputCurrent());
     }
 
     @Override
@@ -92,6 +92,7 @@ public class Shooter extends SubsystemBase {
             // leaderUpLeft.set(0.5);
         }
         SmartDashboard.putNumber("velocity, mps", SmartDashboard.getNumber("velocity, mps", 0));*/
+        SmartDashboard.putBoolean("Shooter/is at target",isAtTargetVelocity());
         if(UPDATE_DASHBOARD){
         updateSDB();
         }

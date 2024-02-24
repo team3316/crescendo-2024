@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putBoolean("Intake/intake has note", isNoteInIntake());
+        SmartDashboard.putBoolean("Intake/has note", isNoteInIntake());
     }
 
     @Override

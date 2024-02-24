@@ -59,7 +59,7 @@ public class Manipulator extends SubsystemBase {
         this._state = ManipulatorState.OFF;
 
         // initialize values into the SDB
-        SmartDashboard.putString("Manipulator/Manipulator State", this._state.toString());
+        SmartDashboard.putString("Manipulator/State", this._state.toString());
     }
 
     public ManipulatorState getManipulatorState() {
@@ -75,7 +75,7 @@ public class Manipulator extends SubsystemBase {
 
         this._manipulatorMotor.set(state.percentage);
 
-        SmartDashboard.putString("Manipulator/Manipulator State", this._state.toString());
+        SmartDashboard.putString("Manipulator/State", this._state.toString());
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
@@ -111,14 +111,14 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putBoolean("Manipulator/has note", hasNoteSwitch());
-        SmartDashboard.putNumber("Manipulator/manipulator note position", getNotePosition());
-        SmartDashboard.putNumber("Manipulator/manipulator current current", _manipulatorMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Manipulator/note position", getNotePosition());
+        SmartDashboard.putNumber("Manipulator/current", _manipulatorMotor.getOutputCurrent());
     }
     @Override
     public void periodic() {
         resetNotePositionPeriodic();
 
+        SmartDashboard.putBoolean("Manipulator/has note", hasNoteSwitch());
         if(UPDATE_DASHBOARD) {
             updateSDB();
         }
