@@ -155,8 +155,8 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Chooser", m_chooser);
         //basic
         m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
-        m_chooser.addOption("left shoot and exit", m_autoFactory.createAuto("LEFT_Shoot_Com"));
-        m_chooser.addOption("right shoot and exit", m_autoFactory.createAuto("RIGHT_Shoot_Com"));
+        m_chooser.addOption("right shoot and exit", m_autoFactory.createAuto("LEFT_Shoot_Com"));//oppisate in path, no idea how changing name will effect PP
+        m_chooser.addOption("left shoot and exit", m_autoFactory.createAuto("RIGHT_Shoot_Com"));//TODO: fix befor ISR3
 
         //"orbit" 
         m_chooser.addOption("mid 4 notes", m_autoFactory.createAuto("MID_ORBIT"));
