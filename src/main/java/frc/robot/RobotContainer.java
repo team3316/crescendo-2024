@@ -24,6 +24,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Manipulator.ManipulatorState;
+import frc.robot.subsystems.Manipulator.NotePosition;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.arm.ArmWristSuperStructure;
@@ -99,18 +100,13 @@ public class RobotContainer {
                 m_driverController.povRight()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.UNDER_CHAIN));
                 m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.ALIGN));
-                m_driverController.povLeft()
-                                .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
-                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.PRE_TRAP))
-                                                .andThen(new WaitCommand(2.1))
-                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
+                                .alongWith(new WaitCommand(2).andThen(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP))));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
                 m_operatorController.L2().onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP), new WaitCommand(3), m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
-                // m_operatorController.square().onTrue(getAMPSequence());
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP))
-                        .andThen(new WaitCommand(1.8))
-                        .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                                .alongWith(Commands.sequence(new WaitCommand(1),
+                                m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))));
 
                 m_Climber.setDefaultCommand(
                                 new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
@@ -131,29 +127,13 @@ public class RobotContainer {
                 return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
         }
 
-        private Command getShootSequence() {
-                Command sequence = new ConditionalCommand(
-                                Commands.sequence(
-                                                m_Shooter.getSetStateCommand(ShooterState.ON),
-                                                new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-                                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                                                new WaitCommand(2),
-                                                m_Shooter.getSetStateCommand(ShooterState.OFF)
-                                                                .andThen(m_Manipulator.getSetStateCommand(
-                                                                                ManipulatorState.OFF)))
-                                                .alongWith(
-                                                                new WaitCommand(2),
-                                                                m_Intake.setStateCommand(IntakeState.DISABLED)),
-                                new InstantCommand(),
-                                () -> m_Manipulator.hasNoteSwitch());
-                return sequence;
+        private Command getShooterSpinCommand() {
+                return new ConditionalCommand(m_Shooter.getSetStateCommand(ShooterState.ON),
+                                m_Shooter.getSetStateCommand(ShooterState.OFF),
+                                () -> m_Shooter.getShooterState() == ShooterState.OFF);
         }
 
-        private Command getShooterSpinCommand(){
-                return new ConditionalCommand(m_Shooter.getSetStateCommand(ShooterState.ON), m_Shooter.getSetStateCommand(ShooterState.OFF), () -> m_Shooter.getShooterState() == ShooterState.OFF);
-        }
-
-        private Command getShooterTriggerCommand(){
+        private Command getShooterTriggerCommand() {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
                                                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
@@ -167,17 +147,6 @@ public class RobotContainer {
                                                                 m_Intake.setStateCommand(IntakeState.DISABLED)),
                                 new InstantCommand(),
                                 () -> m_Manipulator.hasNoteSwitch());
-                return sequence;
-        }
-
-        private Command getAMPSequence() {
-                Command sequence = new StartEndCommand(
-                                () -> m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
-                                                .andThen(m_Manipulator.getSetStateCommand(ManipulatorState.AMP)),
-                                () -> m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
-                                                .andThen(m_ArmWristSuperStructure
-                                                                .getSetStateCommand(ArmWristState.COLLECT)),
-                                m_Climber);
                 return sequence;
         }
 
