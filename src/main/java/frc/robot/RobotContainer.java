@@ -49,7 +49,6 @@ public class RobotContainer {
         private boolean _fieldRelative = true;
 
         public RobotContainer() {
-                CameraServer.startAutomaticCapture().setResolution(320, 180);
                 m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
                                 m_driverController.getLeftY() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
