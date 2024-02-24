@@ -60,7 +60,7 @@ public class LimeLight extends SubsystemBase {
 
             SmartDashboard.putBoolean("tv", true);
             SmartDashboard.putNumber("tx", LimelightHelpers.getTX(null));
-        } else if (SmartDashboard.getBoolean("hasTarget", false)) {
+        } else if (SmartDashboard.getBoolean("tv", false)) {
             // Zero data when we lose the target.
             SmartDashboard.putBoolean("tv", false);
             SmartDashboard.putNumber("tx", 0.0);
