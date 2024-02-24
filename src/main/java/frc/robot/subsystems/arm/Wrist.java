@@ -94,8 +94,8 @@ public class Wrist extends SubsystemBase {
                 .withVelocity(targetState.velocity)
                 .withFeedForward(feedforward));
 
-        SmartDashboard.putNumber("target wrist position (deg)", targetState.position);
-        SmartDashboard.putNumber("target wrist velocity (deg/sec)", targetState.velocity);
+        SmartDashboard.putNumber("Wrist/target wrist position (deg)", targetState.position);
+        SmartDashboard.putNumber("Wrist/target wrist velocity (deg|sec)", targetState.velocity);
     }
 
     private Command generateSetStateCommand(ArmWristState targetState) {
@@ -127,10 +127,10 @@ public class Wrist extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("current wrist position", getPositionDeg());
-        SmartDashboard.putNumber("current wrist velocity", getVelocityDegPerSec());
-        SmartDashboard.putNumber("wrist absolute position", getAbsolutePositionDeg());
-        SmartDashboard.putNumber("wrist applied voltage", _wristMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Wrist/current wrist position", getPositionDeg());
+        SmartDashboard.putNumber("Wrist/current wrist velocity", getVelocityDegPerSec());
+        SmartDashboard.putNumber("Wrist/wrist absolute position", getAbsolutePositionDeg());
+        SmartDashboard.putNumber("Wrist/wrist applied voltage", _wristMotor.getMotorVoltage().getValueAsDouble());
     }
 
     @Override
