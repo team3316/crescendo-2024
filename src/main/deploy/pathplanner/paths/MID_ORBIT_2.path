@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5763977418691195,
-        "y": 5.567111941824834
+        "x": 2.742143631555673,
+        "y": 5.537862667174266
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.108409347460027,
-        "y": 5.567111941824834
+        "x": 2.2741552371465805,
+        "y": 5.537862667174266
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "collect wing middle"
     },
     {
       "anchor": {
-        "x": 1.3771774811958186,
-        "y": 5.567111941824834
+        "x": 1.3089291736778261,
+        "y": 5.537862667174266
       },
       "prevControl": {
-        "x": 1.8451658756049114,
-        "y": 5.557362183607978
+        "x": 1.776917568086919,
+        "y": 5.52811290895741
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "start mid"
     }
   ],
   "rotationTargets": [],

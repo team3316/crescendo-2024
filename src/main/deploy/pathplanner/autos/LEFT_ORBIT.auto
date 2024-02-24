@@ -40,12 +40,6 @@
           "data": {
             "pathName": "MID_ORBIT_4"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MIDtoHalf"
-          }
         }
       ]
     }

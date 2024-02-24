@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3576779647621067,
-        "y": 4.5531370872718
+        "x": 0.7434431971001721,
+        "y": 4.465389263320095
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6501707112677895,
-        "y": 4.270394098982973
+        "x": 1.0359359436058546,
+        "y": 4.182646275031268
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "start right"
     },
     {
       "anchor": {
-        "x": 2.5666479836522633,
-        "y": 4.1046482092964185
+        "x": 2.547148467218551,
+        "y": 4.085148692862707
       },
       "prevControl": {
-        "x": 2.069410314592602,
-        "y": 4.0363999017784264
+        "x": 2.040161039942034,
+        "y": 4.124147725730131
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "collect wing bottom"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "ORBIT_MID",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -61.032339353935996,
     "velocity": 0
   },
   "useDefaultConstraints": true

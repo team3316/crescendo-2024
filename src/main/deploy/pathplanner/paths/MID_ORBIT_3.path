@@ -3,34 +3,52 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.386927239412675,
-        "y": 5.567111941824834
+        "x": 1.3089291736778261,
+        "y": 5.537862667174266
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.488649917917414,
-        "y": 5.547612425391122
+        "x": 2.293654753580292,
+        "y": 5.216120646018014
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "start mid"
     },
     {
       "anchor": {
-        "x": 2.586147500085975,
-        "y": 4.1046482092964185
+        "x": 2.547148467218551,
+        "y": 4.085148692862707
       },
       "prevControl": {
         "x": 1.8354161173880559,
-        "y": 4.046149659995282
+        "y": 4.143647242163843
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "collect wing bottom"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Collect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
