@@ -94,19 +94,26 @@ public class RobotContainer {
                 m_operatorController.R1().onTrue(getShooterSpinCommand());
                 m_operatorController.R2().onTrue(getShooterTriggerCommand());
                 // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
-                m_operatorController.circle().onTrue(new ConditionalCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF), m_Manipulator.getSetStateCommand(ManipulatorState.AMP), () -> m_Manipulator.getManipulatorState() == ManipulatorState.AMP));
+                m_operatorController.circle()
+                                .onTrue(new ConditionalCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
+                                                m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
+                                                () -> m_Manipulator.getManipulatorState() == ManipulatorState.AMP));
                 m_operatorController.povDown()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
                 m_driverController.povRight()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.UNDER_CHAIN));
                 m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.ALIGN));
                 m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
-                                .alongWith(new WaitCommand(2).andThen(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP))));
+                                .alongWith(new WaitCommand(2).andThen(
+                                                m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP))));
                 m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
-                m_operatorController.L2().onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP), new WaitCommand(3), m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                m_operatorController.L2()
+                                .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP),
+                                                new WaitCommand(3),
+                                                m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                                 .alongWith(Commands.sequence(new WaitCommand(1),
-                                m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))));
+                                                m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))));
 
                 m_Climber.setDefaultCommand(
                                 new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
