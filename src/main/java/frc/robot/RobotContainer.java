@@ -94,7 +94,7 @@ public class RobotContainer {
                 m_operatorController.R1().onTrue(getShooterSpinCommand());
                 m_operatorController.R2().onTrue(getShooterTriggerCommand());
                 // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
-                m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
+                m_operatorController.circle().onTrue(new ConditionalCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF), m_Manipulator.getSetStateCommand(ManipulatorState.AMP), () -> m_Manipulator.getManipulatorState() == ManipulatorState.AMP));
                 m_operatorController.povDown()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
                 m_driverController.povRight()
