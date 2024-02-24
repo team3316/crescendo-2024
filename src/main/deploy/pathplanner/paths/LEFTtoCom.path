@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootAndCom",
+  "folder": "basic",
   "previewStartingState": {
     "rotation": -60.80251395393561,
     "velocity": 0

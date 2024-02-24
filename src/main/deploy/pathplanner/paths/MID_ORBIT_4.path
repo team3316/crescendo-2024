@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.586147500085975,
-        "y": 4.1046482092964185
+        "x": 2.547148467218551,
+        "y": 4.085148692862707
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1181591056768823,
-        "y": 4.1046482092964185
+        "x": 2.0791600728094584,
+        "y": 4.085148692862707
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "collect wing bottom"
     },
     {
       "anchor": {
-        "x": 1.3771774811958186,
-        "y": 5.567111941824834
+        "x": 1.3089291736778261,
+        "y": 5.537862667174266
       },
       "prevControl": {
-        "x": 2.1181591056768823,
-        "y": 5.693858798643963
+        "x": 2.0499107981588898,
+        "y": 5.664609523993395
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "start mid"
     }
   ],
   "rotationTargets": [],
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ORBIT_MID",
+  "folder": "orbit",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

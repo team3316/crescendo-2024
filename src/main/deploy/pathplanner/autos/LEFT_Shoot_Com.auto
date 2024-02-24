@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6849446477990359,
-      "y": 4.426390230452671
+      "x": 0.7434431971001721,
+      "y": 4.465389263320095
     },
     "rotation": -58.46520809481177
   },
@@ -26,6 +26,6 @@
       ]
     }
   },
-  "folder": "Shoot_Com",
+  "folder": null,
   "choreoAuto": false
 }

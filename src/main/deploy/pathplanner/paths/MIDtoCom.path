@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.488649917917414,
+        "x": 3.4458358964111295,
         "y": 5.537862667174266
       },
       "prevControl": {
-        "x": 1.4886499179174142,
+        "x": 2.4458358964111295,
         "y": 5.537862667174266
       },
       "nextControl": null,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootAndCom",
+  "folder": "basic",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

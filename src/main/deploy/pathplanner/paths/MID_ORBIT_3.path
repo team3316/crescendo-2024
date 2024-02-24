@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ORBIT_MID",
+  "folder": "orbit",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
