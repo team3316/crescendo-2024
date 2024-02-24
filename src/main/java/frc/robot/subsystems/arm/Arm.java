@@ -25,7 +25,7 @@ import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 
 public class Arm extends SubsystemBase {
 
-    private static final boolean UPDATE_DASHBOARD = false;
+    private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
@@ -117,8 +117,8 @@ public class Arm extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("Arm/current arm position (deg)", getPositionDeg());
-        SmartDashboard.putNumber("Arm/current arm velocity (deg/s)", getVelocityDegPerSec());
+        SmartDashboard.putNumber("Arm/arm position (deg)", getPositionDeg());
+        SmartDashboard.putNumber("Arm/arm velocity (deg/s)", getVelocityDegPerSec());
         SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
     }
 

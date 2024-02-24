@@ -127,10 +127,9 @@ public class Wrist extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("Wrist/current wrist position", getPositionDeg());
-        SmartDashboard.putNumber("Wrist/current wrist velocity", getVelocityDegPerSec());
+        SmartDashboard.putNumber("Wrist/wrist position", getPositionDeg());
+        SmartDashboard.putNumber("Wrist/wrist velocity", getVelocityDegPerSec());
         SmartDashboard.putNumber("Wrist/wrist absolute position", getAbsolutePositionDeg());
-        SmartDashboard.putNumber("Wrist/wrist applied voltage", _wristMotor.getMotorVoltage().getValueAsDouble());
     }
 
     @Override
