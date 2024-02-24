@@ -58,6 +58,8 @@ public class RobotContainer {
                                 m_driverController.getCombinedAxis() *
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
+                m_Intake.setDefaultCommand(m_Intake.setStateCommand(IntakeState.DISABLED));
+                m_Manipulator.setDefaultCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF));
 
                 configureBindings();
         }
@@ -91,13 +93,13 @@ public class RobotContainer {
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
                 m_operatorController.L1().onTrue(getCollectSequence());
-                m_operatorController.R1().onTrue(getShooterSpinCommand());
-                m_operatorController.R2().onTrue(getShooterTriggerCommand());
+                m_operatorController.R1().onTrue(getShooterTriggerCommand());
+                m_operatorController.R2().whileTrue(getShooterSpinCommand());
                 // m_operatorController.circle().onTrue(m_Intake.setStateCommand(IntakeState.EJECT));
                 m_operatorController.circle()
-                                .onTrue(new ConditionalCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
-                                                m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
-                                                () -> m_Manipulator.getManipulatorState() == ManipulatorState.AMP));
+                                .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
+                                                new WaitCommand(3), m_Manipulator
+                                                                .getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.povDown()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
                 m_driverController.povRight()
@@ -135,9 +137,8 @@ public class RobotContainer {
         }
 
         private Command getShooterSpinCommand() {
-                return new ConditionalCommand(m_Shooter.getSetStateCommand(ShooterState.ON),
-                                m_Shooter.getSetStateCommand(ShooterState.OFF),
-                                () -> m_Shooter.getShooterState() == ShooterState.OFF);
+                return new StartEndCommand(() -> m_Shooter.getSetStateCommand(ShooterState.ON).schedule(),
+                                () -> m_Shooter.getSetStateCommand(ShooterState.OFF).schedule());
         }
 
         private Command getShooterTriggerCommand() {
