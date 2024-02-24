@@ -79,8 +79,6 @@ public class RobotContainer {
                                 m_driverController.getLeftX() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond
                                                 * SwerveModuleConstants.driveSpeedLimit,
-                                Math.toRadians(-m_limeLight.getXAngle()),
-                                m_limeLight.hasTarget(),
                                 _fieldRelative), m_Drivetrain));
 
                 m_driverController.options().onTrue(
