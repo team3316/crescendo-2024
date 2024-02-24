@@ -1,0 +1,23 @@
+{
+  "robotWidth": 0.9,
+  "robotLength": 0.9,
+  "holonomicMode": true,
+  "pathFolders": [
+    "Shoot_goHalf",
+    "ShootAndCom",
+    "ORBIT_MID",
+    "ORBIT_LEFT",
+    "AMP"
+  ],
+  "autoFolders": [
+    "AMP",
+    "Shoot_Half",
+    "ORBIT",
+    "Shoot_Com"
+  ],
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
+  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngAccel": 720.0,
+  "maxModuleSpeed": 4.5
+}

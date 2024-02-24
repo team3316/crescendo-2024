@@ -7,14 +7,20 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import frc.robot.autonomous.AutoFactory;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -41,9 +47,12 @@ public class RobotContainer {
         private final LimeLight m_limeLight = new LimeLight();
         private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
-        private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
-                        JoysticksConstants.operatorPort);
-        private final CommandPS5Controller m_driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
+    private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
+            JoysticksConstants.operatorPort);
+    private final CommandPS5Controller m_driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
+
+    private final SendableChooser<Command> chooser;
+    private final AutoFactory _autoFactory;
 
         private boolean _fieldRelative = true;
 
@@ -57,7 +66,9 @@ public class RobotContainer {
                                 m_driverController.getCombinedAxis() *
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
-
+                this._autoFactory = new AutoFactory(m_Drivetrain);
+                this.chooser = AutoBuilder.buildAutoChooser();
+                initChooser();
                 configureBindings();
         }
 
@@ -86,8 +97,8 @@ public class RobotContainer {
                                 new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field relative
                                                                                              // mode
 
-                m_driverController.share().onTrue(
-                                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
+        m_driverController.share().onTrue(
+                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
                 m_operatorController.L1().onTrue(getCollectSequence());
                 m_operatorController.R1().onTrue(getShooterSpinCommand());
@@ -180,13 +191,17 @@ public class RobotContainer {
                                 m_Climber);
                 return sequence;
         }
+        private void initChooser() {
+        SmartDashboard.putData("Auto Chooser", chooser);
+        chooser.addOption("testauto", _autoFactory.createAuto("testauto"));
 
-        /**
-         * Use this to pass the autonomous command to the main {@link Robot} class.
-         *
-         * @return the command to run in autonomous
-         */
-        public Command getAutonomousCommand() {
-                return null;
-        }
+    }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return chooser.getSelected();
+    }
 }
