@@ -45,8 +45,8 @@ public class RobotContainer {
             JoysticksConstants.operatorPort);
     private final CommandPS5Controller m_driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
-    private final SendableChooser<Command> chooser;
-    private final AutoFactory _autoFactory;
+    private final SendableChooser<Command> m_chooser;
+    private final AutoFactory m_autoFactory;
 
     private boolean _fieldRelative = true;
 
@@ -59,9 +59,13 @@ public class RobotContainer {
                 m_driverController.getCombinedAxis() *
                         DrivetrainConstants.maxRotationSpeedRadPerSec,
                 _fieldRelative), m_Drivetrain));
-        this._autoFactory = new AutoFactory(m_Drivetrain);
+        
+        this.m_autoFactory = new AutoFactory(m_Drivetrain);
         NamedCommands.registerCommand("Shoot", getShootSequence());
-        this.chooser = AutoBuilder.buildAutoChooser();
+        NamedCommands.registerCommand("Collect", getCollectSequence());
+
+        AutoBuilder.buildAutoChooser();
+        this.m_chooser = new SendableChooser<Command>();
         initChooser();
         // Configure the trigger bindings
         configureBindings();
@@ -148,7 +152,16 @@ public class RobotContainer {
     // }
 
     private void initChooser() {
-        SmartDashboard.putData("Auto Chooser", chooser);
+        SmartDashboard.putData("Auto Chooser", m_chooser);
+        //basic
+        m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
+        m_chooser.addOption("left shoot and exit", m_autoFactory.createAuto("LEFT_Shoot_Com"));
+        m_chooser.addOption("right shoot and exit", m_autoFactory.createAuto("RIGHT_Shoot_Com"));
+
+        //"orbit" 
+        m_chooser.addOption("mid 4 notes", m_autoFactory.createAuto("MID_ORBIT"));
+        m_chooser.addOption("left 4 notes", m_autoFactory.createAuto("LEFT_ORBIT"));
+        m_chooser.addOption("right 4 notes", m_autoFactory.createAuto("RIGHT_ORBIT"));
     }
 
     /**
@@ -157,6 +170,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return chooser.getSelected();
+        return m_chooser.getSelected();
     }
 }
