@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
+    
+    private static final boolean UPDATE_DASHBOARD = false;
 
     private DBugSparkFlex _leaderLeft;
     private DBugSparkFlex _followerRight;
@@ -43,7 +45,7 @@ public class Shooter extends SubsystemBase {
 
         // sets the shooter state and the roller state to OFF in the beginning
         this._shooterState = ShooterState.OFF;
-        SmartDashboard.putString("shooter state:", "OFF");
+        SmartDashboard.putString("Shooter/shooter state:", "OFF");
 
     }
 
@@ -56,7 +58,7 @@ public class Shooter extends SubsystemBase {
         this._leaderLeft.setReference(shooterState.velocity, ControlType.kVelocity);
 
         // prints the state change onto the SmartDashboard
-        SmartDashboard.putString("shooter state:", this._shooterState.toString());
+        SmartDashboard.putString("Shooter/shooter state:", this._shooterState.toString());
     }
 
     public Command getSetStateCommand(ShooterState targetState) {
@@ -69,6 +71,12 @@ public class Shooter extends SubsystemBase {
 
     public boolean isAtTargetVelocity() {
         return Within.range(this._shooterState.velocity, getShooterVelocityMPS(), 0.1);
+    }
+
+    private void updateSDB() {
+        SmartDashboard.putNumber("Shooter/Shooter velocity", getShooterVelocityMPS());
+        SmartDashboard.putNumber("Shooter/shooter BL current", _leaderLeft.getOutputCurrent());
+        SmartDashboard.putNumber("Shooter/shooter BR current", _followerRight.getOutputCurrent());
     }
 
     @Override
@@ -84,10 +92,9 @@ public class Shooter extends SubsystemBase {
             // leaderUpLeft.set(0.5);
         }
         SmartDashboard.putNumber("velocity, mps", SmartDashboard.getNumber("velocity, mps", 0));*/
-        SmartDashboard.putNumber("Shooter velocity", getShooterVelocityMPS());
-        SmartDashboard.putNumber("shooter BL current", _leaderLeft.getOutputCurrent());
-        SmartDashboard.putNumber("shooter BR current", _followerRight.getOutputCurrent());
-
+        if(UPDATE_DASHBOARD){
+        updateSDB();
+        }
     }
 
     public void stop() {

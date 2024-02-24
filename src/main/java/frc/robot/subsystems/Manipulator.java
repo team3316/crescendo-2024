@@ -11,6 +11,8 @@ import frc.robot.motors.DBugSparkMax;
 
 public class Manipulator extends SubsystemBase {
 
+    private static final boolean UPDATE_DASHBOARD = false;
+
     private DBugSparkMax _manipulatorMotor;
 
     private DigitalInput _hasNoteSwitch;
@@ -57,7 +59,7 @@ public class Manipulator extends SubsystemBase {
         this._state = ManipulatorState.OFF;
 
         // initialize values into the SDB
-        SmartDashboard.putString("Manipulator State", this._state.toString());
+        SmartDashboard.putString("Manipulator/Manipulator State", this._state.toString());
     }
 
     public ManipulatorState getManipulatorState() {
@@ -73,7 +75,7 @@ public class Manipulator extends SubsystemBase {
 
         this._manipulatorMotor.set(state.percentage);
 
-        SmartDashboard.putString("Manipulator State", this._state.toString());
+        SmartDashboard.putString("Manipulator/Manipulator State", this._state.toString());
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
@@ -108,14 +110,17 @@ public class Manipulator extends SubsystemBase {
                 this);
     }
 
+    private void updateSDB() {
+        SmartDashboard.putBoolean("Manipulator/has note", hasNoteSwitch());
+        SmartDashboard.putNumber("Manipulator/manipulator note position", getNotePosition());
+        SmartDashboard.putNumber("Manipulator/manipulator current current", _manipulatorMotor.getOutputCurrent());
+    }
     @Override
     public void periodic() {
         resetNotePositionPeriodic();
 
-        SmartDashboard.putBoolean("has note", hasNoteSwitch());
-        // if (hasNoteSwitch())
-        SmartDashboard.putNumber("manipulator note position", getNotePosition());
-
-        SmartDashboard.putNumber("manipulator current current", _manipulatorMotor.getOutputCurrent());
+        if(UPDATE_DASHBOARD) {
+            updateSDB();
+        }
     }
 }
