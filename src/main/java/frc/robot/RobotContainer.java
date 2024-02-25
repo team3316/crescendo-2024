@@ -131,16 +131,16 @@ public class RobotContainer {
 
     private Command getCollectSequence() {
         Command sequence = Commands.sequence(
-                /*
-                 * m_Arm.getSetStateCommand(ArmState.COLLECT)
-                 * .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
-                 */
-                m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT),
+                m_Shooter.getSetStateCommand(ShooterState.OFF),
+                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
+                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-                m_Intake.setStateCommand(IntakeState.DISABLED)
-                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
-        return sequence;
+                m_Intake.setStateCommand(IntakeState.EJECT)
+                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
+                new WaitCommand(2),
+                m_Intake.setStateCommand(IntakeState.DISABLED));
+        return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
     }
 
     private Command getShooterSpinCommand() {
