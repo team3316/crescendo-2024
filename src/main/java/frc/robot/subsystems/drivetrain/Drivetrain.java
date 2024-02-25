@@ -189,7 +189,7 @@ public class Drivetrain extends SubsystemBase {
             _modules[i].updateSDB(i);
         }
 
-        SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
+        SmartDashboard.putNumber("Drivetrain/rotation", getRotation2d().getRadians());
     }
 
     /************************

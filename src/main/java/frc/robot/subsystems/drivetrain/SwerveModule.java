@@ -186,7 +186,7 @@ public class SwerveModule {
     }
 
     public void updateSDB(int moduleIdx) {
-        var prefix = "module[" + moduleIdx + "] ";
+        var prefix = "Modules/module[" + moduleIdx + "] ";
         var state = getState();
 
         SmartDashboard.putNumber(prefix + "drive speed", state.speedMetersPerSecond);
