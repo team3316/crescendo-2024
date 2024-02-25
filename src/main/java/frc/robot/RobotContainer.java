@@ -84,11 +84,11 @@ public class RobotContainer {
 
     public void stop() {
         m_Drivetrain.disabledInit();
-        // m_Arm.stop();
+        m_ArmWristSuperStructure.stop();
         m_Intake.stop();
         m_Manipulator.stop();
         m_Shooter.stop();
-        // m_Climber.stop();
+        m_Climber.stop();
     }
 
     private void configureBindings() {
@@ -195,6 +195,9 @@ public class RobotContainer {
 
         // only shoot
         m_chooser.addOption("only shoot", getAutoShootSequence());
+
+        // nothing
+        m_chooser.addOption("nothing", new InstantCommand());
     }
 
     /**
