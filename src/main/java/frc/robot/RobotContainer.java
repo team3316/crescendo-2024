@@ -70,6 +70,8 @@ public class RobotContainer {
 
         m_Intake.setDefaultCommand(m_Intake.setStateCommand(IntakeState.DISABLED));
         m_Manipulator.setDefaultCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF));
+        
+        SmartDashboard.putBoolean("Field Relative", _fieldRelative);
 
         this.m_autoFactory = new AutoFactory(m_Drivetrain);
         NamedCommands.registerCommand("Shoot", getAutoShootSequence());
@@ -177,7 +179,7 @@ public class RobotContainer {
     }
 
     private void initChooser() {
-        SmartDashboard.putData("Auto Chooser", m_chooser);
+        SmartDashboard.putData("Auto Chooser PLACE BY DRIVERS!", m_chooser);
         // basic
         m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
         m_chooser.addOption("right shoot and exit", m_autoFactory.createAuto("LEFT_Shoot_Com"));// oppisate in
