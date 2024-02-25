@@ -77,8 +77,5 @@ public class LimeLight extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget() );
-
-        SmartDashboard.putNumber("Limelight/xLength", this.getFieldXMeters());
-        SmartDashboard.putNumber("Limelight/yLength", this.getFieldYMeters());
     }
 }
