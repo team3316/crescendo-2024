@@ -5,8 +5,13 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -15,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.autonomous.AutoFactory;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
@@ -30,11 +36,12 @@ import frc.robot.subsystems.Shooter.ShooterState;
 import frc.robot.subsystems.arm.ArmWristSuperStructure;
 import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.SwerveSysidCommands;
 import frc.robot.subsystems.vision.LimeLight;
 
 public class RobotContainer {
 
-        private final Drivetrain m_Drivetrain = new Drivetrain();
+    private final Drivetrain m_Drivetrain = new Drivetrain();
         private final ArmWristSuperStructure m_ArmWristSuperStructure = new ArmWristSuperStructure();
         private final Manipulator m_Manipulator = new Manipulator();
         private final Shooter m_Shooter = new Shooter();
@@ -42,54 +49,55 @@ public class RobotContainer {
         private final LimeLight m_limeLight = new LimeLight();
         private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
-        private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
-                        JoysticksConstants.operatorPort);
-        private final CommandPS5Controller m_driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
+    private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
+            JoysticksConstants.operatorPort);
+    private final CommandPS5Controller m_driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
-        private boolean _fieldRelative = true;
+    private final SendableChooser<Command> m_chooser;
+    private final AutoFactory m_autoFactory;
 
-        public RobotContainer() {
-                m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
-                                m_driverController.getLeftY() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                                m_driverController.getLeftX() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                                m_driverController.getCombinedAxis() *
-                                                DrivetrainConstants.maxRotationSpeedRadPerSec,
-                                _fieldRelative), m_Drivetrain));
+    private boolean _fieldRelative = true;
+
+    public RobotContainer() {
+        m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+                m_driverController.getLeftY() *
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                m_driverController.getLeftX() *
+                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                m_driverController.getCombinedAxis() *
+                        DrivetrainConstants.maxRotationSpeedRadPerSec,
+                _fieldRelative), m_Drivetrain));
+
                 m_Intake.setDefaultCommand(m_Intake.setStateCommand(IntakeState.DISABLED));
                 m_Manipulator.setDefaultCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF));
+        
+        this.m_autoFactory = new AutoFactory(m_Drivetrain);
+        NamedCommands.registerCommand("Shoot", getShootSequence());
+        NamedCommands.registerCommand("Collect", getCollectSequence());
 
-                configureBindings();
-        }
+        AutoBuilder.buildAutoChooser();
+        this.m_chooser = new SendableChooser<Command>();
+        initChooser();
+        // Configure the trigger bindings
+        configureBindings();
+    }
 
-        public void stop() {
-                m_Drivetrain.disabledInit();
-                m_ArmWristSuperStructure.stop();
-                m_Intake.stop();
-                m_Manipulator.stop();
-                m_Shooter.stop();
-                m_Climber.stop();
-        }
+    public void stop() {
+        m_Drivetrain.disabledInit();
+        // m_Arm.stop();
+        m_Intake.stop();
+        m_Manipulator.stop();
+        m_Shooter.stop();
+        // m_Climber.stop();
+    }
 
-        private void configureBindings() {
-                m_driverController.cross().whileTrue(new RunCommand(() -> m_Drivetrain.driveByVision(
-                                m_driverController.getLeftY() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond
-                                                * SwerveModuleConstants.driveSpeedLimit,
-                                m_driverController.getLeftX() *
-                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond
-                                                * SwerveModuleConstants.driveSpeedLimit,
-                                Math.toRadians(-m_limeLight.getXAngle()),
-                                m_limeLight.hasTarget(),
-                                _fieldRelative), m_Drivetrain));
+    private void configureBindings() {
+        m_driverController.options().onTrue(
+                new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field
+        // relative mode
 
-                m_driverController.options().onTrue(
-                                new InstantCommand(() -> _fieldRelative = !_fieldRelative)); // toggle field relative
-                                                                                             // mode
-
-                m_driverController.share().onTrue(
-                                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
+        m_driverController.share().onTrue(
+                new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
                 m_operatorController.L1().onTrue(getCollectSequence());
                 m_operatorController.R1().onTrue(getShooterTriggerCommand());
@@ -121,19 +129,19 @@ public class RobotContainer {
                                                 m_operatorController.getRightY() * 0.2), m_Climber));// stupid climb
         }
 
-        private Command getCollectSequence() {
-                Command sequence = Commands.sequence(
-                                m_Shooter.getSetStateCommand(ShooterState.OFF),
-                                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
-                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
-                                m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-                                m_Intake.setStateCommand(IntakeState.EJECT)
-                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
-                                new WaitCommand(2),
-                                m_Intake.setStateCommand(IntakeState.DISABLED));
-                return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
-        }
+    private Command getCollectSequence() {
+        Command sequence = Commands.sequence(
+                /*
+                 * m_Arm.getSetStateCommand(ArmState.COLLECT)
+                 * .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
+                 */
+                m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT),
+                m_Intake.setStateCommand(IntakeState.COLLECTING),
+                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                m_Intake.setStateCommand(IntakeState.DISABLED)
+                        .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+        return sequence;
+    }
 
         private Command getShooterSpinCommand() {
                 return new StartEndCommand(() -> m_Shooter.getSetStateCommand(ShooterState.ON).schedule(),
@@ -157,12 +165,43 @@ public class RobotContainer {
                 return sequence;
         }
 
-        /**
-         * Use this to pass the autonomous command to the main {@link Robot} class.
-         *
-         * @return the command to run in autonomous
-         */
-        public Command getAutonomousCommand() {
-                return null;
-        }
+        private Command getShootSequence() {
+                Command sequence = new ConditionalCommand(
+                        Commands.sequence(
+                                // m_Arm.getSetStateCommand(ArmState.COLLECT), // in case of moving to
+                                // amp and then regretting
+                                m_Shooter.getSetStateCommand(ShooterState.ON),
+                                new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
+                                // new WaitCommand(0.2),
+                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                new WaitCommand(2),
+                                m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
+                                        .alongWith(m_Shooter
+                                                .getSetStateCommand(ShooterState.OFF))),
+                        new InstantCommand(),
+                        () -> m_Manipulator.hasNoteSwitch());
+                return sequence;
+            }
+
+        private void initChooser() {
+                SmartDashboard.putData("Auto Chooser", m_chooser);
+                //basic
+                m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
+                m_chooser.addOption("right shoot and exit", m_autoFactory.createAuto("LEFT_Shoot_Com"));//oppisate in path, no idea how changing name will effect PP
+                m_chooser.addOption("left shoot and exit", m_autoFactory.createAuto("RIGHT_Shoot_Com"));//TODO: fix befor ISR3
+        
+                //"orbit" 
+                m_chooser.addOption("mid 4 notes", m_autoFactory.createAuto("MID_ORBIT"));
+                m_chooser.addOption("left 4 notes", m_autoFactory.createAuto("LEFT_ORBIT"));
+                m_chooser.addOption("right 4 notes", m_autoFactory.createAuto("RIGHT_ORBIT"));
+            }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return m_chooser.getSelected();
+    }
 }

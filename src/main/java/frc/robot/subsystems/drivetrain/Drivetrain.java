@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +19,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StructArrayLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
@@ -66,10 +68,6 @@ public class Drivetrain extends SubsystemBase {
         calibrateSteering();
 
     }
-
-    /************************
-     * Drivetrain Interface *
-     ************************/
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
@@ -201,6 +199,26 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetPose(Pose2d pose) {
         _odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
+    }
+
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return DrivetrainConstants.kinematics.toChassisSpeeds(_modules[0].getState(), _modules[1].getState(),
+                _modules[2].getState(), _modules[3].getState());
+    }
+
+    public void autoDrive(ChassisSpeeds speeds) {
+        var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
+
+        setDesiredStates(moduleStates);
+    }
+
+    public boolean shouldFlipPath() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+
     }
 
     /******************************
