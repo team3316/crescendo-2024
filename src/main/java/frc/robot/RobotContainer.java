@@ -192,6 +192,9 @@ public class RobotContainer {
         m_chooser.addOption("mid 4 notes", m_autoFactory.createAuto("MID_ORBIT"));
         m_chooser.addOption("left 4 notes", m_autoFactory.createAuto("LEFT_ORBIT"));
         m_chooser.addOption("right 4 notes", m_autoFactory.createAuto("RIGHT_ORBIT"));
+
+        // only shoot
+        m_chooser.addOption("only shoot", getAutoShootSequence());
     }
 
     /**
