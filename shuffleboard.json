@@ -1,8 +1,8 @@
 {
   "tabPane": [
     {
-      "title": "SmartDashboard",
-      "autoPopulate": true,
+      "title": "LEFT view",
+      "autoPopulate": false,
       "autoPopulatePrefix": "SmartDashboard/",
       "widgetPane": {
         "gridSize": 128.0,
@@ -186,19 +186,6 @@
               "Colors/Color when false": "#CCCCCCFF"
             }
           },
-          "5,2": {
-            "size": [
-              5,
-              1
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Auto Chooser",
-              "_title": "SmartDashboard/Auto Chooser",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "2,4": {
             "size": [
               1,
@@ -227,42 +214,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "10,5": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "List Layout",
-              "_title": "jail",
-              "_glyph": 149,
-              "_showGlyph": false,
-              "Layout/Label position": "BOTTOM",
-              "_children": [
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/limelight_Interface",
-                  "_title": "limelight_Interface",
-                  "_glyph": 148,
-                  "_showGlyph": false
-                },
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/limelight_Stream",
-                  "_title": "limelight_Stream",
-                  "_glyph": 148,
-                  "_showGlyph": false
-                },
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
-                  "_title": "limelight_PipelineName",
-                  "_glyph": 148,
-                  "_showGlyph": false
-                }
-              ]
-            }
-          },
           "10,1": {
             "size": [
               1,
@@ -277,14 +228,257 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
+          },
+          "6,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Chooser PLACE BY DRIVERS!",
+              "_title": "/SmartDashboard/Auto Chooser PLACE BY DRIVERS!",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
     },
     {
-      "title": "LiveWindow",
-      "autoPopulate": true,
-      "autoPopulatePrefix": "LiveWindow/",
+      "title": "RIGHT view",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "6,0": {
+            "size": [
+              5,
+              4
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://USB Camera 0",
+              "_title": "USB Camera 0",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": false,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": 0,
+              "imageHeight": 0
+            }
+          },
+          "1,0": {
+            "size": [
+              5,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Intake/has note",
+              "_title": "/SmartDashboard/Intake/has note",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#E6804DFF",
+              "Colors/Color when false": "#CCCCCCFF"
+            }
+          },
+          "1,3": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///SmartDashboard/time",
+              "_title": "SmartDashboard/time",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Range/Min": 0.0,
+              "Range/Max": 135.0,
+              "Visuals/Show value": true
+            }
+          },
+          "0,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Manipulator/has note",
+              "_title": "/SmartDashboard/Manipulator/has note",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "8,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Manipulator/State",
+              "_title": "/SmartDashboard/Manipulator/State",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm/arm velocity (deg/s)",
+              "_title": "/SmartDashboard/Arm/arm velocity (deg/s)",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm/arm position (deg)",
+              "_title": "/SmartDashboard/Arm/arm position (deg)",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,4": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Arm/arm limit",
+              "_title": "/SmartDashboard/Arm/arm limit",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "9,4": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist/wrist absolute position",
+              "_title": "/SmartDashboard/Wrist/wrist absolute position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist/wrist position",
+              "_title": "/SmartDashboard/Wrist/wrist position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "10,5": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Wrist/wrist velocity",
+              "_title": "/SmartDashboard/Wrist/wrist velocity",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Shooter/state:",
+              "_title": "/SmartDashboard/Shooter/state:",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "0,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Shooter/is at target",
+              "_title": "/SmartDashboard/Shooter/is at target",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "0,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Limelight/hasTarget",
+              "_title": "/SmartDashboard/Limelight/hasTarget",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "1,2": {
+            "size": [
+              5,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Chooser PLACE BY DRIVERS!",
+              "_title": "SmartDashboard/Auto Chooser PLACE BY DRIVERS!",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 3",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
       "widgetPane": {
         "gridSize": 128.0,
         "showGrid": true,
