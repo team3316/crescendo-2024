@@ -5,7 +5,7 @@ import frc.robot.motors.PIDFGains;
 public class ManipulatorConstants {
     // ports
     public static final int sparkmaxCANID = 10;
-    public static final int noteSwitchPort = 0;
+    public static final int noteSwitchPort = 8;
 
     // gains
     public static final PIDFGains gains = new PIDFGains(3.0); // TODO: Calibrate
