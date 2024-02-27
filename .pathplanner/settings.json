@@ -3,11 +3,9 @@
   "robotLength": 0.8,
   "holonomicMode": true,
   "pathFolders": [
-    "Calibration",
     "ShootAndCom"
   ],
   "autoFolders": [
-    "Calibration",
     "ShootAndCom"
   ],
   "defaultMaxVel": 2.0,
