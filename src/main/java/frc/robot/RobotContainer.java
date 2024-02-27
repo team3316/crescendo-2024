@@ -189,12 +189,7 @@ public class RobotContainer {
                                                                                                 // effect PP
         m_chooser.addOption("left shoot and exit", m_autoFactory.createAuto("RIGHT_Shoot_Com"));// TODO: fix
                                                                                                 // befor ISR3
-
-        // "orbit"
-        m_chooser.addOption("mid 4 notes", m_autoFactory.createAuto("MID_ORBIT"));
-        m_chooser.addOption("left 4 notes", m_autoFactory.createAuto("LEFT_ORBIT"));
-        m_chooser.addOption("right 4 notes", m_autoFactory.createAuto("RIGHT_ORBIT"));
-
+                                                                                                
         // only shoot
         m_chooser.addOption("only shoot", getAutoShootSequence());
 
