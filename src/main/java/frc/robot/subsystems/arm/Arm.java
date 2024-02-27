@@ -120,7 +120,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm/arm position (deg)", getPositionDeg());
         SmartDashboard.putNumber("Arm/arm velocity (deg/s)", getVelocityDegPerSec());
         SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
-            }
+}
 
     @Override
     public void periodic() {
