@@ -21,6 +21,9 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 public class Climber extends SubsystemBase {
+
+    private static final boolean UPDATE_DASHBOARD = false;
+
     private DBugSparkMax _leftSpool;
     private DBugSparkMax _rightSpool;
     private Supplier<Rotation2d> _gyroSupplier;
@@ -67,9 +70,16 @@ public class Climber extends SubsystemBase {
         _rightSpool.set(0);
     }
 
+    private void updateSDB() {
+        SmartDashboard.putNumber("Climb/climber left current", _leftSpool.getOutputCurrent());
+        SmartDashboard.putNumber("Climb/climber right current", _rightSpool.getOutputCurrent());
+        SmartDashboard.putNumber("Climb/Robot roll [degs]", _gyroSupplier.get().getDegrees());    
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("climber left current", _leftSpool.getOutputCurrent());
-        SmartDashboard.putNumber("climber right current", _rightSpool.getOutputCurrent());    
+        if(UPDATE_DASHBOARD) {
+            updateSDB();
+        }
     }
 }

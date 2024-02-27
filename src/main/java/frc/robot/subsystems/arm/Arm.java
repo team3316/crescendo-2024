@@ -66,7 +66,7 @@ public class Arm extends SubsystemBase {
 
     // TODO: check if switches are NC or NO
     public boolean anyLimitSwitchClosed() {
-        return !_leftSwitch.get() || !_rightSwitch.get();
+        return !_leftSwitch.get() || _rightSwitch.get();
     }
 
     public double getPositionDeg() {
@@ -85,8 +85,8 @@ public class Arm extends SubsystemBase {
         double feedforward = _armFeedforward.calculate(Math.toRadians(targetState.position),
                 Math.toRadians(targetState.velocity));
         _leader.setReference(targetState.position, ControlType.kPosition, 0, feedforward, ArbFFUnits.kVoltage);
-        SmartDashboard.putNumber("target arm position (deg)", targetState.position);
-        SmartDashboard.putNumber("target arm velocity (deg/sec)", targetState.velocity);
+        SmartDashboard.putNumber("Arm/target arm position (deg)", targetState.position);
+        SmartDashboard.putNumber("Arm/target arm velocity (deg/sec)", targetState.velocity);
     }
 
     private Command generateSetStateCommand(ArmWristState targetState) {
@@ -117,10 +117,10 @@ public class Arm extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("current arm position (deg)", getPositionDeg());
-        SmartDashboard.putNumber("current arm velocity (deg/s)", getVelocityDegPerSec());
-        SmartDashboard.putBoolean("arm limit", anyLimitSwitchClosed());
-    }
+        SmartDashboard.putNumber("Arm/arm position (deg)", getPositionDeg());
+        SmartDashboard.putNumber("Arm/arm velocity (deg/s)", getVelocityDegPerSec());
+        SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
+}
 
     @Override
     public void periodic() {

@@ -5,13 +5,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 public class ArmConstants {
     public static final int leaderCANID = 8; // left
     public static final int followerCANID = 7; // right
-    public static final int leftSwitchPort = 2;
-    public static final int rightSwitchPort = 3;
+    public static final int leftSwitchPort = 6;
+    public static final int rightSwitchPort = 7;
 
     public static final double collectAngle = -43.2; // deg
     public static final double TRAPAngle = 105; // deg
     public static final double underChainAngle = 0; // deg
-    public static final double AMPAngle = 41; // deg
+    public static final double AMPAngle = 46; // deg
     public static final double ALIGNAngle = 36.86; // deg
     
     private static final double gearRatio = 1.0 / 64.0;

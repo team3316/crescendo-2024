@@ -9,6 +9,8 @@ import frc.robot.motors.DBugSparkMax;
 
 public class Intake extends SubsystemBase {
     
+    private static final boolean UPDATE_DASHBOARD = false;
+
     private DBugSparkMax _intakeMotor;
 
     private DigitalInput _hasNoteSwitch;
@@ -58,8 +60,14 @@ public class Intake extends SubsystemBase {
         setState(IntakeState.DISABLED);
     }
 
+    private void updateSDB() {
+        SmartDashboard.putBoolean("Intake/has note", isNoteInIntake());
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("intake switch", isNoteInIntake());
+        if(UPDATE_DASHBOARD) {
+            updateSDB();
+        }
     }
 }
