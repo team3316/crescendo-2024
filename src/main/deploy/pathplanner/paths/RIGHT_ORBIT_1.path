@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7434431971001721,
+        "y": 4.465389263320095
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.0359359436058546,
+        "y": 4.182646275031268
+      },
+      "isLocked": false,
+      "linkedName": "start right"
+    },
+    {
+      "anchor": {
+        "x": 2.547148467218551,
+        "y": 4.085148692862707
+      },
+      "prevControl": {
+        "x": 2.040161039942034,
+        "y": 4.124147725730131
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "collect wing bottom"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Collect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "orbit",
+  "previewStartingState": {
+    "rotation": -61.032339353935996,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
