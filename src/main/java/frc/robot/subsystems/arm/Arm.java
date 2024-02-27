@@ -25,7 +25,7 @@ import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 
 public class Arm extends SubsystemBase {
 
-    private static final boolean UPDATE_DASHBOARD = true;
+    private static final boolean UPDATE_DASHBOARD = false;
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
