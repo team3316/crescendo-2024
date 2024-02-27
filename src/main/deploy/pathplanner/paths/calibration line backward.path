@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "calibration",
+  "folder": "Calibration",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -3,18 +3,12 @@
   "robotLength": 0.8,
   "holonomicMode": true,
   "pathFolders": [
-    "Shoot_goHalf",
-    "ShootAndCom",
-    "ORBIT_MID",
-    "ORBIT_LEFT",
-    "AMP"
+    "Calibration",
+    "ShootAndCom"
   ],
   "autoFolders": [
-    "AMP",
-    "calibration",
-    "ORBIT",
-    "Shoot_Com",
-    "Shoot_Half"
+    "Calibration",
+    "ShootAndCom"
   ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 2.0,
