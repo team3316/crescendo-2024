@@ -3,34 +3,52 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3089291736778261,
-        "y": 5.537862667174266
+        "x": 1.3756161320151827,
+        "y": 5.55076982040085
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.308929173677827,
-        "y": 5.537862667174266
+        "x": 2.3756161320151836,
+        "y": 5.55076982040085
       },
       "isLocked": false,
-      "linkedName": "start mid"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.742143631555673,
-        "y": 5.537862667174266
+        "x": 2.544199252099572,
+        "y": 5.55076982040085
       },
       "prevControl": {
-        "x": 2.244905962496012,
-        "y": 5.547612425391122
+        "x": 1.5441992520995722,
+        "y": 5.55076982040085
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "collect wing middle"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SpinUp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
@@ -43,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "orbit",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

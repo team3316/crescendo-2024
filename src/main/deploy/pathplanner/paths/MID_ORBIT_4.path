@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.547148467218551,
-        "y": 4.085148692862707
+        "x": 2.6513193714406413,
+        "y": 4.148470076299583
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0791600728094584,
-        "y": 4.085148692862707
+        "x": 2.1833309770315488,
+        "y": 4.148470076299583
       },
       "isLocked": false,
       "linkedName": "collect wing bottom"
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
