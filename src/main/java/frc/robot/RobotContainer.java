@@ -193,7 +193,10 @@ public class RobotContainer {
     }
 
     private void initChooser() {
+
         SmartDashboard.putData("Auto Chooser PLACE BY DRIVERS!", m_chooser);
+
+                m_chooser.addOption("4_gp", m_autoFactory.createAuto("4_gp"));
         // basic
         m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
         m_chooser.addOption("right shoot and exit", m_autoFactory.createAuto("LEFT_Shoot_Com"));// oppisate in
