@@ -75,14 +75,13 @@ public class RobotContainer {
                 SmartDashboard.putBoolean("Field Relative", _fieldRelative);
 
                 this.m_autoFactory = new AutoFactory(m_Drivetrain);
-                NamedCommands.registerCommand("Shoot", getAutoShootSequence());
-                NamedCommands.registerCommand("Collect", getAutoCollectcommand());
 
                 AutoBuilder.buildAutoChooser();
                 this.m_chooser = new SendableChooser<Command>();
                 initChooser();
                 // Configure the trigger bindings
                 configureBindings();
+                configureNamedCommands();
         }
 
         public void stop() {
@@ -92,6 +91,13 @@ public class RobotContainer {
                 m_Manipulator.stop();
                 m_Shooter.stop();
                 m_Climber.stop();
+        }
+
+        private void configureNamedCommands() {
+                NamedCommands.registerCommand("Shoot", getAutoShootSequence());
+                NamedCommands.registerCommand("Collect", getAutoCollectcommand());
+                NamedCommands.registerCommand("SpinUp", getAutoSpin());
+                NamedCommands.registerCommand("triger", getAutoTriggerCommand());
         }
 
         private void configureBindings() {
