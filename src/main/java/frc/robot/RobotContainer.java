@@ -75,7 +75,7 @@ public class RobotContainer {
 
         this.m_autoFactory = new AutoFactory(m_Drivetrain);
         NamedCommands.registerCommand("Shoot", getAutoShootSequence());
-        NamedCommands.registerCommand("Collect", getCollectSequence());
+                NamedCommands.registerCommand("Collect", getAutoCollectcommand());
 
         AutoBuilder.buildAutoChooser();
         this.m_chooser = new SendableChooser<Command>();
@@ -166,6 +166,20 @@ public class RobotContainer {
                 () -> m_Manipulator.hasNoteSwitch());
         return sequence;
     }
+        private Command getAutoCollectcommand() {
+                Command sequence = Commands.sequence(
+                                m_Shooter.getSetStateCommand(ShooterState.OFF),
+                                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
+                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
+                                m_Intake.setStateCommand(IntakeState.COLLECTING),
+                                new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
+                                new WaitCommand(0.5),
+                                m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
+                                m_Intake.setStateCommand(IntakeState.DISABLED));
+
+                return sequence;
+
+        }
 
     private Command getAutoShootSequence() {
         return Commands.sequence(
