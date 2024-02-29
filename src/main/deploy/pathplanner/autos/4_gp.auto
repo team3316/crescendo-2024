@@ -18,22 +18,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "MID_ORBIT_1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Collect"
-                }
-              }
-            ]
+            "pathName": "MID_ORBIT_1"
           }
         },
         {
@@ -45,26 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "triger"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "MID_ORBIT_3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Collect"
-                }
-              }
-            ]
+            "pathName": "MID_ORBIT_3"
           }
         },
         {
@@ -76,7 +50,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "triger"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "triger"
           }
         }
       ]
