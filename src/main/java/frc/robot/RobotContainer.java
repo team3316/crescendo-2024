@@ -93,7 +93,11 @@ public class RobotContainer {
                 m_operatorController.L1().onTrue(getCollectSequence());
                 m_operatorController.R1().onTrue(getShooterSpinCommand());
                 m_operatorController.R2().onTrue(getShooterTriggerCommand());
-                m_operatorController.povUp().whileTrue(m_Intake.setStateCommand(IntakeState.EJECT).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)));
+
+                m_operatorController.povUp().whileTrue(new StartEndCommand(()->m_Intake.setStateCommand(IntakeState.EJECT).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)),()->m_Intake.setStateCommand(IntakeState.DISABLED).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))));
+
+
+                
                 m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 m_operatorController.circle().onTrue(m_Manipulator.getSetStateCommand(ManipulatorState.AMP));
                 m_operatorController.povDown()
