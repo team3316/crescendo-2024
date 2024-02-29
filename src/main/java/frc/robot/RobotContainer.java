@@ -201,24 +201,19 @@ public class RobotContainer {
                         .getSetStateCommand(ShooterState.OFF)));
                 }
 
-                // private Command getAutoSpin() {
-                //         return new InstantCommand(() -> m_Shooter.getSetStateCommand(ShooterState.ON).schedule());
-                // }
+        private Command getAutoSpin() {
+                return new InstantCommand(() -> m_Shooter.getSetStateCommand(ShooterState.ON));
+        }
         
-                // private Command getAutoTriggerCommand() {
-                //         Command sequence = new ConditionalCommand(
-                //                         Commands.sequence(
-                //                                         new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-                //                                         m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                //                                         new WaitCommand(1),
-                //                                         m_Shooter.getSetStateCommand(ShooterState.OFF)
-                //                                                         .andThen(m_Manipulator.getSetStateCommand(
-                //                                                                         ManipulatorState.OFF))),
-        
-                //                         new InstantCommand(),
-                //                         () -> m_Manipulator.hasNoteSwitch());
-                //         return sequence;
-                // }
+        private Command getAutoTriggerCommand() {
+                Command sequence = Commands.sequence(
+                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                new WaitCommand(0.2),
+                                m_Shooter.getSetStateCommand(ShooterState.OFF)
+                                                .andThen(m_Manipulator.getSetStateCommand(
+                                                                ManipulatorState.OFF)));
+                return sequence;
+        }
                 
         private void initChooser() {
 
