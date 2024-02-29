@@ -186,7 +186,7 @@ public class RobotContainer {
                 m_Shooter.getSetStateCommand(ShooterState.ON),
                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                new WaitCommand(2),
+                        new WaitCommand(0.5),
                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
                         .alongWith(m_Shooter
                                 .getSetStateCommand(ShooterState.OFF)));
