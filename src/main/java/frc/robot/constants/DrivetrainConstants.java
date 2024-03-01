@@ -93,4 +93,6 @@ public class DrivetrainConstants {
         public static final Rotation2d installAngle = Rotation2d.fromDegrees(0);
         public static final Rotation2d collectAngle = Rotation2d.fromDegrees(90);
 
+        public static final double driveCurrentLimit = 60;
+
 }
