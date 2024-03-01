@@ -14,7 +14,7 @@ public class ArmConstants {
     public static final double AMPAngle = 46; // deg
     public static final double ALIGNAngle = 36.86; // deg
     
-    private static final double gearRatio = 1.0 / 64.0;
+    private static final double gearRatio = 1.0 / 192.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
     public static final double velocityFactor = 360 * gearRatio / 60; // (deg/sec)/RPM
 
@@ -23,7 +23,7 @@ public class ArmConstants {
     public static final TrapezoidProfile.Constraints profileConstrains = new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration);
 
     public static final double ks = 0; // v
-    public static final double kg = 0.7; // v
+    public static final double kg = 0.233; // v
     public static final double kv = 1.24; // v/(rad/sec) 3 / (Math.PI * 125 / 180)
     public static final double ka = 0; // v/(rad/sec^2)
 
