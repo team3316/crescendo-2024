@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
@@ -34,6 +35,8 @@ public class Arm extends SubsystemBase {
     private DigitalInput _rightSwitch;
 
     private ArmFeedforward _armFeedforward;
+
+    private double _climbPosition;
 
     public Arm() {
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
@@ -112,6 +115,19 @@ public class Arm extends SubsystemBase {
         return Commands.defer(() -> generateSetStateCommand(targetState), requirements);
     }
 
+    private void climb() {
+        if (getPositionDeg() > _climbPosition) {
+            _leader.set(SmartDashboard.getNumber("Arm/climb percentage", 0));
+        }
+        else {
+            _leader.set(SmartDashboard.getNumber("Arm/stay on percentage", 0));
+        }
+    }
+
+    public Command getClimbCommand() {
+        return new RunCommand(this::climb, this);
+    }
+
     public void stop() {
         _leader.set(0);
     }
@@ -120,7 +136,11 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm/arm position (deg)", getPositionDeg());
         SmartDashboard.putNumber("Arm/arm velocity (deg/s)", getVelocityDegPerSec());
         SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
-}
+        SmartDashboard.putNumber("Arm/climb percentage", SmartDashboard.getNumber("Arm/climb percentage", 0));
+        SmartDashboard.putNumber("Arm/stay on percentage", SmartDashboard.getNumber("Arm/stay on percentage", 0));
+        SmartDashboard.putNumber("Arm/climb position", SmartDashboard.getNumber("Arm/climb position", 0));
+        _climbPosition = SmartDashboard.getNumber("Arm/climb position", 0);
+    }
 
     @Override
     public void periodic() {

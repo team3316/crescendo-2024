@@ -125,6 +125,7 @@ public class RobotContainer {
         m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                 .alongWith(Commands.sequence(new WaitCommand(1),
                         m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))));
+        m_driverController.povDown().onTrue(m_ArmWristSuperStructure.getClimbCommand());
 
         m_Climber.setDefaultCommand(
                 new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
