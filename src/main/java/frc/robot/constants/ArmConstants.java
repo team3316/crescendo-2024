@@ -24,7 +24,7 @@ public class ArmConstants {
 
     public static final double ks = 0; // v
     public static final double kg = 0.233; // v
-    public static final double kv = 1.24; // v/(rad/sec) 3 / (Math.PI * 125 / 180)
+    public static final double kv = 3.72; // v/(rad/sec)
     public static final double ka = 0; // v/(rad/sec^2)
 
     public static final double kp = 0.01; // percentage/deg
