@@ -59,9 +59,12 @@ public class Arm extends SubsystemBase {
 
     private void initSDB() {
         SmartDashboard.putNumber("Arm/climb percentage", SmartDashboard.getNumber("Arm/climb percentage", -0.5));
-        SmartDashboard.putNumber("Arm/stay on percentage", SmartDashboard.getNumber("Arm/stay on percentage", 0.25));
+        SmartDashboard.putNumber("Arm/stay on percentage", SmartDashboard.getNumber("Arm/stay on percentage", -0.25));
         SmartDashboard.putNumber("Arm/climb position", SmartDashboard.getNumber("Arm/climb position", 20));
-        SmartDashboard.putData("Climb with arm", new InstantCommand(() -> getClimbCommand(SmartDashboard.getNumber("Arm/climb percentage", -0.5), SmartDashboard.getNumber("Arm/stay on percentage", -0.25), SmartDashboard.getNumber("Arm/climb position", 20)).schedule()));
+        SmartDashboard.putData("Climb with arm",
+                new InstantCommand(() -> getClimbCommand(SmartDashboard.getNumber("Arm/climb percentage", -0.5),
+                        SmartDashboard.getNumber("Arm/stay on percentage", -0.25),
+                        SmartDashboard.getNumber("Arm/climb position", 20)).schedule()));
     }
 
     private ArmWristState getInitialState() {
@@ -124,7 +127,8 @@ public class Arm extends SubsystemBase {
     }
 
     private Command getClimbCommand(double climbPercentage, double stayOnPercentage, double climbPosition) {
-        return new FunctionalCommand(() -> _leader.set(climbPercentage), () -> {}, (interrupted) -> _leader.set(stayOnPercentage), () -> getPositionDeg() <= climbPosition, this);
+        return new FunctionalCommand(() -> _leader.set(climbPercentage), () -> {
+        }, (interrupted) -> _leader.set(stayOnPercentage), () -> getPositionDeg() <= climbPosition, this);
     }
 
     public void stop() {
