@@ -25,7 +25,6 @@ import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.constants.JoysticksConstants;
 import frc.robot.humanIO.CommandPS5Controller;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Manipulator;
@@ -47,7 +46,6 @@ public class RobotContainer {
     private final Shooter m_Shooter = new Shooter();
     private final Intake m_Intake = new Intake();
     private final LimeLight m_limeLight = new LimeLight();
-    private final Climber m_Climber = new Climber(() -> Rotation2d.fromDegrees(m_Drivetrain.getRoll()));
 
     private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
             JoysticksConstants.operatorPort);
@@ -90,7 +88,6 @@ public class RobotContainer {
         m_Intake.stop();
         m_Manipulator.stop();
         m_Shooter.stop();
-        m_Climber.stop();
     }
 
     private void configureBindings() {
@@ -117,7 +114,6 @@ public class RobotContainer {
         m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
                 .alongWith(new WaitCommand(2).andThen(
                         m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP))));
-        m_operatorController.triangle().onTrue(m_Climber.getClimbCommand());
         m_operatorController.L2()
                 .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP),
                         new WaitCommand(3),
@@ -126,9 +122,7 @@ public class RobotContainer {
                 .alongWith(Commands.sequence(new WaitCommand(1),
                         m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))));
 
-        m_Climber.setDefaultCommand(
-                new RunCommand(() -> m_Climber.setPercentage(m_operatorController.getLeftY() * 0.2,
-                        m_operatorController.getRightY() * 0.2), m_Climber));// stupid climb
+      
     }
 
     private Command getCollectSequence() {
