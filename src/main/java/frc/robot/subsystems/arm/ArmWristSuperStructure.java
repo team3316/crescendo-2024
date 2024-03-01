@@ -52,10 +52,6 @@ public class ArmWristSuperStructure extends SubsystemBase {
         return new InstantCommand(() -> setEncodersToCollect());
     }
 
-    public Command getClimbCommand() {
-        return m_Arm.getClimbCommand();
-    }
-
     public void stop() {
         m_Arm.stop();
         m_Wrist.stop();
