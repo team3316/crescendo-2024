@@ -57,7 +57,7 @@ public class Wrist extends SubsystemBase {
         wristConfig.withCurrentLimits(currentConfigs);
         SoftwareLimitSwitchConfigs limitConfigs = new SoftwareLimitSwitchConfigs();
         limitConfigs.withForwardSoftLimitThreshold(
-                ArmWristState.TRAP.wristAngleDeg + WristConstants.softLimitExtraAngle);
+                ArmWristState.AMP.wristAngleDeg + WristConstants.softLimitExtraAngle);
         limitConfigs.withForwardSoftLimitEnable(true);
         limitConfigs.withReverseSoftLimitThreshold(ArmWristState.COLLECT.wristAngleDeg
                 - WristConstants.softLimitExtraAngle);
