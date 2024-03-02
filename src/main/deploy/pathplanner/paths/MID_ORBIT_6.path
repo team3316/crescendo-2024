@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9078895212422267,
-        "y": 6.990576641485824
+        "x": 2.690272142110121,
+        "y": 6.982284142504229
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5081494343511275,
-        "y": 6.7858317189318464
+        "x": 2.2905320552190216,
+        "y": 6.777539219950251
       },
       "isLocked": false,
       "linkedName": "collect wing top"
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "spinUp",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "sequential",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "SpinUp"
+                "name": "Shoot"
               }
             }
           ]

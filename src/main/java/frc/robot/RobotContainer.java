@@ -41,12 +41,12 @@ import frc.robot.subsystems.vision.LimeLight;
 
 public class RobotContainer {
 
-    private final Drivetrain m_Drivetrain = new Drivetrain();
-    private final ArmWristSuperStructure m_ArmWristSuperStructure = new ArmWristSuperStructure();
-    private final Manipulator m_Manipulator = new Manipulator();
-    private final Shooter m_Shooter = new Shooter();
-    private final Intake m_Intake = new Intake();
-    private final LimeLight m_limeLight = new LimeLight();
+        private final Drivetrain m_Drivetrain = new Drivetrain();
+        private final ArmWristSuperStructure m_ArmWristSuperStructure = new ArmWristSuperStructure();
+        private final Manipulator m_Manipulator = new Manipulator();
+        private final Shooter m_Shooter = new Shooter();
+        private final Intake m_Intake = new Intake();
+        private final LimeLight m_limeLight = new LimeLight();
 
         private final CommandPS5Controller m_operatorController = new CommandPS5Controller(
                         JoysticksConstants.operatorPort);
@@ -74,12 +74,14 @@ public class RobotContainer {
 
                 this.m_autoFactory = new AutoFactory(m_Drivetrain);
 
+                configureNamedCommands();
+
                 AutoBuilder.buildAutoChooser();
                 this.m_chooser = new SendableChooser<Command>();
                 initChooser();
                 // Configure the trigger bindings
                 configureBindings();
-                configureNamedCommands();
+
         }
 
         public void stop() {
@@ -88,7 +90,7 @@ public class RobotContainer {
                 m_Intake.stop();
                 m_Manipulator.stop();
                 m_Shooter.stop();
-                }
+        }
 
         private void configureNamedCommands() {
                 NamedCommands.registerCommand("Shoot", getAutoShootSequence());
@@ -121,7 +123,7 @@ public class RobotContainer {
                 m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
                                 .alongWith(new WaitCommand(2).andThen(
                                                 m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP))));
-                        m_operatorController.L2()
+                m_operatorController.L2()
                                 .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP),
                                                 new WaitCommand(3),
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
@@ -131,9 +133,7 @@ public class RobotContainer {
 
         }
 
-      
-   
-         private Command getShooterTriggerCommand() {
+        private Command getShooterTriggerCommand() {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
                                                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
@@ -149,7 +149,6 @@ public class RobotContainer {
                                 () -> m_Manipulator.hasNoteSwitch());
                 return sequence;
         }
-
 
         private Command getCollectSequence() {
                 Command sequence = Commands.sequence(
@@ -184,22 +183,22 @@ public class RobotContainer {
                 return sequence;
 
         }
-        
+
         private Command getAutoShootSequence() {
                 return Commands.sequence(
-                        m_Shooter.getSetStateCommand(ShooterState.ON),
-                        new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
-                        m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                        new WaitCommand(0.5),
-                        m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
-                        .alongWith(m_Shooter
-                        .getSetStateCommand(ShooterState.OFF)));
-                }
+                                m_Shooter.getSetStateCommand(ShooterState.ON),
+                                new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
+                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                new WaitCommand(0.5),
+                                m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
+                                                .alongWith(m_Shooter
+                                                                .getSetStateCommand(ShooterState.OFF)));
+        }
 
         private Command getAutoSpin() {
                 return new InstantCommand(() -> m_Shooter.getSetStateCommand(ShooterState.ON));
         }
-        
+
         private Command getAutoTriggerCommand() {
                 Command sequence = Commands.sequence(
                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
@@ -209,7 +208,7 @@ public class RobotContainer {
                                                                 ManipulatorState.OFF)));
                 return sequence;
         }
-                
+
         private void initChooser() {
 
                 SmartDashboard.putData("Auto Chooser PLACE BY DRIVERS!", m_chooser);
@@ -230,7 +229,9 @@ public class RobotContainer {
 
                 // nothing
                 m_chooser.addOption("nothing", new InstantCommand());
-                        }
+                m_chooser.addOption("test2", m_autoFactory.createAuto("test2"));
+                //
+        }
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
