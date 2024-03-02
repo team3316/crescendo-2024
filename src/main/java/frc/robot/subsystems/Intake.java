@@ -19,21 +19,19 @@ public class Intake extends SubsystemBase {
     private IntakeState _state;
 
     public static enum IntakeState {
-        COLLECTING(IntakeConstants.collectingPercentage, IntakeConstants.rollerCollectingPercentage),
-        EJECT(IntakeConstants.ejectPercentage, IntakeConstants.rollerEjectPercentage),
-        DISABLED(IntakeConstants.disabledPrecent, IntakeConstants.rollerOffPercentage);
+        COLLECTING(IntakeConstants.collectingPercentage),
+        EJECT(IntakeConstants.ejectPercentage),
+        DISABLED(IntakeConstants.disabledPrecent);
         
         public final double percentage;
-        public final double rollerPercentage;
 
-        private IntakeState(double precentege, double rollerPercentage){
+        private IntakeState(double precentege){
             this.percentage = precentege;
-            this.rollerPercentage = rollerPercentage;
         }
     }
 
     public Intake(){
-        this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensor_port);
+        this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
 
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
         _intakeMotor.setSmartCurrentLimit(15);
@@ -55,7 +53,7 @@ public class Intake extends SubsystemBase {
         this._state = state;
 
         _intakeMotor.set(state.percentage);
-        _intakeRoller.set(state.rollerPercentage);
+        _intakeRoller.set(state.percentage);
     }
     
     public Command setStateCommand(IntakeState state){
