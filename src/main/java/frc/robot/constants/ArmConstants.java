@@ -11,15 +11,15 @@ public class ArmConstants {
     public static final double collectAngle = -43.2; // deg
     public static final double TRAPAngle = 105; // deg
     public static final double underChainAngle = 0; // deg
-    public static final double AMPAngle = 46; // deg
+    public static final double AMPAngle = 56; // deg
     public static final double ALIGNAngle = 36.86; // deg
     
     private static final double gearRatio = 1.0 / 192.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
     public static final double velocityFactor = 360 * gearRatio / 60; // (deg/sec)/RPM
 
-    private static final double maxVelocity = 20; // deg/sec
-    private static final double maxAcceleration = 20; // deg/sec^2
+    private static final double maxVelocity = 150; // deg/sec
+    private static final double maxAcceleration = 150; // deg/sec^2
     public static final TrapezoidProfile.Constraints profileConstrains = new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration);
 
     public static final double ks = 0; // v
