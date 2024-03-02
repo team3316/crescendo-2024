@@ -66,7 +66,7 @@ public class Arm extends SubsystemBase {
 
     // TODO: check if switches are NC or NO
     public boolean anyLimitSwitchClosed() {
-        return !_leftSwitch.get() || _rightSwitch.get();
+        return !_leftSwitch.get() || !_rightSwitch.get();
     }
 
     public double getPositionDeg() {
