@@ -12,34 +12,39 @@ public class Intake extends SubsystemBase {
     private static final boolean UPDATE_DASHBOARD = false;
 
     private DBugSparkMax _intakeMotor;
+    private DBugSparkMax _intakeRoller;
 
     private DigitalInput _hasNoteSwitch;
 
     private IntakeState _state;
 
     public static enum IntakeState {
-        COLLECTING(IntakeConstants.collectingPercentage),
-        EJECT(IntakeConstants.ejectPercentage),
-        DISABLED(IntakeConstants.disabledPrecent);
+        COLLECTING(IntakeConstants.collectingPercentage, IntakeConstants.rollerCollectingPercentage),
+        EJECT(IntakeConstants.ejectPercentage, IntakeConstants.rollerEjectPercentage),
+        DISABLED(IntakeConstants.disabledPrecent, IntakeConstants.rollerOffPercentage);
+        
         public final double percentage;
+        public final double rollerPercentage;
 
-        private IntakeState(double precentege){
+        private IntakeState(double precentege, double rollerPercentage){
             this.percentage = precentege;
+            this.rollerPercentage = rollerPercentage;
         }
     }
 
     public Intake(){
-                this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensor_port);
+        this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensor_port);
 
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
         _intakeMotor.setSmartCurrentLimit(15);
+        _intakeRoller = DBugSparkMax.create(IntakeConstants.rollerID);
+        _intakeRoller.setSmartCurrentLimit(15);
 
         this._state = IntakeState.DISABLED; 
     }
 
     public boolean isNoteInIntake(){
         return !_hasNoteSwitch.get();
-
     }
 
     public IntakeState getState(){
@@ -50,6 +55,7 @@ public class Intake extends SubsystemBase {
         this._state = state;
 
         _intakeMotor.set(state.percentage);
+        _intakeRoller.set(state.rollerPercentage);
     }
     
     public Command setStateCommand(IntakeState state){
