@@ -229,7 +229,7 @@ public class RobotContainer {
 
                 // nothing
                 m_chooser.addOption("nothing", new InstantCommand());
-                m_chooser.addOption("test2", m_autoFactory.createAuto("test2"));
+
                 //
         }
 
