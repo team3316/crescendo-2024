@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +19,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StructArrayLogEntry;
 import edu.wpi.first.util.datalog.StructLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
@@ -29,7 +31,7 @@ import frc.robot.constants.LimelightConstants;
 public class Drivetrain extends SubsystemBase {
 
     private static final boolean UPDATE_TELEMETRY = false;
-    private static final boolean UPDATE_DASHBOARD = false;
+    private static final boolean UPDATE_DASHBOARD = true;
 
     private SwerveModule[] _modules;
 
@@ -66,10 +68,6 @@ public class Drivetrain extends SubsystemBase {
         calibrateSteering();
 
     }
-
-    /************************
-     * Drivetrain Interface *
-     ************************/
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
@@ -189,7 +187,7 @@ public class Drivetrain extends SubsystemBase {
             _modules[i].updateSDB(i);
         }
 
-        SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
+        SmartDashboard.putNumber("Drivetrain/rotation", getRotation2d().getRadians());
     }
 
     /************************
@@ -203,6 +201,26 @@ public class Drivetrain extends SubsystemBase {
         _odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
     }
 
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return DrivetrainConstants.kinematics.toChassisSpeeds(_modules[0].getState(), _modules[1].getState(),
+                _modules[2].getState(), _modules[3].getState());
+    }
+
+    public void autoDrive(ChassisSpeeds speeds) {
+        var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
+
+        setDesiredStates(moduleStates);
+    }
+
+    public boolean shouldFlipPath() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+
+    }
+
     /******************************
      * Pigeon Methods *
      ******************************/
@@ -213,10 +231,6 @@ public class Drivetrain extends SubsystemBase {
 
     private Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
-    }
-
-    public double getRoll() {
-        return _pigeon.getRoll();
     }
 
     public void resetYaw() {

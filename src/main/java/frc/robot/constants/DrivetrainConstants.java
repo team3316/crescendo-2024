@@ -67,7 +67,7 @@ public class DrivetrainConstants {
         public final static double cancoderTROffset = 124;
         public final static double cancoderTLOffset = 288.19;
         public final static double cancoderBROffset = 116.27;        
-        public final static double cancoderBLOffset = 186.15;
+        public final static double cancoderBLOffset = 324.31-180;
         
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
                         new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 17, 2,
@@ -92,5 +92,7 @@ public class DrivetrainConstants {
 
         public static final Rotation2d installAngle = Rotation2d.fromDegrees(0);
         public static final Rotation2d collectAngle = Rotation2d.fromDegrees(90);
+
+        public static final double driveCurrentLimit = 60;
 
 }

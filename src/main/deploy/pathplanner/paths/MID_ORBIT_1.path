@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3089291736778261,
+        "y": 5.537862667174266
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.308929173677827,
+        "y": 5.537862667174266
+      },
+      "isLocked": false,
+      "linkedName": "start mid"
+    },
+    {
+      "anchor": {
+        "x": 2.742143631555673,
+        "y": 5.537862667174266
+      },
+      "prevControl": {
+        "x": 2.244905962496012,
+        "y": 5.547612425391122
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "collect wing middle"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "collect",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Collect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "orbit",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

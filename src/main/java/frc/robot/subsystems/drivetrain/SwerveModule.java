@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.SwerveModuleConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
@@ -42,14 +43,14 @@ public class SwerveModule {
                 _absEncoder.getAbsolutePosition().getValue() * 360);
 
         this._driveMotor.getConfigurator()
-                .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor));
+                .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor,DrivetrainConstants.driveCurrentLimit));
 
         this._targetState = getState();
 
     }
 
     private static TalonFXConfiguration getTalonConfig(PIDFGains gains,
-            double conversionFactor) {
+            double conversionFactor,double currntLimit) {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
@@ -60,6 +61,13 @@ public class SwerveModule {
                 .withKV(gains.kF); // feedforward
 
         config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+
+        config.CurrentLimits
+            .withSupplyCurrentLimit(currntLimit)
+            .withSupplyCurrentLimitEnable(true)
+            .withSupplyCurrentThreshold(currntLimit)
+            .withSupplyTimeThreshold(0.05);
+        
 
         return config;
     }
@@ -186,7 +194,7 @@ public class SwerveModule {
     }
 
     public void updateSDB(int moduleIdx) {
-        var prefix = "module[" + moduleIdx + "] ";
+        var prefix = "Modules/module[" + moduleIdx + "] ";
         var state = getState();
 
         SmartDashboard.putNumber(prefix + "drive speed", state.speedMetersPerSecond);

@@ -31,7 +31,7 @@ public class LimeLight extends SubsystemBase {
         hasTarget = limeLightTable.getEntry("tv");
         pipeLine = limeLightTable.getEntry("pipeline");
         LEDs = limeLightTable.getEntry("ledMode");
-        SmartDashboard.putNumber("tx", tx.getDouble(52));
+        SmartDashboard.putNumber("Limelight/tx", tx.getDouble(52));
              setPipeLine(0);
     }
     public double getArea(){
@@ -76,9 +76,6 @@ public class LimeLight extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("hasTarget",hasTarget() );
-
-        SmartDashboard.putNumber("xLength", this.getFieldXMeters());
-        SmartDashboard.putNumber("yLength", this.getFieldYMeters());
+        SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget() );
     }
 }

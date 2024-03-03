@@ -9,7 +9,10 @@ import frc.robot.motors.DBugSparkMax;
 
 public class Intake extends SubsystemBase {
     
+    private static final boolean UPDATE_DASHBOARD = false;
+
     private DBugSparkMax _intakeMotor;
+    private DBugSparkMax _intakeRoller;
 
     private DigitalInput _hasNoteSwitch;
 
@@ -19,6 +22,7 @@ public class Intake extends SubsystemBase {
         COLLECTING(IntakeConstants.collectingPercentage),
         EJECT(IntakeConstants.ejectPercentage),
         DISABLED(IntakeConstants.disabledPrecent);
+        
         public final double percentage;
 
         private IntakeState(double precentege){
@@ -27,17 +31,18 @@ public class Intake extends SubsystemBase {
     }
 
     public Intake(){
-                this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensor_port);
+        this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
 
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
         _intakeMotor.setSmartCurrentLimit(15);
+        _intakeRoller = DBugSparkMax.create(IntakeConstants.rollerID);
+        _intakeRoller.setSmartCurrentLimit(15);
 
         this._state = IntakeState.DISABLED; 
     }
 
     public boolean isNoteInIntake(){
         return !_hasNoteSwitch.get();
-
     }
 
     public IntakeState getState(){
@@ -48,6 +53,7 @@ public class Intake extends SubsystemBase {
         this._state = state;
 
         _intakeMotor.set(state.percentage);
+        _intakeRoller.set(state.percentage);
     }
     
     public Command setStateCommand(IntakeState state){
@@ -58,8 +64,14 @@ public class Intake extends SubsystemBase {
         setState(IntakeState.DISABLED);
     }
 
+    private void updateSDB() {
+        SmartDashboard.putBoolean("Intake/has note", isNoteInIntake());
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("intake switch", isNoteInIntake());
+        if(UPDATE_DASHBOARD) {
+            updateSDB();
+        }
     }
 }

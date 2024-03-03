@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7434431971001721,
+      "y": 4.465389263320095
+    },
+    "rotation": -60.55985000194755
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RIGHT_ORBIT_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
