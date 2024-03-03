@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7434431971001721,
-        "y": 4.465389263320095
+        "x": 1.3756161320151827,
+        "y": 5.55076982040085
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7434431971001718,
-        "y": 4.465389263320095
+        "x": 2.3756161320151836,
+        "y": 5.55076982040085
       },
       "isLocked": false,
-      "linkedName": "start right"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8981397630253705,
-        "y": 2.895678190406262
+        "x": 2.544199252099572,
+        "y": 5.55076982040085
       },
       "prevControl": {
-        "x": 1.8981397630253705,
-        "y": 2.895678190406262
+        "x": 1.5441992520995722,
+        "y": 5.55076982040085
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SpinUp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
@@ -43,9 +61,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootAndCom",
+  "folder": null,
   "previewStartingState": {
-    "rotation": -60.80251395393561,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true
