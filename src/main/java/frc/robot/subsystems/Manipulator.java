@@ -11,7 +11,7 @@ import frc.robot.motors.DBugSparkMax;
 
 public class Manipulator extends SubsystemBase {
 
-    private static final boolean UPDATE_DASHBOARD = false;
+    private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkMax _manipulatorMotor;
 

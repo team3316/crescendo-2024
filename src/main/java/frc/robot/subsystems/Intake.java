@@ -9,7 +9,7 @@ import frc.robot.motors.DBugSparkMax;
 
 public class Intake extends SubsystemBase {
     
-    private static final boolean UPDATE_DASHBOARD = false;
+    private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkMax _intakeMotor;
     private DBugSparkMax _intakeRoller;
