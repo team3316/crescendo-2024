@@ -138,7 +138,7 @@ public class RobotContainer {
                         m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
         m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                 .alongWith(Commands.sequence(new WaitCommand(1))
-                        /*m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))*/));
+                /* m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)) */));
 
         }
 
