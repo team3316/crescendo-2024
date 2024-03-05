@@ -180,8 +180,8 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
-                                new WaitCommand(0.5),
+                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                new WaitCommand(10),
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
 
