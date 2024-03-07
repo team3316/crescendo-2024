@@ -132,6 +132,11 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putNumber("Wrist/wrist absolute position", getAbsolutePositionDeg());
     }
 
+    public void setBreakMode(boolean shouldBreak) {
+        NeutralModeValue mode = shouldBreak ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+        _wristMotor.setNeutralMode(mode);
+    }
+
     @Override
     public void periodic() {
         if (UPDATE_DASHBOARD) {

@@ -7,6 +7,8 @@ public class ArmConstants {
     public static final int followerCANID = 7; // right
     public static final int leftSwitchPort = 6;
     public static final int rightSwitchPort = 7;
+    public static final int coastSwitchPort = 3;
+
 
     public static final double collectAngle = -43.2; // deg
     public static final double TRAPAngle = 105; // deg
