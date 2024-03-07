@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isAtTargetVelocity() {
-        return Within.range(this._shooterState.velocity, getShooterVelocityMPS(), 0.1);
+        return Within.range(this._shooterState.velocity, getShooterVelocityMPS(), 0.15);
     }
 
     private void updateSDB() {
