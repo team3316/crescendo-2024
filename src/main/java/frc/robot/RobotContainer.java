@@ -67,9 +67,6 @@ public class RobotContainer {
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
 
-                m_Intake.setDefaultCommand(m_Intake.setStateCommand(IntakeState.DISABLED));
-                m_Manipulator.setDefaultCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF));
-
                 SmartDashboard.putBoolean("Field Relative", _fieldRelative);
 
                 this.m_autoFactory = new AutoFactory(m_Drivetrain);
@@ -114,9 +111,9 @@ public class RobotContainer {
         m_operatorController.povUp()
                 .whileTrue(new StartEndCommand(
                         () -> m_Intake.setStateCommand(IntakeState.EJECT)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)),
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
                         () -> m_Intake.setStateCommand(IntakeState.DISABLED)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))));
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
                 
         m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED)
                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
@@ -159,8 +156,8 @@ public class RobotContainer {
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                                 m_Intake.setStateCommand(IntakeState.EJECT)
-                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
-                                new WaitCommand(0.5),
+                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)),
+                                new WaitCommand(2),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
                 return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
         }
