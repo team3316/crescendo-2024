@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -8,7 +9,7 @@ import frc.robot.constants.IntakeConstants;
 import frc.robot.motors.DBugSparkMax;
 
 public class Intake extends SubsystemBase {
-    
+
     private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkMax _intakeMotor;
@@ -22,15 +23,15 @@ public class Intake extends SubsystemBase {
         COLLECTING(IntakeConstants.collectingPercentage),
         EJECT(IntakeConstants.ejectPercentage),
         DISABLED(IntakeConstants.disabledPrecent);
-        
+
         public final double percentage;
 
-        private IntakeState(double precentege){
+        private IntakeState(double precentege) {
             this.percentage = precentege;
         }
     }
 
-    public Intake(){
+    public Intake() {
         this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
 
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
@@ -38,25 +39,25 @@ public class Intake extends SubsystemBase {
         _intakeRoller = DBugSparkMax.create(IntakeConstants.rollerID);
         _intakeRoller.setSmartCurrentLimit(15);
 
-        this._state = IntakeState.DISABLED; 
+        this._state = IntakeState.DISABLED;
     }
 
-    public boolean isNoteInIntake(){
+    public boolean isNoteInIntake() {
         return !_hasNoteSwitch.get();
     }
 
-    public IntakeState getState(){
+    public IntakeState getState() {
         return this._state;
     }
 
-    private void setState(IntakeState state){
+    private void setState(IntakeState state) {
         this._state = state;
 
         _intakeMotor.set(state.percentage);
         _intakeRoller.set(state.percentage);
     }
-    
-    public Command setStateCommand(IntakeState state){
+
+    public Command setStateCommand(IntakeState state) {
         return new InstantCommand(() -> setState(state), this);
     }
 
@@ -70,7 +71,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(UPDATE_DASHBOARD) {
+        if (UPDATE_DASHBOARD) {
             updateSDB();
         }
     }

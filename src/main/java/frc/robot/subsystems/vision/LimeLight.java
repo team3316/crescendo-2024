@@ -23,7 +23,7 @@ public class LimeLight extends SubsystemBase {
 
     /** Creates a new LimeLight. */
     public LimeLight() { // CR: add a way to send the config to the limelight trough code
-   
+
         limeLightTable = NetworkTableInstance.getDefault().getTable("limelight");
         ta = limeLightTable.getEntry("ta");
         tx = limeLightTable.getEntry("tx");
@@ -32,13 +32,13 @@ public class LimeLight extends SubsystemBase {
         pipeLine = limeLightTable.getEntry("pipeline");
         LEDs = limeLightTable.getEntry("ledMode");
         SmartDashboard.putNumber("Limelight/tx", tx.getDouble(52));
-             setPipeLine(0);
+        setPipeLine(0);
     }
-    public double getArea(){
-  
+
+    public double getArea() {
         return this.ta.getDouble(-1);
-        
     }
+
     public boolean hasTarget() {
         return hasTarget.getDouble(0) == 1;
     }
@@ -73,9 +73,8 @@ public class LimeLight extends SubsystemBase {
         LEDs.setNumber(off ? LimelightConstants.LEDsForceOff : LimelightConstants.LEDsByPipeline);
     }
 
-
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget() );
+        SmartDashboard.putBoolean("Limelight/hasTarget", hasTarget());
     }
 }

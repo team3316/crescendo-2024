@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.ControlType;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -115,12 +116,13 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putNumber("Manipulator/note position", getNotePosition());
         SmartDashboard.putNumber("Manipulator/current", _manipulatorMotor.getOutputCurrent());
     }
+
     @Override
     public void periodic() {
         resetNotePositionPeriodic();
 
         SmartDashboard.putBoolean("Manipulator/has note", hasNoteSwitch());
-        if(UPDATE_DASHBOARD) {
+        if (UPDATE_DASHBOARD) {
             updateSDB();
         }
     }
