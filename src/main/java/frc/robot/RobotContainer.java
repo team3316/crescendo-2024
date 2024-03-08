@@ -156,7 +156,7 @@ public class RobotContainer {
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                                 m_Intake.setStateCommand(IntakeState.EJECT)
-                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)),
+                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
                                 new WaitCommand(2),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
                 return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
