@@ -111,11 +111,15 @@ public class RobotContainer {
         m_operatorController.R1().onTrue(getShooterTriggerCommand());
         m_operatorController.R2().whileTrue(getShooterSpinCommand());
 
-        m_operatorController.povUp().whileTrue(new StartEndCommand(()->m_Intake.setStateCommand(IntakeState.EJECT).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)),()->m_Intake.setStateCommand(IntakeState.DISABLED).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))));
-
-
+        m_operatorController.povUp()
+                .whileTrue(new StartEndCommand(
+                        () -> m_Intake.setStateCommand(IntakeState.EJECT)
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)),
+                        () -> m_Intake.setStateCommand(IntakeState.DISABLED)
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))));
                 
-                m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED).alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+        m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED)
+                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
         m_operatorController.circle()
                 .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
                         new WaitCommand(3), m_Manipulator
@@ -134,14 +138,15 @@ public class RobotContainer {
                         m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
         m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                 .alongWith(Commands.sequence(new WaitCommand(1))
-                        /*m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP))*/));
+                /* m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)) */));
 
         }
 
         private Command getShooterTriggerCommand() {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
-                                                new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
+                        new WaitUntilCommand(
+                                () -> m_Shooter.isAtTargetVelocity() && m_Shooter.getShooterState() == ShooterState.ON),
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
                                                 new WaitCommand(2),
                                                 m_Shooter.getSetStateCommand(ShooterState.OFF)
@@ -157,7 +162,6 @@ public class RobotContainer {
 
         private Command getCollectSequence() {
                 Command sequence = Commands.sequence(
-                                m_Shooter.getSetStateCommand(ShooterState.OFF),
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
@@ -180,8 +184,8 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
-                                new WaitCommand(0.5),
+                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                new WaitCommand(10),
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
 

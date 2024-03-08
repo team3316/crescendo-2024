@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
     
-    private static final boolean UPDATE_DASHBOARD = false;
+    private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkFlex _leaderLeft;
     private DBugSparkFlex _followerRight;
@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isAtTargetVelocity() {
-        return Within.range(this._shooterState.velocity, getShooterVelocityMPS(), 0.1);
+        return Within.range(this._shooterState.velocity, getShooterVelocityMPS(), 0.15);
     }
 
     private void updateSDB() {
