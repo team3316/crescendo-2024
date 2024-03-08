@@ -1,6 +1,5 @@
 package frc.robot.constants;
 
-
 public class ShooterConstants {
     public static final int leaderUpLeftPort = 12;
     public static final int followerDownRightPort = 13;

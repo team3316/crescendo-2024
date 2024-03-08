@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase.ControlType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,15 +11,8 @@ import frc.robot.motors.DBugSparkFlex;
 import frc.robot.motors.PIDFGains;
 import frc.robot.utils.Within;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
-import com.revrobotics.CANSparkBase.ControlType;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class Shooter extends SubsystemBase {
-    
+
     private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkFlex _leaderLeft;
@@ -81,20 +77,9 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        /*
-         * gets the velocity value from the SmartDashboard. To use these lines for
-         * calibration remove final keyword from
-         * ShooterState.velocity and remember to put it back
-         */
-        /*ShooterState.ON.velocity = SmartDashboard.getNumber("velocity, mps", 0);
-        if (DriverStation.isEnabled()) {
-            // setState(ShooterState.ON);
-            // leaderUpLeft.set(0.5);
-        }
-        SmartDashboard.putNumber("velocity, mps", SmartDashboard.getNumber("velocity, mps", 0));*/
-        SmartDashboard.putBoolean("Shooter/is at target",isAtTargetVelocity());
-        if(UPDATE_DASHBOARD){
-        updateSDB();
+        SmartDashboard.putBoolean("Shooter/is at target", isAtTargetVelocity());
+        if (UPDATE_DASHBOARD) {
+            updateSDB();
         }
     }
 

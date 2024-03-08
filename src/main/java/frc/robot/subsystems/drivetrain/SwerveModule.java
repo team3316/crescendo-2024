@@ -43,14 +43,15 @@ public class SwerveModule {
                 _absEncoder.getAbsolutePosition().getValue() * 360);
 
         this._driveMotor.getConfigurator()
-                .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor,DrivetrainConstants.driveCurrentLimit));
+                .apply(getTalonConfig(constants.driveGains, SwerveModuleConstants.drivePositionConversionFactor,
+                        DrivetrainConstants.driveCurrentLimit));
 
         this._targetState = getState();
 
     }
 
     private static TalonFXConfiguration getTalonConfig(PIDFGains gains,
-            double conversionFactor,double currntLimit) {
+            double conversionFactor, double currntLimit) {
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         config.Feedback.withSensorToMechanismRatio(1 / conversionFactor);
@@ -63,11 +64,10 @@ public class SwerveModule {
         config.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
 
         config.CurrentLimits
-            .withSupplyCurrentLimit(currntLimit)
-            .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentThreshold(currntLimit)
-            .withSupplyTimeThreshold(0.05);
-        
+                .withSupplyCurrentLimit(currntLimit)
+                .withSupplyCurrentLimitEnable(true)
+                .withSupplyCurrentThreshold(currntLimit)
+                .withSupplyTimeThreshold(0.05);
 
         return config;
     }
