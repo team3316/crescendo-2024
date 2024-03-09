@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.ManipulatorConstants;
 import frc.robot.motors.DBugSparkMax;
+import frc.robot.motors.PIDFGains;
 
 public class Manipulator extends SubsystemBase {
 
@@ -52,7 +54,8 @@ public class Manipulator extends SubsystemBase {
     }
 
     public Manipulator() {
-        this._manipulatorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID, ManipulatorConstants.positionGains,
+        this._manipulatorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID,
+                ManipulatorConstants.positionGains,
                 ManipulatorConstants.positionFactor, ManipulatorConstants.velocityFactor, 0);
         this._manipulatorMotor.setSmartCurrentLimit(40);
 
@@ -82,7 +85,9 @@ public class Manipulator extends SubsystemBase {
     private void setState(ManipulatorState state) {
         this._state = state;
 
-        this._manipulatorMotor.setReference(state.velocity,ControlType.kVelocity,1);
+        this._manipulatorMotor.setReference(state.velocity, ControlType.kVelocity, 1);
+
+    }
 
      public void upDatePIDF(double manipulatorKp, double manipulatorKi, double manipulatorKd) {
         this._manipulatorMotor.setupPIDF(new PIDFGains(manipulatorKp, manipulatorKi, manipulatorKd, ManipulatorConstants.velocityKf));
@@ -143,7 +148,7 @@ public class Manipulator extends SubsystemBase {
         resetNotePositionPeriodic();
 
         SmartDashboard.putBoolean("Manipulator/has note", hasNoteSwitch());
-        if(UPDATE_DASHBOARD) {
+        if (UPDATE_DASHBOARD) {
             updateSDB();
         }
     }
