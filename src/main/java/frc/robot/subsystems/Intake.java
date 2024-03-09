@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -8,7 +9,7 @@ import frc.robot.constants.IntakeConstants;
 import frc.robot.motors.DBugSparkMax;
 
 public class Intake extends SubsystemBase {
-    
+
     private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkMax _intakeMotor;
@@ -22,7 +23,7 @@ public class Intake extends SubsystemBase {
         COLLECTING(IntakeConstants.collectingPercentage),
         EJECT(IntakeConstants.ejectPercentage),
         DISABLED(IntakeConstants.disabledPrecent);
-        
+
         public final double percentage;
 
         private IntakeState(double precentege){
@@ -33,12 +34,15 @@ public class Intake extends SubsystemBase {
     public Intake(){
         this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
 
-        _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
+        _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID, IntakeConstants.intakeGains, 0,
+                IntakeConstants.intakeVelocityFactor, 0);
         _intakeMotor.setSmartCurrentLimit(15);
-        _intakeRoller = DBugSparkMax.create(IntakeConstants.rollerID);
+
+        _intakeRoller = DBugSparkMax.create(IntakeConstants.rollerID,IntakeConstants.rollerGains, 0,
+                IntakeConstants.rollerVelocityFactor, 0);
         _intakeRoller.setSmartCurrentLimit(15);
 
-        this._state = IntakeState.DISABLED; 
+        this._state = IntakeState.DISABLED;
     }
 
     public boolean isNoteInIntake(){
@@ -55,7 +59,7 @@ public class Intake extends SubsystemBase {
         _intakeMotor.set(state.percentage);
         _intakeRoller.set(state.percentage);
     }
-    
+
     public Command setStateCommand(IntakeState state){
         return new InstantCommand(() -> setState(state), this);
     }
