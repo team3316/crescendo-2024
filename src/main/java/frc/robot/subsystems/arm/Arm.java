@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
@@ -61,10 +62,10 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm/climb percentage", SmartDashboard.getNumber("Arm/climb percentage", -0.5));
         SmartDashboard.putNumber("Arm/stay on percentage", SmartDashboard.getNumber("Arm/stay on percentage", -0.25));
         SmartDashboard.putNumber("Arm/climb position", SmartDashboard.getNumber("Arm/climb position", 20));
-        SmartDashboard.putData("Climb with arm",
+        /*SmartDashboard.putData("Climb with arm",
                 new InstantCommand(() -> getClimbCommand(SmartDashboard.getNumber("Arm/climb percentage", -0.5),
                         SmartDashboard.getNumber("Arm/stay on percentage", -0.25),
-                        SmartDashboard.getNumber("Arm/climb position", 20)).schedule()));
+                        SmartDashboard.getNumber("Arm/climb position", 20)).schedule()));*/
     }
 
     private ArmWristState getInitialState() {
@@ -126,9 +127,17 @@ public class Arm extends SubsystemBase {
         return Commands.defer(() -> generateSetStateCommand(targetState), requirements);
     }
 
-    private Command getClimbCommand(double climbPercentage, double stayOnPercentage, double climbPosition) {
-        return new FunctionalCommand(() -> _leader.set(climbPercentage), () -> {
-        }, (interrupted) -> _leader.set(stayOnPercentage), () -> getPositionDeg() <= climbPosition, this);
+    private void climb() {
+        if (getPositionDeg() >= ArmConstants.climbPosition) {
+            _leader.set(ArmConstants.climbPercentage);
+        }
+        else {
+            _leader.set(0);
+        }
+    }
+
+    public Command getClimbCommand() {
+        return new StartEndCommand(this::climb, this::stop, this);
     }
 
     public void stop() {
