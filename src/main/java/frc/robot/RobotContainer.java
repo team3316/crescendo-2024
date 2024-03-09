@@ -163,8 +163,8 @@ public class RobotContainer {
         private Command getCollectSequence() {
                 Command sequence = Commands.sequence(
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
-                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
-                                m_Intake.setStateCommand(IntakeState.COLLECTING),
+                                                .alongWith(m_Manipulator.getCollectCommand()),
+                                m_Intake.getCollectCommand(),
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                                 m_Intake.setStateCommand(IntakeState.EJECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
