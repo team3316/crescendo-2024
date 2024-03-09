@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.motors.DBugSparkMax;
+import frc.robot.motors.PIDFGains;
 
 public class Intake extends SubsystemBase {
 
@@ -33,7 +34,9 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    public Intake(){
+    public void upDatePIDF(double intakeKp, double intakeKi, double intakeKd) {
+        this._intakeMotor.setupPIDF(new PIDFGains(intakeKp, intakeKi, intakeKd, IntakeConstants.intakeKf));
+    }
         this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
 
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID, IntakeConstants.intakeGains, 0,
@@ -45,6 +48,12 @@ public class Intake extends SubsystemBase {
         _intakeRoller.setSmartCurrentLimit(15);
 
         this._state = IntakeState.DISABLED;
+
+        SmartDashboard.putNumber("Intake/error", -1);
+         SmartDashboard.putData("intakePID",new InstantCommand(()-> new InstantCommand(() -> upDatePIDF(SmartDashboard.getNumber("intakeKp", 0),
+                SmartDashboard.getNumber("intakeKi", 0), SmartDashboard.getNumber("intakeKd", 0))).schedule()));
+
+
     }
 
     public boolean isNoteInIntake(){
@@ -62,7 +71,10 @@ public class Intake extends SubsystemBase {
         _intakeRoller.set(state.percentage);
     }
 
-    public Command setStateCommand(IntakeState state){
+    public double getVelocity() {
+        return _intakeMotor.getVelocity();
+    }
+
         return new InstantCommand(() -> setState(state), this);
     }
 
@@ -71,6 +83,12 @@ public class Intake extends SubsystemBase {
     }
 
     private void updateSDB() {
+        SmartDashboard.putNumber("intakeKp", SmartDashboard.getNumber("intakeKp", IntakeConstants.intakeKp));
+        SmartDashboard.putNumber("intakeKi", SmartDashboard.getNumber("intakeKi", IntakeConstants.intakeKi));
+        SmartDashboard.putNumber("intakeKd", SmartDashboard.getNumber("intakeKd", IntakeConstants.intakeKd));
+
+       
+        SmartDashboard.putNumber("Intake/error", getVelocity() - this._state.velocity);
         SmartDashboard.putBoolean("Intake/has note", isNoteInIntake());
     }
 

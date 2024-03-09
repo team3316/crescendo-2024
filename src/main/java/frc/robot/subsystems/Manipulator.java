@@ -64,6 +64,11 @@ public class Manipulator extends SubsystemBase {
 
         // initialize values into the SDB
         SmartDashboard.putString("Manipulator/State", this._state.toString());
+        SmartDashboard.putNumber("Manipulator/error", -1);
+
+         SmartDashboard.putData("manipulatorPID", new InstantCommand(()->new InstantCommand(() -> upDatePIDF(SmartDashboard.getNumber("manipulatorKp", 0),
+                SmartDashboard.getNumber("manipulatorKi", 0), SmartDashboard.getNumber("manipulatorKd", 0))).schedule()));
+
     }
 
     public ManipulatorState getManipulatorState() {
@@ -79,7 +84,8 @@ public class Manipulator extends SubsystemBase {
 
         this._manipulatorMotor.setReference(state.velocity,ControlType.kVelocity,1);
 
-        SmartDashboard.putString("Manipulator/State", this._state.toString());
+     public void upDatePIDF(double manipulatorKp, double manipulatorKi, double manipulatorKd) {
+        this._manipulatorMotor.setupPIDF(new PIDFGains(manipulatorKp, manipulatorKi, manipulatorKd, ManipulatorConstants.velocityKf));
     }
 
     public Command getSetStateCommand(ManipulatorState state) {
@@ -108,6 +114,10 @@ public class Manipulator extends SubsystemBase {
         return _manipulatorMotor.getPosition();
     }
 
+    public double getVelocity() {
+        return _manipulatorMotor.getVelocity();
+    }
+
     public Command getMoveNoteToPositionCommand(NotePosition pos) {
         return new InstantCommand(
                 () -> _manipulatorMotor.setReference(pos.position, ControlType.kPosition),
@@ -115,9 +125,19 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void updateSDB() {
+        SmartDashboard.putString("Manipulator/State", this._state.toString());
+        SmartDashboard.putNumber("Manipulator/error", getVelocity() - this._state.velocity);
+
         SmartDashboard.putNumber("Manipulator/note position", getNotePosition());
         SmartDashboard.putNumber("Manipulator/current", _manipulatorMotor.getOutputCurrent());
+
+        SmartDashboard.putNumber("manipulatorKp", SmartDashboard.getNumber("manipulatorKp", ManipulatorConstants.velocityKp));
+        SmartDashboard.putNumber("manipulatorKi", SmartDashboard.getNumber("manipulatorKi", ManipulatorConstants.velocityKi));
+        SmartDashboard.putNumber("manipulatorKd", SmartDashboard.getNumber("manipulatorKd", ManipulatorConstants.velocityKd));
+
+       
     }
+
     @Override
     public void periodic() {
         resetNotePositionPeriodic();
