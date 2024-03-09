@@ -37,10 +37,16 @@ public class ArmWristSuperStructure extends SubsystemBase {
     }
 
     public Command getSetStateCommand(ArmWristState targetState) {
-        return Commands.sequence(
-                m_Wrist.getSetStateCommand(ArmWristState.COLLECT),
-                m_Arm.getSetStateCommand(targetState),
-                m_Wrist.getSetStateCommand(targetState));
+        if (targetState == ArmWristState.AMP) {
+            return m_Arm.getSetStateCommand(targetState)
+                    .alongWith(Commands.waitUntil(() -> m_Arm.getPositionDeg() >= ArmConstants.wristMovementAngle)
+                            .andThen(m_Wrist.getSetStateCommand(targetState)));
+        } else {
+            return Commands.sequence(
+                    m_Wrist.getSetStateCommand(ArmWristState.COLLECT),
+                    m_Arm.getSetStateCommand(targetState),
+                    m_Wrist.getSetStateCommand(targetState));
+        }
     }
 
     private void setEncodersToCollect() {
