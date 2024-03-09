@@ -31,6 +31,11 @@ public class DBugSparkMax extends CANSparkMax {
         this._pidController.setReference(value, ctrl);
     }
 
+      public void setReference(double value, ControlType ctrl,int slotID) {
+        this._pidController.setReference(value, ctrl,slotID);
+    }
+
+
     public void setConversionFactors(double positionFactor, double velocityFactor) {
         this._encoder.setPositionConversionFactor(positionFactor);
         this._encoder.setVelocityConversionFactor(velocityFactor);
