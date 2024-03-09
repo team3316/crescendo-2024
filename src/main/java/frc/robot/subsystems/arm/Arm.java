@@ -28,7 +28,7 @@ import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 
 public class Arm extends SubsystemBase {
 
-    private static final boolean UPDATE_DASHBOARD = false;
+    private static final boolean UPDATE_DASHBOARD = true;
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
@@ -81,7 +81,7 @@ public class Arm extends SubsystemBase {
 
     // TODO: check if switches are NC or NO
     public boolean anyLimitSwitchClosed() {
-        return !_leftSwitch.get() || _rightSwitch.get();
+        return !_leftSwitch.get();
     }
 
     public double getPositionDeg() {
@@ -148,6 +148,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm/arm position (deg)", getPositionDeg());
         SmartDashboard.putNumber("Arm/arm velocity (deg/s)", getVelocityDegPerSec());
         SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
+        SmartDashboard.putNumber("Arm/leader current", _leader.getOutputCurrent());
+        SmartDashboard.putNumber("Arm/follower current", _follower.getOutputCurrent());
     }
 
     @Override
