@@ -20,14 +20,16 @@ public class Intake extends SubsystemBase {
     private IntakeState _state;
 
     public static enum IntakeState {
-        COLLECTING(IntakeConstants.collectingPercentage),
-        EJECT(IntakeConstants.ejectPercentage),
-        DISABLED(IntakeConstants.disabledPrecent);
+        COLLECTING(IntakeConstants.collectingVelocity, IntakeConstants.collectingPercentage),
+        EJECT(IntakeConstants.ejectVelocity, IntakeConstants.ejectPercentage),
+        DISABLED(IntakeConstants.disabledVelocity, IntakeConstants.disabledPrecent);
 
+        public final double velocity;
         public final double percentage;
 
-        private IntakeState(double precentege){
-            this.percentage = precentege;
+        private IntakeState(double velocity, double percentage) {
+            this.velocity = velocity;
+            this.percentage = percentage;
         }
     }
 
