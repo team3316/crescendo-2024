@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase.ControlType;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,14 +39,20 @@ public class Intake extends SubsystemBase {
     public void upDatePIDF(double intakeKp, double intakeKi, double intakeKd) {
         this._intakeMotor.setupPIDF(new PIDFGains(intakeKp, intakeKi, intakeKd, IntakeConstants.intakeKf));
     }
+
+    public Intake() {
         this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
 
-        _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID, IntakeConstants.intakeGains, 0,
+        _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID, IntakeConstants.intakeGains,
+                IntakeConstants.intakePositionFactor,
                 IntakeConstants.intakeVelocityFactor, 0);
         _intakeMotor.setSmartCurrentLimit(15);
 
-        _intakeRoller = DBugSparkMax.create(IntakeConstants.rollerID,IntakeConstants.rollerGains, 0,
-                IntakeConstants.rollerVelocityFactor, 0);
+        // _intakeRoller =
+        // DBugSparkMax.create(IntakeConstants.rollerID,IntakeConstants.rollerGains,
+        // IntakeConstants.rollerPositionFactor,
+        // IntakeConstants.rollerVelocityFactor, 0);
+        _intakeRoller = DBugSparkMax.create(IntakeConstants.rollerID);
         _intakeRoller.setSmartCurrentLimit(15);
 
         this._state = IntakeState.DISABLED;
@@ -56,18 +64,18 @@ public class Intake extends SubsystemBase {
 
     }
 
-    public boolean isNoteInIntake(){
+    public boolean isNoteInIntake() {
         return !_hasNoteSwitch.get();
     }
 
-    public IntakeState getState(){
+    public IntakeState getState() {
         return this._state;
     }
 
-    private void setState(IntakeState state){
+    private void setState(IntakeState state) {
         this._state = state;
 
-        _intakeMotor.set(state.percentage);
+        _intakeMotor.setReference(state.velocity, ControlType.kVelocity);
         _intakeRoller.set(state.percentage);
     }
 
@@ -75,11 +83,13 @@ public class Intake extends SubsystemBase {
         return _intakeMotor.getVelocity();
     }
 
+    public Command setStateCommand(IntakeState state) {
         return new InstantCommand(() -> setState(state), this);
     }
 
     public void stop() {
-        setState(IntakeState.DISABLED);
+        _intakeMotor.set(0);
+        _intakeRoller.set(0);
     }
 
     private void updateSDB() {
@@ -94,7 +104,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(UPDATE_DASHBOARD) {
+        if (UPDATE_DASHBOARD) {
             updateSDB();
         }
     }
