@@ -87,6 +87,14 @@ public class Manipulator extends SubsystemBase {
         this._manipulatorMotor.set(state.percentage);
 
     }
+    
+    public void setToCollect(){
+        this._manipulatorMotor.setReference(ManipulatorConstants.collectingVelocity, ControlType.kVelocity,1);
+    }
+
+    public Command getCollectCommand(){
+       return new InstantCommand(()->setToCollect(),this);
+    }
 
      public void upDatePIDF(double manipulatorKp, double manipulatorKi, double manipulatorKd) {
         this._manipulatorMotor.setupPIDF(new PIDFGains(manipulatorKp, manipulatorKi, manipulatorKd, ManipulatorConstants.velocityKf));
