@@ -17,7 +17,7 @@ public class IntakeConstants {
     public final static double ejectPercentage = -0.8;
     public final static double disabledPrecent = 0;
 
-    public final static double collectingVelocity = 0.5;
+    public final static double collectingVelocity = 0.5;//m/s
     
     public final static PIDFGains intakeGains = new PIDFGains(intakeKp, 0, 0, intakeKf);
 

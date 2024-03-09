@@ -30,7 +30,7 @@ public class ManipulatorConstants {
     }
 
     
-    public static final double collectingVelocity = 0.4;
+    public static final double collectingVelocity = 0.4;//m/s
     
     // motor percentages
     public static final double offPercentage = 0;
