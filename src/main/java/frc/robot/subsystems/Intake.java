@@ -57,8 +57,8 @@ public class Intake extends SubsystemBase {
         this._state = IntakeState.DISABLED;
 
         SmartDashboard.putNumber("Intake/error", -1);
-         SmartDashboard.putData("intakePID",new InstantCommand(()-> new InstantCommand(() -> upDatePIDF(SmartDashboard.getNumber("intakeKp", 0),
-                SmartDashboard.getNumber("intakeKi", 0), SmartDashboard.getNumber("intakeKd", 0))).schedule()));
+         SmartDashboard.putData("Intake/intakePID",new InstantCommand(()-> new InstantCommand(() -> upDatePIDF(SmartDashboard.getNumber("Intake/intakeKp", 0),
+                SmartDashboard.getNumber("Intake/intakeKi", 0), SmartDashboard.getNumber("Intake/intakeKd", 0))).schedule()));
 
 
     }
@@ -101,9 +101,9 @@ public class Intake extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("intakeKp", SmartDashboard.getNumber("intakeKp", IntakeConstants.intakeKp));
-        SmartDashboard.putNumber("intakeKi", SmartDashboard.getNumber("intakeKi", IntakeConstants.intakeKi));
-        SmartDashboard.putNumber("intakeKd", SmartDashboard.getNumber("intakeKd", IntakeConstants.intakeKd));
+        SmartDashboard.putNumber("Intake/intakeKp", SmartDashboard.getNumber("Intake/intakeKp", IntakeConstants.intakeKp));
+        SmartDashboard.putNumber("Intake/intakeKi", SmartDashboard.getNumber("Intake/intakeKi", IntakeConstants.intakeKi));
+        SmartDashboard.putNumber("Intake/intakeKd", SmartDashboard.getNumber("Intake/intakeKd", IntakeConstants.intakeKd));
 
        
         SmartDashboard.putNumber("Intake/error", getVelocity() - IntakeConstants.collectingVelocity);

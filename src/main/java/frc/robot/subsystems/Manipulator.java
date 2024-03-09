@@ -68,8 +68,8 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putString("Manipulator/State", this._state.toString());
         SmartDashboard.putNumber("Manipulator/error", -1);
 
-         SmartDashboard.putData("manipulatorPID", new InstantCommand(()->new InstantCommand(() -> upDatePIDF(SmartDashboard.getNumber("manipulatorKp", 0),
-                SmartDashboard.getNumber("manipulatorKi", 0), SmartDashboard.getNumber("manipulatorKd", 0))).schedule()));
+         SmartDashboard.putData("Manipulator/manipulatorPID", new InstantCommand(()->new InstantCommand(() -> upDatePIDF(SmartDashboard.getNumber("Manipulator/manipulatorKp", 0),
+                SmartDashboard.getNumber("Manipulator/manipulatorKi", 0), SmartDashboard.getNumber("Manipulator/manipulatorKd", 0))).schedule()));
 
     }
 
@@ -143,9 +143,9 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putNumber("Manipulator/note position", getNotePosition());
         SmartDashboard.putNumber("Manipulator/current", _manipulatorMotor.getOutputCurrent());
 
-        SmartDashboard.putNumber("manipulatorKp", SmartDashboard.getNumber("manipulatorKp", ManipulatorConstants.velocityKp));
-        SmartDashboard.putNumber("manipulatorKi", SmartDashboard.getNumber("manipulatorKi", ManipulatorConstants.velocityKi));
-        SmartDashboard.putNumber("manipulatorKd", SmartDashboard.getNumber("manipulatorKd", ManipulatorConstants.velocityKd));
+        SmartDashboard.putNumber("Manipulator/manipulatorKp", SmartDashboard.getNumber("Manipulator/manipulatorKp", ManipulatorConstants.velocityKp));
+        SmartDashboard.putNumber("Manipulator/manipulatorKi", SmartDashboard.getNumber("Manipulator/manipulatorKi", ManipulatorConstants.velocityKi));
+        SmartDashboard.putNumber("Manipulator/manipulatorKd", SmartDashboard.getNumber("Manipulator/manipulatorKd", ManipulatorConstants.velocityKd));
 
        
     }
