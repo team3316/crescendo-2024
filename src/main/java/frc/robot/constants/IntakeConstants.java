@@ -18,9 +18,7 @@ public class IntakeConstants {
     public final static double disabledPrecent = 0;
 
     public final static double collectingVelocity = 0.5;
-    public final static double ejectVelocity = -0.8;
-    public final static double disabledVelocity = 0;
-
+    
     public final static PIDFGains intakeGains = new PIDFGains(intakeKp, 0, 0, intakeKf);
 
     private static final double gearRatio = 1.0 / 9.0;
