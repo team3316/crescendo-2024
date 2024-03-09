@@ -34,7 +34,7 @@ public class ManipulatorConstants {
     public static final double AMPVelocity = 0;
     public static final double TRAPVelocity = 0;
     public static final double toShooterVelocity = 0;
-    public static final double collectingVelocity = 0;
+    public static final double collectingVelocity = 0.4;
     public static final double PreTrapVelocity = 0;
     public static final double ejectVelocity = 0;
 }
