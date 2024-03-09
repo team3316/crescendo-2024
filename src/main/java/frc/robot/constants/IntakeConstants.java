@@ -17,7 +17,13 @@ public class IntakeConstants {
     public final static PIDFGains intakeGains = new PIDFGains(intakeKp, 0, 0, 0);
     public final static PIDFGains rollerGains = new PIDFGains(rollerkp, 0, 0, 0);
 
-    public final static double intakeVelocityFactor = 0;//m/s
-    public final static double rollerVelocityFactor = 0;//m/s
+    private static final double gearRatio = 1.0 / 9.0;
+    private static final double rollerCircumference = Math.PI * 0.0508; // in meters
+    private static final double intakeCircumference = Math.PI * 0.0254; // in meters
+    public static final double intakePositionFactor = intakeCircumference * gearRatio; // m/rotations
+    public static final double intakeVelocityFactor = intakeCircumference * gearRatio / 60; // (m/sec)/RPM
+
+    public static final double rollerPositionFactor = rollerCircumference * gearRatio; // m/rotations
+    public static final double rollerVelocityFactor = rollerCircumference * gearRatio / 60; // (m/sec)/RPM
 
 }
