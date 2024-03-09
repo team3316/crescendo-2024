@@ -23,15 +23,14 @@ public class Intake extends SubsystemBase {
     private IntakeState _state;
 
     public static enum IntakeState {
-        COLLECTING(IntakeConstants.collectingVelocity, IntakeConstants.collectingPercentage),
-        EJECT(IntakeConstants.ejectVelocity, IntakeConstants.ejectPercentage),
-        DISABLED(IntakeConstants.disabledVelocity, IntakeConstants.disabledPrecent);
+        COLLECTING(IntakeConstants.collectingPercentage),
+        EJECT(IntakeConstants.ejectPercentage),
+        DISABLED(IntakeConstants.disabledPrecent);
 
-        public final double velocity;
+        
         public final double percentage;
 
-        private IntakeState(double velocity, double percentage) {
-            this.velocity = velocity;
+        private IntakeState(double percentage) {
             this.percentage = percentage;
         }
     }
@@ -75,7 +74,7 @@ public class Intake extends SubsystemBase {
     private void setState(IntakeState state) {
         this._state = state;
 
-        _intakeMotor.setReference(state.velocity, ControlType.kVelocity);
+        _intakeMotor.set(state.percentage);
         _intakeRoller.set(state.percentage);
     }
 
@@ -85,6 +84,15 @@ public class Intake extends SubsystemBase {
 
     public Command setStateCommand(IntakeState state) {
         return new InstantCommand(() -> setState(state), this);
+    }
+
+    public void setToCollect(){
+        this._intakeMotor.setReference(IntakeConstants.collectingVelocity, ControlType.kVelocity);
+        this._intakeRoller.set(IntakeConstants.collectingPercentage);
+    }
+
+    public Command getCollectCommand(){
+        return new InstantCommand(() -> setToCollect(), this);
     }
 
     public void stop() {
@@ -98,7 +106,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("intakeKd", SmartDashboard.getNumber("intakeKd", IntakeConstants.intakeKd));
 
        
-        SmartDashboard.putNumber("Intake/error", getVelocity() - this._state.velocity);
+        SmartDashboard.putNumber("Intake/error", getVelocity() - IntakeConstants.collectingVelocity);
         SmartDashboard.putBoolean("Intake/has note", isNoteInIntake());
     }
 
