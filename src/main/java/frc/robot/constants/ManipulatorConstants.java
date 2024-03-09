@@ -10,8 +10,12 @@ public class ManipulatorConstants {
     // gains
     public static final PIDFGains positionGains = new PIDFGains(3.0); // TODO: Calibrate
 
-    private static final double velocityKp = 0;
-    public final static PIDFGains velocityGains = new PIDFGains(velocityKp);
+    public static final double velocityKp = 2.5;
+    public static final double velocityKi = 0;
+    public static final double velocityKd = 0;
+    public static final double velocityKf = 0.5/0.4;
+    
+    public final static PIDFGains velocityGains = new PIDFGains(velocityKp, 0, velocityKd, velocityKf);
 
     // positioning
     private static final double gearRatio = 1.0 / 9.0;
