@@ -67,9 +67,6 @@ public class RobotContainer {
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
 
-                m_Intake.setDefaultCommand(m_Intake.setStateCommand(IntakeState.DISABLED));
-                m_Manipulator.setDefaultCommand(m_Manipulator.getSetStateCommand(ManipulatorState.OFF));
-
                 SmartDashboard.putBoolean("Field Relative", _fieldRelative);
 
                 this.m_autoFactory = new AutoFactory(m_Drivetrain);
@@ -114,28 +111,20 @@ public class RobotContainer {
         m_operatorController.povUp()
                 .whileTrue(new StartEndCommand(
                         () -> m_Intake.setStateCommand(IntakeState.EJECT)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)),
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
                         () -> m_Intake.setStateCommand(IntakeState.DISABLED)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF))));
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
                 
         m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED)
                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+                
         m_operatorController.circle()
                 .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
                         new WaitCommand(3), m_Manipulator
                                 .getSetStateCommand(ManipulatorState.OFF)));
         m_operatorController.povDown()
                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
-        m_driverController.povRight()
-                .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.UNDER_CHAIN));
-        m_driverController.povUp().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.ALIGN));
-        m_driverController.povLeft().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.TRAP)
-                .alongWith(new WaitCommand(2).andThen(
-                        m_Manipulator.getMoveNoteToPositionCommand(NotePosition.TRAP))));
-        m_operatorController.L2()
-                .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.TRAP),
-                        new WaitCommand(3),
-                        m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+        
         m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                 .alongWith(Commands.sequence(new WaitCommand(1))
                 /* m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)) */));
@@ -168,7 +157,7 @@ public class RobotContainer {
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                                 m_Intake.setStateCommand(IntakeState.EJECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
-                                new WaitCommand(0.5),
+                                new WaitCommand(2),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
                 return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
         }
