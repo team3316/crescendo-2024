@@ -3,10 +3,12 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
 import frc.robot.utils.LatchedBoolean;
@@ -20,10 +22,14 @@ public class ArmWristSuperStructure extends SubsystemBase {
     private DigitalInput _coastSwitch = new DigitalInput(ArmConstants.coastSwitchPort);
     private LatchedBoolean _shouldChangeMode = new LatchedBoolean();
     private boolean _isBreakMode = true;
+    private Trigger _toggleNutoralMode;
 
     public ArmWristSuperStructure() {
         this.m_Arm = new Arm();
         this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
+        this._toggleNutoralMode = new Trigger(()->DriverStation.isDisabled()&&_coastSwitch.get());
+
+        _toggleNutoralMode.toggleOnTrue(Commands.startEnd(()->setBreakMode(false),()->setBreakMode(true)).until(DriverStation::isEnabled).ignoringDisable(true));
     }
 
     public static enum ArmWristState {
@@ -70,23 +76,25 @@ public class ArmWristSuperStructure extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled()) {
-            // only update once per button press - software latch
-            if (_shouldChangeMode.update(!_coastSwitch.get())) {
-                // flip the currently latched state
-                _isBreakMode = !_isBreakMode;
-                setBreakMode(_isBreakMode);
-            }
-        } else {
-            // set break mode once if it was false
-            if (!_isBreakMode) {
-                    _isBreakMode = true;
-                    setBreakMode(_isBreakMode);
-            }
-        }
+        // if (DriverStation.isDisabled()) {
+        //     // only update once per button press - software latch
+        //     if (_shouldChangeMode.update(!_coastSwitch.get())) {
+        //         // flip the currently latched state
+        //         _isBreakMode = !_isBreakMode;
+        //         setBreakMode(_isBreakMode);
+        //     }
+        // } else {
+        //     // set break mode once if it was false
+        //     if (!_isBreakMode) {
+        //             _isBreakMode = true;
+        //             setBreakMode(_isBreakMode);
+        //     }
+        // }
 
         if (_recalibrationDebouncer.calculate(m_Arm.anyLimitSwitchClosed())) {
             setEncodersToCollect();
         }
+
+        SmartDashboard.putBoolean("togle", _coastSwitch.get());
     }
 }
