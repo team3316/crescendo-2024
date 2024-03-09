@@ -14,7 +14,7 @@ public class ArmConstants {
     public static final double AMPAngle = 8; // deg
     public static final double ALIGNAngle = 36.86; // deg
 
-    public static final double wristMovementAngle = -15; // deg
+    public static final double wristMovementAngle = -25; // deg
     
     private static final double gearRatio = 1.0 / 192.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
