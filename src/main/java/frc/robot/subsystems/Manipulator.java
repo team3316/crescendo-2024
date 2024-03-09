@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,18 +23,18 @@ public class Manipulator extends SubsystemBase {
     private boolean _noteLatch = false;
 
     public static enum ManipulatorState {
-        OFF(ManipulatorConstants.offPercentage),
-        COLLECT(ManipulatorConstants.collectingPercentage),
-        AMP(ManipulatorConstants.AMPPercentage),
-        TRAP(ManipulatorConstants.TRAPPercentage),
-        PRE_TRAP(ManipulatorConstants.PreTrapPercentage),
-        TO_SHOOTER(ManipulatorConstants.toShooterPercentage),
-        EJECT(ManipulatorConstants.ejectPercentage);
+        OFF(ManipulatorConstants.offVelocity),
+        COLLECT(ManipulatorConstants.collectingVelocity),
+        AMP(ManipulatorConstants.AMPVelocity),
+        TRAP(ManipulatorConstants.TRAPVelocity),
+        PRE_TRAP(ManipulatorConstants.PreTrapVelocity),
+        TO_SHOOTER(ManipulatorConstants.toShooterVelocity),
+        EJECT(ManipulatorConstants.ejectVelocity);
 
-        public double percentage;
+        public double velocity;
 
-        private ManipulatorState(double percentage) {
-            this.percentage = percentage;
+        private ManipulatorState(double velocity) {
+            this.velocity = velocity;
         }
     }
 
@@ -51,9 +52,11 @@ public class Manipulator extends SubsystemBase {
     }
 
     public Manipulator() {
-        this._manipulatorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID, ManipulatorConstants.gains,
+        this._manipulatorMotor = DBugSparkMax.create(ManipulatorConstants.sparkmaxCANID, ManipulatorConstants.positionGains,
                 ManipulatorConstants.positionFactor, ManipulatorConstants.velocityFactor, 0);
         this._manipulatorMotor.setSmartCurrentLimit(40);
+
+        this._manipulatorMotor.setupPIDF(ManipulatorConstants.velocityGains, 1);
 
         this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
 
@@ -74,7 +77,7 @@ public class Manipulator extends SubsystemBase {
     private void setState(ManipulatorState state) {
         this._state = state;
 
-        this._manipulatorMotor.set(state.percentage);
+        this._manipulatorMotor.setReference(state.velocity,ControlType.kVelocity,1);
 
         SmartDashboard.putString("Manipulator/State", this._state.toString());
     }
@@ -84,7 +87,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void stop() {
-        setState(ManipulatorState.OFF);
+        this._manipulatorMotor.set(0);
     }
 
     /******************************
