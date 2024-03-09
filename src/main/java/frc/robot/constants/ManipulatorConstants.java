@@ -8,7 +8,10 @@ public class ManipulatorConstants {
     public static final int noteSwitchPort = 8;
 
     // gains
-    public static final PIDFGains gains = new PIDFGains(3.0); // TODO: Calibrate
+    public static final PIDFGains positionGains = new PIDFGains(3.0); // TODO: Calibrate
+
+    private static final double velocityKp = 0;
+    public final static PIDFGains velocityGains = new PIDFGains(velocityKp);
 
     // positioning
     private static final double gearRatio = 1.0 / 9.0;
@@ -22,12 +25,12 @@ public class ManipulatorConstants {
         public static final double trap = -0.35; // install in trap. in meters
     }
 
-    // motor percentages
-    public static final double offPercentage = 0;
-    public static final double AMPPercentage = 1.0;
-    public static final double TRAPPercentage = 0.5;
-    public static final double toShooterPercentage = 0.35;
-    public static final double collectingPercentage = 0.5;
-    public static final double PreTrapPercentage = 0.2;
-    public static final double ejectPercentage = -0.5;
+    // motor velocity
+    public static final double offVelocity = 0;
+    public static final double AMPVelocity = 0;
+    public static final double TRAPVelocity = 0;
+    public static final double toShooterVelocity = 0;
+    public static final double collectingVelocity = 0;
+    public static final double PreTrapVelocity = 0;
+    public static final double ejectVelocity = 0;
 }
