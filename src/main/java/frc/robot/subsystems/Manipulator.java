@@ -25,21 +25,20 @@ public class Manipulator extends SubsystemBase {
     private boolean _noteLatch = false;
 
     public static enum ManipulatorState {
-        OFF(ManipulatorConstants.offVelocity),
-        COLLECT(ManipulatorConstants.collectingVelocity),
-        AMP(ManipulatorConstants.AMPVelocity),
-        TRAP(ManipulatorConstants.TRAPVelocity),
-        PRE_TRAP(ManipulatorConstants.PreTrapVelocity),
-        TO_SHOOTER(ManipulatorConstants.toShooterVelocity),
-        EJECT(ManipulatorConstants.ejectVelocity);
+        OFF(ManipulatorConstants.offPercentage),
+        COLLECT(ManipulatorConstants.collectingPercentage),
+        AMP(ManipulatorConstants.AMPPercentage),
+        TRAP(ManipulatorConstants.TRAPPercentage),
+        PRE_TRAP(ManipulatorConstants.PreTrapPercentage),
+        TO_SHOOTER(ManipulatorConstants.toShooterPercentage),
+        EJECT(ManipulatorConstants.ejectPercentage);
 
-        public double velocity;
+        public double percentage;
 
-        private ManipulatorState(double velocity) {
-            this.velocity = velocity;
+        private ManipulatorState(double percentage) {
+            this.percentage = percentage;
         }
     }
-
     public static enum NotePosition {
         // Not sure if EXTRACT is needed. Omit if unnecessary.
         EXTRACT(ManipulatorConstants.NotePosition.extract),
@@ -85,7 +84,7 @@ public class Manipulator extends SubsystemBase {
     private void setState(ManipulatorState state) {
         this._state = state;
 
-        this._manipulatorMotor.setReference(state.velocity, ControlType.kVelocity, 1);
+        this._manipulatorMotor.set(state.percentage);
 
     }
 
@@ -98,7 +97,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void stop() {
-        this._manipulatorMotor.set(0);
+        setState(ManipulatorState.OFF);
     }
 
     /******************************
@@ -131,7 +130,7 @@ public class Manipulator extends SubsystemBase {
 
     private void updateSDB() {
         SmartDashboard.putString("Manipulator/State", this._state.toString());
-        SmartDashboard.putNumber("Manipulator/error", getVelocity() - this._state.velocity);
+        SmartDashboard.putNumber("Manipulator/error", getVelocity() - ManipulatorConstants.collectingPercentage);
 
         SmartDashboard.putNumber("Manipulator/note position", getNotePosition());
         SmartDashboard.putNumber("Manipulator/current", _manipulatorMotor.getOutputCurrent());

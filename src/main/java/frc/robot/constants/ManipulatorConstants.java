@@ -29,12 +29,15 @@ public class ManipulatorConstants {
         public static final double trap = -0.35; // install in trap. in meters
     }
 
-    // motor velocity
-    public static final double offVelocity = 0;
-    public static final double AMPVelocity = 0;
-    public static final double TRAPVelocity = 0;
-    public static final double toShooterVelocity = 0;
+    
     public static final double collectingVelocity = 0.4;
-    public static final double PreTrapVelocity = 0;
-    public static final double ejectVelocity = 0;
+    
+    // motor percentages
+    public static final double offPercentage = 0;
+    public static final double AMPPercentage = 1.0;
+    public static final double TRAPPercentage = 0.5;
+    public static final double toShooterPercentage = 0.35;
+    public static final double collectingPercentage = 0.5;
+    public static final double PreTrapPercentage = 0.2;
+    public static final double ejectPercentage = -0.5;
 }
