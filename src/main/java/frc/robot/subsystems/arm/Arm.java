@@ -10,6 +10,9 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +29,7 @@ import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 public class Arm extends SubsystemBase {
 
     private static final boolean UPDATE_DASHBOARD = true;
+    private static final boolean UPDATE_TELEMETRY = true;
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
@@ -34,6 +38,8 @@ public class Arm extends SubsystemBase {
     private DigitalInput _rightSwitch;
 
     private ArmFeedforward _armFeedforward;
+
+    private DoubleLogEntry m_velLog;
 
     public Arm() {
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
@@ -51,6 +57,17 @@ public class Arm extends SubsystemBase {
         _rightSwitch = new DigitalInput(ArmConstants.rightSwitchPort);
 
         _leader.setPosition(getInitialState().armAngleDeg);
+
+        initTelemetry();
+    }
+
+    private void initTelemetry() {
+        DataLog log = DataLogManager.getLog();
+        m_velLog = new DoubleLogEntry(log, "/arm/velocity");
+    }
+
+    private void updateTelemetry() {
+        m_velLog.append(getVelocityDegPerSec());
     }
 
     private ArmWristState getInitialState() {
@@ -126,6 +143,9 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         if (UPDATE_DASHBOARD) {
             updateSDB();
+        }
+        if (UPDATE_TELEMETRY) {
+            updateTelemetry();
         }
     }
 }

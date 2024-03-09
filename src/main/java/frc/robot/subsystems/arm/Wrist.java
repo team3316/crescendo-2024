@@ -14,6 +14,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -27,6 +30,7 @@ import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 public class Wrist extends SubsystemBase {
 
     private static final boolean UPDATE_DASHBOARD = true;
+    private static final boolean UPDATE_TELEMETRY = true;
 
     private TalonFX _wristMotor;
 
@@ -34,6 +38,8 @@ public class Wrist extends SubsystemBase {
     private final PositionVoltage request;
 
     private ArmFeedforward _feedforward;
+
+    private DoubleLogEntry m_VelLog;
 
     public Wrist(Supplier<Double> armAngleDeg) {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
@@ -44,6 +50,8 @@ public class Wrist extends SubsystemBase {
         _armAngleDeg = armAngleDeg;
 
         request = new PositionVoltage(0);
+
+        initTelemetry();
     }
 
     private TalonFXConfiguration getConfigurator() {
@@ -64,6 +72,15 @@ public class Wrist extends SubsystemBase {
         limitConfigs.withReverseSoftLimitEnable(true);
         wristConfig.withSoftwareLimitSwitch(limitConfigs);
         return wristConfig;
+    }
+
+    private void initTelemetry() {
+        DataLog log = DataLogManager.getLog();
+        m_VelLog = new DoubleLogEntry(log, "/wrist/velocity");
+    }
+
+    private void updateTelemetry() {
+        m_VelLog.append(getVelocityDegPerSec());
     }
 
     private double getPositionDeg() {
@@ -136,6 +153,9 @@ public class Wrist extends SubsystemBase {
     public void periodic() {
         if (UPDATE_DASHBOARD) {
             updateSDB();
+        }
+        if (UPDATE_TELEMETRY) {
+            updateTelemetry();
         }
     }
 
