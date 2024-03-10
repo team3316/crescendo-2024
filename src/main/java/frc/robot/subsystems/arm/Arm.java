@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -54,18 +53,6 @@ public class Arm extends SubsystemBase {
         _rightSwitch = new DigitalInput(ArmConstants.rightSwitchPort);
 
         _leader.setPosition(getInitialState().armAngleDeg);
-
-        initSDB();
-    }
-
-    private void initSDB() {
-        SmartDashboard.putNumber("Arm/climb percentage", SmartDashboard.getNumber("Arm/climb percentage", -0.5));
-        SmartDashboard.putNumber("Arm/stay on percentage", SmartDashboard.getNumber("Arm/stay on percentage", -0.25));
-        SmartDashboard.putNumber("Arm/climb position", SmartDashboard.getNumber("Arm/climb position", 20));
-        /*SmartDashboard.putData("Climb with arm",
-                new InstantCommand(() -> getClimbCommand(SmartDashboard.getNumber("Arm/climb percentage", -0.5),
-                        SmartDashboard.getNumber("Arm/stay on percentage", -0.25),
-                        SmartDashboard.getNumber("Arm/climb position", 20)).schedule()));*/
     }
 
     private ArmWristState getInitialState() {
