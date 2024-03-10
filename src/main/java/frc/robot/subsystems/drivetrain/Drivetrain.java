@@ -75,7 +75,11 @@ public class Drivetrain extends SubsystemBase {
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            if (getAlliance()) {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            } else {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, rot, getPose().getRotation());
+            }
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
         }
@@ -238,7 +242,10 @@ public class Drivetrain extends SubsystemBase {
     // - CW Yaw is positive
 
     private Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
+        if(getAlliance()){
+            return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
+        }
+        return Rotation2d.fromDegrees(-this._pigeon.getFusedHeading());
     }
 
     public void resetYaw() {
