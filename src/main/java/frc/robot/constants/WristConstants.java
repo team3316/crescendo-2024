@@ -11,7 +11,8 @@ public class WristConstants {
     public static final double TRAPAngle = -30.68; // deg
     public static final double underChainAngle = -110.5; // deg
 
-    public static final double hallEffectAngle = -99.4;
+    // The angle in which the wrist entes the range of the hall effect
+    public static final double hallEffectAngle = -99.4; // deg
 
     private static final double gearRatio = 1.0 / 35.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
