@@ -32,7 +32,7 @@ public class AutoFactory {
             0.4, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
-        (()-> false),
+        drivetrain::shouldFlipPath,
         drivetrain // Reference to this subsystem to set requirements
         );
     }
