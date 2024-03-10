@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -34,6 +35,8 @@ public class Wrist extends SubsystemBase {
 
     private TalonFX _wristMotor;
 
+    private DigitalInput _wristHallEffect;
+
     private Supplier<Double> _armAngleDeg;
     private final PositionVoltage request;
 
@@ -45,6 +48,8 @@ public class Wrist extends SubsystemBase {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
         _wristMotor.getConfigurator().apply(getConfigurator());
         _wristMotor.setInverted(true);
+
+        _wristHallEffect = new DigitalInput(WristConstants.wristHallEffectID);
 
         _feedforward = new ArmFeedforward(0, WristConstants.kg, WristConstants.kv);
         _armAngleDeg = armAngleDeg;
@@ -93,6 +98,10 @@ public class Wrist extends SubsystemBase {
 
     private double getVelocityDegPerSec() {
         return _wristMotor.getVelocity().getValueAsDouble();
+    }
+
+    public boolean getHallEffect(){
+        return this._wristHallEffect.get();
     }
 
     private State getTrapezoidState() {
@@ -147,6 +156,7 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putNumber("Wrist/wrist position", getPositionDeg());
         SmartDashboard.putNumber("Wrist/wrist velocity", getVelocityDegPerSec());
         SmartDashboard.putNumber("Wrist/wrist absolute position", getAbsolutePositionDeg());
+        SmartDashboard.putBoolean("Wrist/hall-effect", getHallEffect());
     }
 
     @Override

@@ -4,6 +4,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class WristConstants {
     public static final int wristCANID = 9;
+    public static final int wristHallEffectID = 2;
     
     public static final double collectAngle = -110.5; // deg
     public static final double AMPAngle = 42; // deg
