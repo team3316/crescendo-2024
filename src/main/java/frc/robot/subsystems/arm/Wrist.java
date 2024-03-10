@@ -44,6 +44,8 @@ public class Wrist extends SubsystemBase {
 
     private DoubleLogEntry m_VelLog;
 
+    private boolean inHallEffectRange = false;
+
     public Wrist(Supplier<Double> armAngleDeg) {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
         _wristMotor.getConfigurator().apply(getConfigurator());
@@ -55,6 +57,8 @@ public class Wrist extends SubsystemBase {
         _armAngleDeg = armAngleDeg;
 
         request = new PositionVoltage(0);
+
+        inHallEffectRange = getHallEffect();
 
         initTelemetry();
     }
@@ -101,7 +105,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public boolean getHallEffect(){
-        return this._wristHallEffect.get();
+        return !_wristHallEffect.get();
     }
 
     private State getTrapezoidState() {
@@ -166,6 +170,14 @@ public class Wrist extends SubsystemBase {
         }
         if (UPDATE_TELEMETRY) {
             updateTelemetry();
+        }
+        
+        if (getHallEffect() && !inHallEffectRange) {
+            setSensorPosition(WristConstants.hallEffectAngle);
+            inHallEffectRange = true;
+        }
+        else if (!getHallEffect() && inHallEffectRange) {
+            inHallEffectRange = false;
         }
     }
 
