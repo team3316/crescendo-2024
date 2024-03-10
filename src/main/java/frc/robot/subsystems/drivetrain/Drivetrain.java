@@ -85,6 +85,14 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
     }
 
+    public boolean getAlliance() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+    }
+
     /**
      * Drives by X and Y inputs, maintaining given target angle given from vision
      * target
