@@ -6,7 +6,7 @@ public class WristConstants {
     public static final int wristCANID = 9;
     public static final int wristHallEffectID = 2;
     
-    public static final double collectAngle = -115.3; // deg
+    public static final double collectAngle = -109.3; // deg
     public static final double AMPAngle = 42; // deg
     public static final double TRAPAngle = -30.68; // deg
     public static final double underChainAngle = -110.5; // deg
