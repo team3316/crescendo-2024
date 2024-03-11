@@ -31,7 +31,7 @@ import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
 public class Wrist extends SubsystemBase {
 
     private static final boolean UPDATE_DASHBOARD = true;
-    private static final boolean UPDATE_TELEMETRY = true;
+    private static final boolean UPDATE_TELEMETRY = false;
 
     private TalonFX _wristMotor;
 
