@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.8741476772796651,
+      "y": 4.514404933021262
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "go-long1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "go-long2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "go-long3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "go-long4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
