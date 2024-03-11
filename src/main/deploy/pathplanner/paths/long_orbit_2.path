@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7434431971001721,
-        "y": 4.465389263320095
+        "x": 8.0,
+        "y": 4.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6458561736281192,
-        "y": 0.7514723534814536
+        "x": 6.392204890107551,
+        "y": 2.342694297279593
       },
       "isLocked": false,
-      "linkedName": "start right"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.022445171232209,
-        "y": 1.1748876346637904
+        "x": 1.32,
+        "y": 5.5
       },
       "prevControl": {
-        "x": 3.022445171232209,
-        "y": 1.1748876346637904
+        "x": 3.0185411981063432,
+        "y": 6.829530422066625
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,25 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 5.0
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
@@ -61,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootAndCom",
+  "folder": "orbit",
   "previewStartingState": {
-    "rotation": -60.80251395393561,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

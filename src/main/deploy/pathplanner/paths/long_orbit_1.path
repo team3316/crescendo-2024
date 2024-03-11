@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7141939224496041,
-        "y": 6.659084862112717
+        "x": 1.3180507946482447,
+        "y": 5.5046503486896325
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7141939224496054,
-        "y": 6.659084862112717
+        "x": 3.134638936495049,
+        "y": 7.123189407402762
       },
       "isLocked": false,
-      "linkedName": "start left"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.9078895212422267,
-        "y": 7.010076157919538
+        "x": 7.983426833905692,
+        "y": 4.097818930567671
       },
       "prevControl": {
-        "x": 1.9078895212422267,
-        "y": 7.010076157919538
+        "x": 5.627325672487844,
+        "y": 2.622694725158236
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootAndCom",
+  "folder": "orbit",
   "previewStartingState": {
-    "rotation": 59.67639313745004,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true
