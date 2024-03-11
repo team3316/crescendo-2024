@@ -222,15 +222,24 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Auto Chooser PLACE BY DRIVERS!", m_chooser);
 
+                m_chooser.addOption("5 gp", m_autoFactory.createAuto("5_gp"));
+
                 m_chooser.addOption("4_gp", m_autoFactory.createAuto("4_gp"));
+
+                m_chooser.addOption("3 gp source long", m_autoFactory.createAuto("3_gp_source_long"));
+
+                m_chooser.addOption("2 gp amp", null);
+
+                m_chooser.addOption("2 gp source", null);
                 // basic
                 m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
-                m_chooser.addOption("right shoot and exit", m_autoFactory.createAuto("LEFT_Shoot_Com"));// oppisate in
-                                                                                                        // path, no idea
+                m_chooser.addOption("source shoot and exit", m_autoFactory.createAuto("source_Shoot_Com"));// oppisate in
+                                                                                                         // path, no
+                                                                                                         // idea
                                                                                                         // how changing
                                                                                                         // name will
                                                                                                         // effect PP
-                m_chooser.addOption("left shoot and exit", m_autoFactory.createAuto("RIGHT_Shoot_Com"));// TODO: fix
+                m_chooser.addOption("amp shoot and exit", m_autoFactory.createAuto("amp_Shoot_Com"));// TODO: fix
                                                                                                         // befor ISR3
 
                 // only shoot
