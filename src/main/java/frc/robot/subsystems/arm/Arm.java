@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.util.datalog.DataLog;
@@ -40,6 +41,8 @@ public class Arm extends SubsystemBase {
     private ArmFeedforward _armFeedforward;
 
     private DoubleLogEntry m_velLog;
+
+    private final Debouncer _recalibrationDebouncer = new Debouncer(2);
 
     public Arm() {
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
@@ -146,6 +149,10 @@ public class Arm extends SubsystemBase {
         }
         if (UPDATE_TELEMETRY) {
             updateTelemetry();
+        }
+
+        if (_recalibrationDebouncer.calculate(anyLimitSwitchClosed())) {
+            setSensorPosition(ArmWristState.COLLECT.armAngleDeg);
         }
     }
 }
