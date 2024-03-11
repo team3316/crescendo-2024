@@ -66,7 +66,6 @@ public class Arm extends SubsystemBase {
         initTelemetry();
 
         _limitLatchedBoolean = new LatchedBoolean();
-        _limitLatchedBoolean.update(anyLimitSwitchClosed());
     }
 
     private void initTelemetry() {
