@@ -26,6 +26,7 @@ import frc.robot.constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
 import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
+import frc.robot.utils.LatchedBoolean;
 
 public class Arm extends SubsystemBase {
 
@@ -43,6 +44,7 @@ public class Arm extends SubsystemBase {
     private DoubleLogEntry m_velLog;
 
     private final Debouncer _recalibrationDebouncer = new Debouncer(2);
+    private LatchedBoolean _limitLatchedBoolean;
 
     public Arm() {
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
@@ -62,6 +64,9 @@ public class Arm extends SubsystemBase {
         _leader.setPosition(getInitialState().armAngleDeg);
 
         initTelemetry();
+
+        _limitLatchedBoolean = new LatchedBoolean();
+        _limitLatchedBoolean.update(anyLimitSwitchClosed());
     }
 
     private void initTelemetry() {
@@ -151,7 +156,7 @@ public class Arm extends SubsystemBase {
             updateTelemetry();
         }
 
-        if (_recalibrationDebouncer.calculate(anyLimitSwitchClosed())) {
+        if (_limitLatchedBoolean.update(_recalibrationDebouncer.calculate(anyLimitSwitchClosed()))) {
             setSensorPosition(ArmWristState.COLLECT.armAngleDeg);
         }
     }
