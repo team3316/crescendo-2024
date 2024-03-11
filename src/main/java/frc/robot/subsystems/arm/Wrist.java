@@ -59,6 +59,7 @@ public class Wrist extends SubsystemBase {
 
         request = new PositionVoltage(0);
 
+        _inHallEffectRange = new LatchedBoolean();
         _inHallEffectRange.update(getHallEffect());
 
         initTelemetry();
