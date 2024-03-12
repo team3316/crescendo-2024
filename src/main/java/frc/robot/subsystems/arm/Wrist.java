@@ -105,7 +105,7 @@ public class Wrist extends SubsystemBase {
         return _wristMotor.getVelocity().getValueAsDouble();
     }
 
-    public boolean getHallEffect(){
+    public boolean getHallEffect() {
         return !_wristHallEffect.get();
     }
 
@@ -134,9 +134,19 @@ public class Wrist extends SubsystemBase {
                 new State(targetState.wristAngleDeg, 0), getTrapezoidState());
         return new InstantCommand(this::stop)
                 .andThen(
-                        new TrapezoidProfileCommand(profile, this::useState, this));
+                        new TrapezoidProfileCommand(profile, this::useState, this))
+                .andThen(getHoldCommand(targetState));
     }
-    
+
+    private Command getHoldCommand(ArmWristState targetState) {
+        if (targetState == ArmWristState.COLLECT) {
+            return new InstantCommand(() -> {
+                _wristMotor.set(-0.05);
+            }, this);
+        }
+        return new InstantCommand();
+    }
+
     public Command getSetStateCommand(ArmWristState targetState) {
         Set<Subsystem> requirements = new HashSet<>();
         requirements.add(this);
@@ -162,7 +172,7 @@ public class Wrist extends SubsystemBase {
         if (UPDATE_TELEMETRY) {
             updateTelemetry();
         }
-        
+
         if (_inHallEffectRange.update(getHallEffect())) {
             setSensorPosition(WristConstants.hallEffectAngle);
         }
