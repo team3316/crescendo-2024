@@ -121,7 +121,7 @@ public class Arm extends SubsystemBase {
     }
 
     private Command getHoldCommand(ArmWristState targetState) {
-        return new ConditionalCommand(new InstantCommand(() -> _leader.set(-0.05)), new InstantCommand(),
+        return new ConditionalCommand(new InstantCommand(() -> _leader.set(-0.03)), new InstantCommand(),
                 () -> targetState == ArmWristState.COLLECT);
     }
 
