@@ -1,9 +1,7 @@
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,7 +13,6 @@ public class ArmWristSuperStructure extends SubsystemBase {
 
     private final Arm m_Arm;
     private final Wrist m_Wrist;
-    private final Debouncer _recalibrationDebouncer = new Debouncer(2);
     private DigitalInput _coastSwitch = new DigitalInput(ArmConstants.coastSwitchPort);
     private Trigger _toggleNutoralMode;
 
