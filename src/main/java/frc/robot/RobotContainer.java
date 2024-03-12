@@ -153,10 +153,9 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
+                                Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()), Commands.sequence(new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
                                 new WaitUntilCommand(() -> !m_Intake.isNoteInIntake()),
-                                m_Manipulator.getSetStateCommand(ManipulatorState.SLOW_COLLECT).alongWith(m_Intake.setStateCommand(IntakeState.SLOW_COLLECT)),
-                                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                                m_Manipulator.getSetStateCommand(ManipulatorState.SLOW_COLLECT).alongWith(m_Intake.setStateCommand(IntakeState.SLOW_COLLECT)))),
                                 m_Intake.setStateCommand(IntakeState.EJECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
                                 new WaitCommand(2),
