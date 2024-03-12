@@ -19,7 +19,7 @@ public class ArmWristSuperStructure extends SubsystemBase {
     public ArmWristSuperStructure() {
         this.m_Arm = new Arm();
         this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
-        this._toggleNutoralMode = new Trigger(()->DriverStation.isDisabled()&&_coastSwitch.get());
+        this._toggleNutoralMode = new Trigger(()->DriverStation.isDisabled()&&_coastSwitch.get()).debounce(1);
 
         _toggleNutoralMode.toggleOnTrue(Commands.startEnd(()->setBreakMode(false),()->setBreakMode(true)).until(DriverStation::isEnabled).ignoringDisable(true));
     }
