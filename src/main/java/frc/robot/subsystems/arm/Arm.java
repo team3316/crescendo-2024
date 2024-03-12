@@ -37,7 +37,6 @@ public class Arm extends SubsystemBase {
     private DBugSparkMax _follower;
 
     private DigitalInput _leftSwitch;
-    private DigitalInput _rightSwitch;
 
     private ArmFeedforward _armFeedforward;
 
@@ -59,7 +58,6 @@ public class Arm extends SubsystemBase {
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
 
         _leftSwitch = new DigitalInput(ArmConstants.leftSwitchPort);
-        _rightSwitch = new DigitalInput(ArmConstants.rightSwitchPort);
 
         _leader.setPosition(getInitialState().armAngleDeg);
 
@@ -90,7 +88,7 @@ public class Arm extends SubsystemBase {
 
     // TODO: check if switches are NC or NO
     public boolean anyLimitSwitchClosed() {
-        return !_leftSwitch.get() || !_rightSwitch.get();
+        return !_leftSwitch.get();
     }
 
     public double getPositionDeg() {
