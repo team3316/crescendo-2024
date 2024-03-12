@@ -31,6 +31,11 @@ public class DBugSparkMax extends CANSparkMax {
         this._pidController.setReference(value, ctrl);
     }
 
+      public void setReference(double value, ControlType ctrl,int slotID) {
+        this._pidController.setReference(value, ctrl,slotID);
+    }
+
+
     public void setConversionFactors(double positionFactor, double velocityFactor) {
         this._encoder.setPositionConversionFactor(positionFactor);
         this._encoder.setVelocityConversionFactor(velocityFactor);
@@ -43,6 +48,15 @@ public class DBugSparkMax extends CANSparkMax {
         this._pidController.setFF(gains.kF);
         this._pidController.setIZone(gains.iZone);
         this._pidController.setOutputRange(-gains.outputRange, gains.outputRange);
+    }
+
+    public void setupPIDF(PIDFGains gains, int slotID) {
+        this._pidController.setP(gains.kP, slotID);
+        this._pidController.setI(gains.kI, slotID);
+        this._pidController.setD(gains.kD, slotID);
+        this._pidController.setFF(gains.kF, slotID);
+        this._pidController.setIZone(gains.iZone, slotID);
+        this._pidController.setOutputRange(-gains.outputRange, gains.outputRange, slotID);
     }
 
     public void setPosition(double value) {
