@@ -137,15 +137,6 @@ public class Wrist extends SubsystemBase {
                         new TrapezoidProfileCommand(profile, this::useState, this));
     }
 
-    public Command getHoldCommand(ArmWristState targetState) {
-        if (targetState == ArmWristState.COLLECT) {
-            return new InstantCommand(() -> {
-                _wristMotor.set(-0.05);
-            }, this);
-        }
-        return new InstantCommand();
-    }
-
     public Command getSetStateCommand(ArmWristState targetState) {
         Set<Subsystem> requirements = new HashSet<>();
         requirements.add(this);
