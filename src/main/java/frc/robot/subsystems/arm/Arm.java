@@ -9,8 +9,12 @@ import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,18 +27,24 @@ import frc.robot.constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
 import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
+import frc.robot.utils.LatchedBoolean;
 
 public class Arm extends SubsystemBase {
 
-    private static final boolean UPDATE_DASHBOARD = false;
+    private static final boolean UPDATE_DASHBOARD = true;
+    private static final boolean UPDATE_TELEMETRY = false;
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;
 
     private DigitalInput _leftSwitch;
-    private DigitalInput _rightSwitch;
 
     private ArmFeedforward _armFeedforward;
+
+    private DoubleLogEntry m_velLog;
+
+    private final Debouncer _recalibrationDebouncer = new Debouncer(2);
+    private LatchedBoolean _limitLatchedBoolean;
 
     public Arm() {
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
@@ -49,9 +59,21 @@ public class Arm extends SubsystemBase {
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
 
         _leftSwitch = new DigitalInput(ArmConstants.leftSwitchPort);
-        _rightSwitch = new DigitalInput(ArmConstants.rightSwitchPort);
 
         _leader.setPosition(getInitialState().armAngleDeg);
+
+        initTelemetry();
+
+        _limitLatchedBoolean = new LatchedBoolean();
+    }
+
+    private void initTelemetry() {
+        DataLog log = DataLogManager.getLog();
+        m_velLog = new DoubleLogEntry(log, "/arm/velocity");
+    }
+
+    private void updateTelemetry() {
+        m_velLog.append(getVelocityDegPerSec());
     }
 
     private ArmWristState getInitialState() {
@@ -67,7 +89,7 @@ public class Arm extends SubsystemBase {
 
     // TODO: check if switches are NC or NO
     public boolean anyLimitSwitchClosed() {
-        return !_leftSwitch.get() || !_rightSwitch.get();
+        return !_leftSwitch.get();
     }
 
     public double getPositionDeg() {
@@ -94,17 +116,7 @@ public class Arm extends SubsystemBase {
         TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains,
                 new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
 
-        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this))
-                .andThen(getHoldCommand(targetState));
-    }
-
-    private Command getHoldCommand(ArmWristState targetState) {
-        if (targetState == ArmWristState.COLLECT) {
-            return new InstantCommand(() -> {
-                _leader.set(-0.05);
-            }, this);
-        }
-        return new InstantCommand();
+        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this));
     }
 
     public Command getSetStateCommand(ArmWristState targetState) {
@@ -133,6 +145,13 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         if (UPDATE_DASHBOARD) {
             updateSDB();
+        }
+        if (UPDATE_TELEMETRY) {
+            updateTelemetry();
+        }
+
+        if (_limitLatchedBoolean.update(_recalibrationDebouncer.calculate(anyLimitSwitchClosed()))) {
+            setSensorPosition(ArmWristState.COLLECT.armAngleDeg);
         }
     }
 }
