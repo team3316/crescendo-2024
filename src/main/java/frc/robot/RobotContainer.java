@@ -104,9 +104,10 @@ public class RobotContainer {
                 m_driverController.share().onTrue(
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
+
         m_operatorController.L1().onTrue(getCollectSequence());
-        m_operatorController.R1().onTrue(getShooterTriggerCommand());
         m_operatorController.R2().whileTrue(getShooterSpinCommand());
+
 
         m_operatorController.povUp()
                 .whileTrue(new StartEndCommand(
@@ -127,14 +128,19 @@ public class RobotContainer {
         
         m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                 .alongWith(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)));
+        
+        m_driverController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.PRE_CLIB));
+        m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
+        m_driverController.R1().onTrue(getShooterTriggerCommand());
 
         }
 
         private Command getShooterTriggerCommand() {
                 Command sequence = new ConditionalCommand(
                                 Commands.sequence(
-                        new WaitUntilCommand(
-                                () -> m_Shooter.isAtTargetVelocity() && m_Shooter.getShooterState() == ShooterState.ON),
+                                                new WaitUntilCommand(
+                                                                () -> m_Shooter.isAtTargetVelocity() && m_Shooter
+                                                                                .getShooterState() == ShooterState.ON),
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
                                                 new WaitCommand(2),
                                                 m_Shooter.getSetStateCommand(ShooterState.OFF)
@@ -153,7 +159,13 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                                Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                                                Commands.sequence(new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
+                                                                new WaitUntilCommand(() -> !m_Intake.isNoteInIntake()),
+                                                                m_Manipulator.getSetStateCommand(
+                                                                                ManipulatorState.SLOW_COLLECT)
+                                                                                .alongWith(m_Intake.setStateCommand(
+                                                                                                IntakeState.SLOW_COLLECT)))),
                                 m_Intake.setStateCommand(IntakeState.EJECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
                                 new WaitCommand(2),
@@ -172,8 +184,8 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-                new WaitCommand(10),
+                                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                                new WaitCommand(10),
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
 

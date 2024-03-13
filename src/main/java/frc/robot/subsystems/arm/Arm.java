@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,7 +55,7 @@ public class Arm extends SubsystemBase {
                 ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
         _follower.follow(_leader, true);
         _leader.setSoftLimit(SoftLimitDirection.kForward,
-                (float) ArmWristState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle);
+                (float) ArmWristState.PRE_CLIB.armAngleDeg + ArmConstants.softLimitExtraAngle);
         _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
 
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
@@ -80,7 +82,7 @@ public class Arm extends SubsystemBase {
         if (anyLimitSwitchClosed()) {
             return ArmWristState.COLLECT;
         }
-        return ArmWristState.TRAP;
+        return ArmWristState.PRE_CLIB;
     }
 
     public void setSensorPosition(double position) {
@@ -116,13 +118,32 @@ public class Arm extends SubsystemBase {
         TrapezoidProfile profile = new TrapezoidProfile(ArmConstants.profileConstrains,
                 new State(targetState.armAngleDeg, 0), getCurrentTrapezoidState());
 
-        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this));
+        return new InstantCommand(this::stop).andThen(new TrapezoidProfileCommand(profile, this::useState, this))
+                .andThen(getHoldCommand(targetState));
+    }
+
+    private Command getHoldCommand(ArmWristState targetState) {
+        return new ConditionalCommand(new InstantCommand(() -> _leader.set(-0.03)), new InstantCommand(),
+                () -> targetState == ArmWristState.COLLECT);
     }
 
     public Command getSetStateCommand(ArmWristState targetState) {
         Set<Subsystem> requirements = new HashSet<>();
         requirements.add(this);
         return Commands.defer(() -> generateSetStateCommand(targetState), requirements);
+    }
+
+    private void climb() {
+        if (getPositionDeg() >= ArmConstants.climbPosition) {
+            _leader.set(ArmConstants.climbPercentage);
+        }
+        else {
+            _leader.set(0);
+        }
+    }
+
+    public Command getClimbCommand() {
+        return new FunctionalCommand(() -> {}, this::climb, (interrupted) -> stop(), () -> false, this);
     }
 
     public void stop() {
@@ -133,6 +154,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm/arm position (deg)", getPositionDeg());
         SmartDashboard.putNumber("Arm/arm velocity (deg/s)", getVelocityDegPerSec());
         SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
+        SmartDashboard.putNumber("Arm/leader current", _leader.getOutputCurrent());
+        SmartDashboard.putNumber("Arm/follower current", _follower.getOutputCurrent());
     }
 
     public void setBrakeMode(boolean shouldBrake) {
