@@ -8,29 +8,47 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.308929173677826,
-        "y": 5.537862667174266
+        "x": 2.339697206084804,
+        "y": 6.105846802440936
       },
       "isLocked": false,
       "linkedName": "start mid"
     },
     {
       "anchor": {
-        "x": 3.4458358964111295,
-        "y": 5.537862667174266
+        "x": 2.690272142110121,
+        "y": 6.982284142504229
       },
       "prevControl": {
-        "x": 2.4458358964111295,
-        "y": 5.537862667174266
+        "x": 2.018336848061597,
+        "y": 6.719352940485241
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "collect wing top"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Collect"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
@@ -39,11 +57,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootAndCom",
+  "folder": "orbit",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

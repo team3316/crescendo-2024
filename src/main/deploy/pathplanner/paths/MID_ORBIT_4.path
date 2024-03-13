@@ -3,34 +3,52 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3089291736778261,
-        "y": 5.537862667174266
+        "x": 2.6415811787732717,
+        "y": 4.138731883632214
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.308929173677826,
-        "y": 5.537862667174266
+        "x": 2.173592784364179,
+        "y": 4.138731883632214
       },
       "isLocked": false,
-      "linkedName": "start mid"
+      "linkedName": "collect wing bottom"
     },
     {
       "anchor": {
-        "x": 3.4458358964111295,
+        "x": 1.3089291736778261,
         "y": 5.537862667174266
       },
       "prevControl": {
-        "x": 2.4458358964111295,
-        "y": 5.537862667174266
+        "x": 2.000978667522983,
+        "y": 5.61391880834959
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "start mid"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "spinUp",
+      "waypointRelativePos": 0.25,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
@@ -43,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "ShootAndCom",
+  "folder": "orbit",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

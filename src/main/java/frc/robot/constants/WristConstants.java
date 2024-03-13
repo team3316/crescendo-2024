@@ -4,19 +4,22 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class WristConstants {
     public static final int wristCANID = 9;
+    public static final int wristHallEffectID = 2;
     
-    public static final double collectAngle = -110.5; // deg
-    public static final double AMPAngle = -34.68; // deg
+    public static final double collectAngle = -109.3; // deg
+    public static final double AMPAngle = 42; // deg
     public static final double TRAPAngle = -30.68; // deg
     public static final double underChainAngle = -110.5; // deg
+
+    // The angle in which the wrist entes the range of the hall effect
+    public static final double hallEffectAngle = -99.4; // deg
 
     private static final double gearRatio = 1.0 / 35.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
 
-    private static final double maxVelocity = 200; // deg/sec
-    private static final double maxAcceleration = 200; // deg/sec^2
+    private static final double maxVelocity = 600; // deg/sec
+    private static final double maxAcceleration = 1200; // deg/sec^2, measured max acceleration - 1400
     public static final TrapezoidProfile.Constraints profileConstrains = new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration);
-
     public static final double kg = 0.15; // v
     public static final double kv = 3 / (Math.PI * 275 / 180); // v/(rad/sec)
 

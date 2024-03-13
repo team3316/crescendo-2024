@@ -11,8 +11,10 @@ public class ArmConstants {
     public static final double collectAngle = -43.2; // deg
     public static final double TRAPAngle = 105; // deg
     public static final double underChainAngle = 0; // deg
-    public static final double AMPAngle = 46; // deg
+    public static final double AMPAngle = 8; // deg
     public static final double ALIGNAngle = 36.86; // deg
+
+    public static final double wristMovementAngle = -25; // deg
     
     private static final double gearRatio = 1.0 / 192.0;
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
@@ -21,8 +23,8 @@ public class ArmConstants {
     public static final double climbPosition = -30;
     public static final double climbPercentage = -0.4;
 
-    private static final double maxVelocity = 300; // deg/sec
-    private static final double maxAcceleration = 300; // deg/sec^2
+    private static final double maxVelocity = 180; // deg/sec
+    private static final double maxAcceleration = 600; // deg/sec^2, measured max accel
     public static final TrapezoidProfile.Constraints profileConstrains = new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration);
 
     public static final double ks = 0; // v
