@@ -245,7 +245,7 @@ public class Drivetrain extends SubsystemBase {
         if(getAlliance()){
             return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
         }
-        return Rotation2d.fromDegrees(-this._pigeon.getFusedHeading());
+        return Rotation2d.fromDegrees(this._pigeon.getFusedHeading() + 180);
     }
 
     public void resetYaw() {
