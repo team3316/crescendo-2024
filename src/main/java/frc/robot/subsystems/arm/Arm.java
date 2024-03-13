@@ -135,8 +135,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
     }
 
-    public void setBreakMode(boolean shouldBreak) {
-        IdleMode mode = shouldBreak ? IdleMode.kBrake : IdleMode.kCoast;
+    public void setBrakeMode(boolean shouldBrake) {
+        IdleMode mode = shouldBrake ? IdleMode.kBrake : IdleMode.kCoast;
         _leader.setIdleMode(mode);
         _follower.setIdleMode(mode);
     }

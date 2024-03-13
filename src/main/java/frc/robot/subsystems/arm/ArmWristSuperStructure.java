@@ -14,14 +14,15 @@ public class ArmWristSuperStructure extends SubsystemBase {
     private final Arm m_Arm;
     private final Wrist m_Wrist;
     private DigitalInput _coastSwitch = new DigitalInput(ArmConstants.coastSwitchPort);
-    private Trigger _toggleNutoralMode;
+    private Trigger _coastTrigger;
 
     public ArmWristSuperStructure() {
         this.m_Arm = new Arm();
         this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
-        this._toggleNutoralMode = new Trigger(()->DriverStation.isDisabled()&&_coastSwitch.get()).debounce(1);
+        this._coastTrigger = new Trigger(() -> DriverStation.isDisabled() && _coastSwitch.get()).debounce(1);
 
-        _toggleNutoralMode.toggleOnTrue(Commands.startEnd(()->setBreakMode(false),()->setBreakMode(true)).until(DriverStation::isEnabled).ignoringDisable(true));
+        _coastTrigger.toggleOnTrue(Commands.startEnd(() -> setBrakeMode(false), () -> setBrakeMode(true))
+                .until(DriverStation::isEnabled).ignoringDisable(true));
     }
 
     public static enum ArmWristState {
@@ -59,8 +60,8 @@ public class ArmWristSuperStructure extends SubsystemBase {
         m_Wrist.stop();
     }
 
-    private void setBreakMode(boolean shouldBreak) {
-        m_Arm.setBreakMode(shouldBreak);
-        m_Wrist.setBreakMode(shouldBreak);
+    private void setBrakeMode(boolean shouldBrake) {
+        m_Arm.setBrakeMode(shouldBrake);
+        m_Wrist.setBrakeMode(shouldBrake);
     }
 }
