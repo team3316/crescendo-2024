@@ -19,9 +19,7 @@ public class ArmWristSuperStructure extends SubsystemBase {
     public static enum ArmWristState {
         COLLECT(ArmConstants.collectAngle, WristConstants.collectAngle),
         AMP(ArmConstants.AMPAngle, WristConstants.AMPAngle),
-        UNDER_CHAIN(ArmConstants.underChainAngle, WristConstants.underChainAngle),
-        ALIGN(ArmConstants.ALIGNAngle, WristConstants.TRAPAngle),
-        TRAP(ArmConstants.TRAPAngle, WristConstants.TRAPAngle);
+        PRE_CLIB(ArmConstants.preClimbAngle, WristConstants.preClimbAngle);
 
         public final double armAngleDeg;
         public final double wristAngleDeg;

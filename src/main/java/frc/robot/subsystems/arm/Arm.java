@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
                 ArmConstants.positionFactor, ArmConstants.velocityFactor, 0);
         _follower.follow(_leader, true);
         _leader.setSoftLimit(SoftLimitDirection.kForward,
-                (float) ArmWristState.TRAP.armAngleDeg + ArmConstants.softLimitExtraAngle);
+                (float) ArmWristState.PRE_CLIB.armAngleDeg + ArmConstants.softLimitExtraAngle);
         _leader.enableSoftLimit(SoftLimitDirection.kForward, true);
 
         _armFeedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
@@ -80,7 +80,7 @@ public class Arm extends SubsystemBase {
         if (anyLimitSwitchClosed()) {
             return ArmWristState.COLLECT;
         }
-        return ArmWristState.TRAP;
+        return ArmWristState.PRE_CLIB;
     }
 
     public void setSensorPosition(double position) {

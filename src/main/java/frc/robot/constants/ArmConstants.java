@@ -9,10 +9,8 @@ public class ArmConstants {
     public static final int rightSwitchPort = 7;
 
     public static final double collectAngle = -43.2; // deg
-    public static final double TRAPAngle = 105; // deg
-    public static final double underChainAngle = 0; // deg
+    public static final double preClimbAngle = 90; // deg
     public static final double AMPAngle = 8; // deg
-    public static final double ALIGNAngle = 36.86; // deg
 
     public static final double wristMovementAngle = -25; // deg
     
