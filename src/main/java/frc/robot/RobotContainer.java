@@ -104,9 +104,10 @@ public class RobotContainer {
                 m_driverController.share().onTrue(
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
-                m_operatorController.L1().onTrue(getCollectSequence());
-                m_operatorController.R1().onTrue(getShooterTriggerCommand());
-                m_operatorController.R2().whileTrue(getShooterSpinCommand());
+
+        m_operatorController.L1().onTrue(getCollectSequence());
+        m_operatorController.R2().whileTrue(getShooterSpinCommand());
+
 
         m_operatorController.povUp()
                 .whileTrue(new StartEndCommand(
@@ -130,6 +131,7 @@ public class RobotContainer {
         
         m_driverController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.PRE_CLIB));
         m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
+        m_driverController.R1().onTrue(getShooterTriggerCommand());
 
         }
 
