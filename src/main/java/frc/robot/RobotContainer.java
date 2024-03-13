@@ -123,7 +123,7 @@ public class RobotContainer {
                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
 
                 m_operatorController.circle()
-                                .onTrue(new StartEndCommand(() -> m_Manipulator.getSetStateCommand(ManipulatorState.AMP).schedule(), () -> m_Manipulator.getSetStateCommand(ManipulatorState.OFF).schedule(), m_Manipulator).withTimeout(3));
+                                .onTrue(new StartEndCommand(() -> m_Manipulator.getSetStateCommand(ManipulatorState.AMP).schedule(), () -> m_Manipulator.getSetStateCommand(ManipulatorState.OFF).schedule()).withTimeout(3));
                 m_operatorController.povDown()
                                 .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
 
