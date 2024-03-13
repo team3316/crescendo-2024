@@ -127,7 +127,7 @@ public class RobotContainer {
         
         m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
                 .alongWith(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)));
-                m_driverController.triangle().onTrue(m_ArmWristSuperStructure.getClimbCommand());
+                m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
 
         }
 

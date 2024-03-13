@@ -126,11 +126,16 @@ public class Arm extends SubsystemBase {
     }
 
     private void climb() {
-        _leader.set(ArmConstants.climbPercentage);
+        if (getPositionDeg() >= ArmConstants.climbPosition) {
+            _leader.set(ArmConstants.climbPercentage);
+        }
+        else {
+            _leader.set(0);
+        }
     }
 
     public Command getClimbCommand() {
-        return new FunctionalCommand(this::climb, () -> {}, (interrupted) -> stop(), () -> getPositionDeg() <= ArmConstants.climbPosition, this);
+        return new FunctionalCommand(() -> {}, this::climb, (interrupted) -> stop(), () -> false, this);
     }
 
     public void stop() {

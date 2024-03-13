@@ -47,7 +47,7 @@ public class ArmWristSuperStructure extends SubsystemBase {
     }
 
     public Command getClimbCommand() {
-        return (m_Arm.getClimbCommand());
+        return m_Wrist.getSetStateCommand(ArmWristState.COLLECT).andThen(m_Arm.getClimbCommand());
     }
 
     public void stop() {
