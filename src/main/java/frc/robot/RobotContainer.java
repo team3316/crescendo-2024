@@ -185,7 +185,6 @@ public class RobotContainer {
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                 new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
-                                new WaitCommand(10),
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
 
