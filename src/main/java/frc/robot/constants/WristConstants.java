@@ -7,7 +7,7 @@ public class WristConstants {
     public static final int wristHallEffectID = 2;
     
     public static final double collectAngle = -109.3; // deg
-    public static final double AMPAngle = 42; // deg
+    public static final double AMPAngle = 0; // deg
     public static final double preClimbAngle = -109.3; // deg
 
     // The angle in which the wrist entes the range of the hall effect

@@ -24,6 +24,7 @@ public class Manipulator extends SubsystemBase {
     public static enum ManipulatorState {
         OFF(ManipulatorConstants.offPercentage),
         COLLECT(ManipulatorConstants.collectingPercentage),
+        SLOW_COLLECT(ManipulatorConstants.slowCollectPercentage),
         AMP(ManipulatorConstants.AMPPercentage),
         TRAP(ManipulatorConstants.TRAPPercentage),
         PRE_TRAP(ManipulatorConstants.PreTrapPercentage),
