@@ -10,7 +10,7 @@ public class ArmConstants {
 
     public static final double collectAngle = -43.2; // deg
     public static final double preClimbAngle = 90; // deg
-    public static final double AMPAngle = 8; // deg
+    public static final double AMPAngle = 56; // deg
 
     public static final double wristMovementAngle = -25; // deg
     

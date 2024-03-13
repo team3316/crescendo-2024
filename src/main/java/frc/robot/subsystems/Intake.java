@@ -20,6 +20,7 @@ public class Intake extends SubsystemBase {
 
     public static enum IntakeState {
         COLLECTING(IntakeConstants.collectingPercentage),
+        SLOW_COLLECT(IntakeConstants.slowCollectPercentage),
         EJECT(IntakeConstants.ejectPercentage),
         DISABLED(IntakeConstants.disabledPrecent);
         
