@@ -242,13 +242,10 @@ public class Drivetrain extends SubsystemBase {
     // - CW Yaw is positive
 
     private Rotation2d getRotation2d() {
-        if(getAlliance()){
-            return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
-        }
-        return Rotation2d.fromDegrees(this._pigeon.getFusedHeading() + 180);
+        return Rotation2d.fromDegrees(this._pigeon.getFusedHeading());
     }
 
     public void resetYaw() {
-        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(180))));
     }
 }
