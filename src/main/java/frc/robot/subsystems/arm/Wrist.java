@@ -161,6 +161,11 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putBoolean("Wrist/hall-effect", getHallEffect());
     }
 
+    public void setBrakeMode(boolean shouldBreak) {
+        NeutralModeValue mode = shouldBreak ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+        _wristMotor.setNeutralMode(mode);
+    }
+
     @Override
     public void periodic() {
         if (UPDATE_DASHBOARD) {

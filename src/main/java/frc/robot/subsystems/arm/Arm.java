@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
@@ -155,6 +156,12 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("Arm/arm limit", anyLimitSwitchClosed());
         SmartDashboard.putNumber("Arm/leader current", _leader.getOutputCurrent());
         SmartDashboard.putNumber("Arm/follower current", _follower.getOutputCurrent());
+    }
+
+    public void setBrakeMode(boolean shouldBrake) {
+        IdleMode mode = shouldBrake ? IdleMode.kBrake : IdleMode.kCoast;
+        _leader.setIdleMode(mode);
+        _follower.setIdleMode(mode);
     }
 
     @Override
