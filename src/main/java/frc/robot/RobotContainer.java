@@ -108,8 +108,8 @@ public class RobotContainer {
         m_operatorController.L1().onTrue(getCollectSequence());
         m_operatorController.R2().whileTrue(getShooterSpinCommand());
 
-
-        m_operatorController.povUp()
+        
+m_operatorController.povUp()
                 .whileTrue(new StartEndCommand(
                         () -> m_Intake.setStateCommand(IntakeState.EJECT)
                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
@@ -133,7 +133,7 @@ public class RobotContainer {
         m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
         m_driverController.R1().onTrue(getShooterTriggerCommand());
 
-        }
+                }
 
         private Command getShooterTriggerCommand() {
                 Command sequence = new ConditionalCommand(
@@ -184,7 +184,14 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                               Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                                                Commands.sequence(new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
+                                                                new WaitUntilCommand(() -> !m_Intake.isNoteInIntake()),
+                                                                m_Manipulator.getSetStateCommand(
+                                                                                ManipulatorState.SLOW_COLLECT)
+                                                                                .alongWith(m_Intake.setStateCommand(
+                                                                                                IntakeState.SLOW_COLLECT)))),
+                      
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
 
@@ -233,7 +240,7 @@ public class RobotContainer {
                 // basic
                 m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
                 m_chooser.addOption("source shoot and exit", m_autoFactory.createAuto("source_Shoot_Com"));// oppisate in
-                                                                                                         // path, no
+                                                                                                        // path, no
                                                                                                          // idea
                                                                                                         // how changing
                                                                                                         // name will
