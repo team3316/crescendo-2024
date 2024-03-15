@@ -108,14 +108,7 @@ public class RobotContainer {
         m_operatorController.L1().onTrue(getCollectSequence());
         m_operatorController.R2().whileTrue(getShooterSpinCommand());
 
-
-        m_operatorController.povUp()
-                .whileTrue(new StartEndCommand(
-                        () -> m_Intake.setStateCommand(IntakeState.EJECT)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
-                        () -> m_Intake.setStateCommand(IntakeState.DISABLED)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
-                
+        
         m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED)
                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
                 
@@ -133,6 +126,13 @@ public class RobotContainer {
         m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
         m_driverController.R1().onTrue(getShooterTriggerCommand());
 
+        m_driverController.povUp()
+                .whileTrue(new StartEndCommand(
+                        () -> m_Intake.setStateCommand(IntakeState.EJECT)
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
+                        () -> m_Intake.setStateCommand(IntakeState.DISABLED)
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
+        
         }
 
         private Command getShooterTriggerCommand() {
