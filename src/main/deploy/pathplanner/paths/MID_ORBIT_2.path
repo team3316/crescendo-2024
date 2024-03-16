@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "spinUp",
-      "waypointRelativePos": 0.0,
+      "name": "shoot",
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "sequential",
         "data": {

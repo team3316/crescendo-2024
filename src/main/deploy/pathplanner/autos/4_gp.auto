@@ -12,9 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "MID_ORBIT_1"
+            "name": "Shoot"
           }
         },
         {
@@ -26,7 +26,19 @@
         {
           "type": "path",
           "data": {
+            "pathName": "MID_ORBIT_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "MID_ORBIT_2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -42,6 +54,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "MID_ORBIT_5"
@@ -51,6 +69,12 @@
           "type": "path",
           "data": {
             "pathName": "MID_ORBIT_6"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         }
       ]
