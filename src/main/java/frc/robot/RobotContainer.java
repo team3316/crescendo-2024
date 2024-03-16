@@ -126,7 +126,7 @@ public class RobotContainer {
         m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
         m_driverController.R1().onTrue(getShooterTriggerCommand());
 
-        m_driverController.triangle()
+        m_driverController.L1()
                 .whileTrue(new StartEndCommand(
                         () -> m_Intake.setStateCommand(IntakeState.EJECT)
                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
