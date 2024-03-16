@@ -27,8 +27,6 @@ public class Manipulator extends SubsystemBase {
         COLLECT(ManipulatorConstants.collectingPercentage),
         SLOW_COLLECT(ManipulatorConstants.slowCollectPercentage),
         AMP(ManipulatorConstants.AMPPercentage),
-        TRAP(ManipulatorConstants.TRAPPercentage),
-        PRE_TRAP(ManipulatorConstants.PreTrapPercentage),
         TO_SHOOTER(ManipulatorConstants.toShooterPercentage),
         EJECT(ManipulatorConstants.ejectPercentage);
 
