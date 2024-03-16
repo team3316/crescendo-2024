@@ -133,7 +133,10 @@ public class RobotContainer {
                         () -> m_Intake.setStateCommand(IntakeState.DISABLED)
                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
         
-        }
+        
+        m_driverController.L1().onTrue(getAutoCollectcommand());
+
+                }
 
         private Command getShooterTriggerCommand() {
                 Command sequence = new ConditionalCommand(
@@ -181,21 +184,21 @@ public class RobotContainer {
         private Command getAutoCollectcommand() {
                 Command sequence = Commands.sequence(
                                 m_Shooter.getSetStateCommand(ShooterState.OFF),
-                                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
+                                                                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
-                                m_Intake.setStateCommand(IntakeState.COLLECTING),
+                                                                m_Intake.setStateCommand(IntakeState.COLLECTING),
                                Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                                                 Commands.sequence(new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
-                                                                new WaitUntilCommand(() -> !m_Intake.isNoteInIntake()),
-                                                                m_Manipulator.getSetStateCommand(
+                                                                                                                        new WaitUntilCommand(() -> !m_Intake.isNoteInIntake()),
+                                                                                                                                m_Manipulator.getSetStateCommand(
                                                                                 ManipulatorState.SLOW_COLLECT)
                                                                                 .alongWith(m_Intake.setStateCommand(
                                                                                                 IntakeState.SLOW_COLLECT)))),
-                      
+                                                                                                                      
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
 
-                return sequence;
+                return Commands.runOnce(()->sequence.schedule());
 
         }
 
