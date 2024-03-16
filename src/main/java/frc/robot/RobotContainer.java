@@ -205,8 +205,9 @@ public class RobotContainer {
                 return Commands.sequence(
                                 m_Shooter.getSetStateCommand(ShooterState.ON),
                                 new WaitUntilCommand(() -> m_Shooter.isAtTargetVelocity()),
+                        new WaitUntilCommand(()->m_Manipulator.hasNoteSwitch()==true),
                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
-                                new WaitCommand(0.5),
+                        new WaitUntilCommand(()->m_Manipulator.hasNoteSwitch()==false),
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF)
                                                 .alongWith(m_Shooter
                                                                 .getSetStateCommand(ShooterState.OFF)));
