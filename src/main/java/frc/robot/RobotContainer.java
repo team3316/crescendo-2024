@@ -90,10 +90,10 @@ public class RobotContainer {
         }
 
         private void configureNamedCommands() {
-                NamedCommands.registerCommand("Shoot", Commands.runOnce(()->getAutoShootSequence().schedule()));
-                NamedCommands.registerCommand("Collect", getAutoCollectcommand());
-                NamedCommands.registerCommand("SpinUp", getAutoSpin());
-                NamedCommands.registerCommand("triger", getAutoTriggerCommand());
+                NamedCommands.registerCommand("Shoot", Commands.runOnce(()->getAutoShootSequence().schedule()).andThen(new WaitCommand(0.3)));
+                NamedCommands.registerCommand("Collect", Commands.runOnce(()->getAutoCollectcommand().schedule()));
+                NamedCommands.registerCommand("SpinUp", Commands.runOnce(()->getAutoSpin().schedule()));
+                NamedCommands.registerCommand("triger", Commands.runOnce(()->getAutoTriggerCommand().schedule()));
         }
 
         private void configureBindings() {
@@ -197,7 +197,7 @@ public class RobotContainer {
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
 
-                return Commands.runOnce(()->sequence.schedule());
+                return sequence;
 
         }
 
