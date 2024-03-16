@@ -150,7 +150,7 @@ public class RobotContainer {
                                                                 new WaitCommand(2),
                                                                 m_Intake.setStateCommand(IntakeState.DISABLED)),
                                 new InstantCommand(),
-                                () -> m_Manipulator.hasNoteSwitch());
+                                () -> m_Manipulator.hasNote());
                 return sequence;
         }
 
@@ -159,7 +159,7 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                                Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNote()),
                                                 Commands.sequence(new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
                                                                 new WaitUntilCommand(() -> !m_Intake.isNoteInIntake()),
                                                                 m_Manipulator.getSetStateCommand(
@@ -170,7 +170,7 @@ public class RobotContainer {
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)),
                                 new WaitCommand(2),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
-                return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNoteSwitch);
+                return new ConditionalCommand(new InstantCommand(), sequence, m_Manipulator::hasNote);
         }
 
         private Command getShooterSpinCommand() {
@@ -184,7 +184,7 @@ public class RobotContainer {
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
-                                new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
+                                new WaitUntilCommand(() -> m_Manipulator.hasNote()),
                                 new WaitCommand(10),
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
