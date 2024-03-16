@@ -6,7 +6,7 @@ public class ManipulatorConstants {
     // ports
     public static final int sparkmaxCANID = 10;
     public static final int lowBeamBreakPort = 8;
-    public static final int highBeamBreakPort = 9;
+    public static final int highBeamBreakPort = 7;
 
     // gains
     public static final PIDFGains gains = new PIDFGains(3.0); // TODO: Calibrate
