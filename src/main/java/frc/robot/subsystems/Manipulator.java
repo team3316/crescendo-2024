@@ -115,6 +115,8 @@ public class Manipulator extends SubsystemBase {
     private void updateSDB() {
         SmartDashboard.putNumber("Manipulator/note position", getNotePosition());
         SmartDashboard.putNumber("Manipulator/current", _manipulatorMotor.getOutputCurrent());
+        SmartDashboard.putBoolean("Manipulator/lower beam break", !_lowBeamBreak.get());
+        SmartDashboard.putBoolean("Manipulator/high beam break", !_highBeamBreak.get());
     }
     @Override
     public void periodic() {
