@@ -90,7 +90,7 @@ public class RobotContainer {
         }
 
         private void configureNamedCommands() {
-                NamedCommands.registerCommand("Shoot", getAutoShootSequence());
+                NamedCommands.registerCommand("Shoot", Commands.runOnce(()->getAutoShootSequence().schedule()));
                 NamedCommands.registerCommand("Collect", getAutoCollectcommand());
                 NamedCommands.registerCommand("SpinUp", getAutoSpin());
                 NamedCommands.registerCommand("triger", getAutoTriggerCommand());
@@ -183,8 +183,8 @@ public class RobotContainer {
 
         private Command getAutoCollectcommand() {
                 Command sequence = Commands.sequence(
-                                                                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
-                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
+                                                                
+                                                m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT),
                                                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
                                                 Commands.sequence(new WaitUntilCommand(() -> m_Intake.isNoteInIntake()),
@@ -255,6 +255,8 @@ public class RobotContainer {
 
                 // nothing
                 m_chooser.addOption("nothing", new InstantCommand());
+
+                                m_chooser.addOption("test", m_autoFactory.createAuto("test2"));
 
                 //
         }
