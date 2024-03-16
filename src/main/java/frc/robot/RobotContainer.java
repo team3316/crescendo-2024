@@ -183,7 +183,6 @@ public class RobotContainer {
 
         private Command getAutoCollectcommand() {
                 Command sequence = Commands.sequence(
-                                m_Shooter.getSetStateCommand(ShooterState.OFF),
                                                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
                                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT)),
                                                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
