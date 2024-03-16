@@ -15,7 +15,8 @@ public class Manipulator extends SubsystemBase {
 
     private DBugSparkMax _manipulatorMotor;
 
-    private DigitalInput _hasNoteSwitch;
+    private DigitalInput _lowBeamBreak;
+    private DigitalInput _highBeamBreak;
 
     private ManipulatorState _state;
 
@@ -26,8 +27,6 @@ public class Manipulator extends SubsystemBase {
         COLLECT(ManipulatorConstants.collectingPercentage),
         SLOW_COLLECT(ManipulatorConstants.slowCollectPercentage),
         AMP(ManipulatorConstants.AMPPercentage),
-        TRAP(ManipulatorConstants.TRAPPercentage),
-        PRE_TRAP(ManipulatorConstants.PreTrapPercentage),
         TO_SHOOTER(ManipulatorConstants.toShooterPercentage),
         EJECT(ManipulatorConstants.ejectPercentage);
 
@@ -56,7 +55,8 @@ public class Manipulator extends SubsystemBase {
                 ManipulatorConstants.positionFactor, ManipulatorConstants.velocityFactor, 0);
         this._manipulatorMotor.setSmartCurrentLimit(40);
 
-        this._hasNoteSwitch = new DigitalInput(ManipulatorConstants.noteSwitchPort);
+        this._lowBeamBreak = new DigitalInput(ManipulatorConstants.lowBeamBreakPort);
+        this._highBeamBreak = new DigitalInput(ManipulatorConstants.highBeamBreakPort);
 
         this._state = ManipulatorState.OFF;
 
@@ -68,8 +68,8 @@ public class Manipulator extends SubsystemBase {
         return this._state;
     }
 
-    public boolean hasNoteSwitch() {
-        return !_hasNoteSwitch.get();
+    public boolean hasNote() {
+        return !_lowBeamBreak.get() || !_highBeamBreak.get();
     }
 
     private void setState(ManipulatorState state) {
@@ -92,11 +92,11 @@ public class Manipulator extends SubsystemBase {
      * Note Position Manipulation *
      ******************************/
     private void resetNotePositionPeriodic() {
-        if (!_noteLatch && hasNoteSwitch()) {
+        if (!_noteLatch && hasNote()) {
             // Note just entered the manipulator, reset position to 0.
             _noteLatch = true;
             _manipulatorMotor.setPosition(0);
-        } else if (_noteLatch && !hasNoteSwitch()) {
+        } else if (_noteLatch && !hasNote()) {
             // Note just left the manipulator, reset latch.
             _noteLatch = false;
         }
@@ -115,12 +115,14 @@ public class Manipulator extends SubsystemBase {
     private void updateSDB() {
         SmartDashboard.putNumber("Manipulator/note position", getNotePosition());
         SmartDashboard.putNumber("Manipulator/current", _manipulatorMotor.getOutputCurrent());
+        SmartDashboard.putBoolean("Manipulator/lower beam break", !_lowBeamBreak.get());
+        SmartDashboard.putBoolean("Manipulator/high beam break", !_highBeamBreak.get());
     }
     @Override
     public void periodic() {
         resetNotePositionPeriodic();
 
-        SmartDashboard.putBoolean("Manipulator/has note", hasNoteSwitch());
+        SmartDashboard.putBoolean("Manipulator/has note", hasNote());
         if(UPDATE_DASHBOARD) {
             updateSDB();
         }
