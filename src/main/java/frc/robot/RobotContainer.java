@@ -136,8 +136,7 @@ public class RobotContainer {
         }
 
         private Command getShooterTriggerCommand() {
-                Command sequence = new ConditionalCommand(
-                                Commands.sequence(
+                Command sequence = Commands.sequence(
                                                 new WaitUntilCommand(
                                                                 () -> m_Shooter.isAtTargetVelocity() && m_Shooter
                                                                                 .getShooterState() == ShooterState.ON),
@@ -148,9 +147,7 @@ public class RobotContainer {
                                                                                 ManipulatorState.OFF)))
                                                 .alongWith(
                                                                 new WaitCommand(2),
-                                                                m_Intake.setStateCommand(IntakeState.DISABLED)),
-                                new InstantCommand(),
-                                () -> m_Manipulator.hasNote());
+                                                m_Intake.setStateCommand(IntakeState.DISABLED));
                 return sequence;
         }
 
