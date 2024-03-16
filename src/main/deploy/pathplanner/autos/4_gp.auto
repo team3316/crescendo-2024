@@ -12,15 +12,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "MID_ORBIT_1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {

@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "collect",
-      "waypointRelativePos": 0.05,
+      "name": "collecct",
+      "waypointRelativePos": 0.1,
       "command": {
         "type": "sequential",
         "data": {
