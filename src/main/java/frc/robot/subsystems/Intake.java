@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(){
         this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
-        this._hasNoteDebouncer = new Debouncer(1);
+        this._hasNoteDebouncer = new Debouncer(0.5);
 
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
         _intakeMotor.setSmartCurrentLimit(15);
