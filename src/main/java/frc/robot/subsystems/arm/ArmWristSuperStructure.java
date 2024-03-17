@@ -1,8 +1,11 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.WristConstants;
 
@@ -10,10 +13,16 @@ public class ArmWristSuperStructure extends SubsystemBase {
 
     private final Arm m_Arm;
     private final Wrist m_Wrist;
+    private DigitalInput _coastSwitch = new DigitalInput(ArmConstants.coastSwitchPort);
+    private Trigger _coastTrigger;
 
     public ArmWristSuperStructure() {
         this.m_Arm = new Arm();
         this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
+        this._coastTrigger = new Trigger(() -> DriverStation.isDisabled() && _coastSwitch.get()).debounce(1);
+
+        _coastTrigger.toggleOnTrue(Commands.startEnd(() -> setBrakeMode(false), () -> setBrakeMode(true))
+                .until(DriverStation::isEnabled).ignoringDisable(true));
     }
 
     public static enum ArmWristState {
@@ -50,5 +59,10 @@ public class ArmWristSuperStructure extends SubsystemBase {
     public void stop() {
         m_Arm.stop();
         m_Wrist.stop();
+    }
+
+    private void setBrakeMode(boolean shouldBrake) {
+        m_Arm.setBrakeMode(shouldBrake);
+        m_Wrist.setBrakeMode(shouldBrake);
     }
 }

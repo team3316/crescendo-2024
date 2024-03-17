@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.126841687209387,
-        "y": 2.4178163632958145
+        "x": 8.147329523395628,
+        "y": 2.451962756939552
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.293669682302205,
-        "y": 0.5943989427202638
+        "x": 6.026009179835986,
+        "y": 0.3306424133799091
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "long-collect2"
     },
     {
       "anchor": {
-        "x": 0.7785377750772017,
-        "y": 4.350502243531324
+        "x": 0.7443913814334647,
+        "y": 4.4734292606487776
       },
       "prevControl": {
-        "x": 0.9970746943971176,
-        "y": 2.274401509992119
+        "x": 2.8657117249931074,
+        "y": 2.3521089170891347
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "long-shoot"
     }
   ],
   "rotationTargets": [],
