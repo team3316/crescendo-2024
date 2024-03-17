@@ -94,6 +94,7 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Collect", Commands.runOnce(()->getAutoCollectcommand().schedule()));
                 NamedCommands.registerCommand("SpinUp", Commands.runOnce(()->getAutoSpin().schedule()));
                 NamedCommands.registerCommand("triger", Commands.runOnce(()->getAutoTriggerCommand().schedule()));
+                NamedCommands.registerCommand("hold", Commands.runOnce(()-> m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT).schedule()));
         }
 
         private void configureBindings() {
@@ -183,7 +184,7 @@ public class RobotContainer {
 
         private Command getAutoCollectcommand() {
                 Command sequence = Commands.sequence(
-                                                                
+                                                 
                                                 m_Manipulator.getSetStateCommand(ManipulatorState.COLLECT),
                                                                 m_Intake.setStateCommand(IntakeState.COLLECTING),
                                Commands.deadline(new WaitUntilCommand(() -> m_Manipulator.hasNoteSwitch()),
@@ -192,7 +193,7 @@ public class RobotContainer {
                                                                                                                                 m_Manipulator.getSetStateCommand(
                                                                                 ManipulatorState.SLOW_COLLECT)
                                                                                 .alongWith(m_Intake.setStateCommand(
-                                                                                                IntakeState.SLOW_COLLECT)))),
+                                                                                                IntakeState.AUTO_SLOW)))),
                                                                                                                       
                                 m_Manipulator.getSetStateCommand(ManipulatorState.OFF),
                                 m_Intake.setStateCommand(IntakeState.DISABLED));
