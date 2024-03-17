@@ -34,7 +34,7 @@ import frc.robot.utils.LatchedBoolean;
 public class Arm extends SubsystemBase {
 
     private static final boolean UPDATE_DASHBOARD = true;
-    private static final boolean UPDATE_TELEMETRY = false;
+    private static final boolean UPDATE_TELEMETRY = true;
 
     private DBugSparkMax _leader;
     private DBugSparkMax _follower;

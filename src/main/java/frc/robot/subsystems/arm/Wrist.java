@@ -33,7 +33,7 @@ import frc.robot.utils.LatchedBoolean;
 public class Wrist extends SubsystemBase {
 
     private static final boolean UPDATE_DASHBOARD = true;
-    private static final boolean UPDATE_TELEMETRY = false;
+    private static final boolean UPDATE_TELEMETRY = true;
 
     private TalonFX _wristMotor;
 
