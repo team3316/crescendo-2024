@@ -31,7 +31,7 @@ import frc.robot.constants.LimelightConstants;
 public class Drivetrain extends SubsystemBase {
 
     private static final boolean UPDATE_TELEMETRY = true;
-    private static final boolean UPDATE_DASHBOARD = true;
+    private static final boolean UPDATE_DASHBOARD = false;
 
     private SwerveModule[] _modules;
 
