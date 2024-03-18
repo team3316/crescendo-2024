@@ -246,6 +246,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetYaw() {
-        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(180))));
+        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(isRedAll()?180:0))));
     }
 }
