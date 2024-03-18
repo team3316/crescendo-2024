@@ -6,6 +6,7 @@ public class IntakeConstants {
     public final static int sensorID = 5;
 
     public final static double collectingPercentage = 1;
+    public static final double slowCollectPercentage = 0.4;
     public final static double ejectPercentage = -0.8;
     public final static double disabledPrecent = 0;
 
