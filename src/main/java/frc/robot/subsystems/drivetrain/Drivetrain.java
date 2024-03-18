@@ -75,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            if (getAlliance()) {
+            if (isRedAll()) {
                 speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
             } else {
                 speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, rot, getPose().getRotation());
@@ -89,7 +89,7 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
     }
 
-    public boolean getAlliance() {
+    public boolean isRedAll() {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
