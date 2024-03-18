@@ -5,7 +5,8 @@ import frc.robot.motors.PIDFGains;
 public class ManipulatorConstants {
     // ports
     public static final int sparkmaxCANID = 10;
-    public static final int noteSwitchPort = 8;
+    public static final int lowBeamBreakPort = 8;
+    public static final int highBeamBreakPort = 7;
 
     // gains
     public static final PIDFGains gains = new PIDFGains(3.0); // TODO: Calibrate
@@ -18,7 +19,7 @@ public class ManipulatorConstants {
 
     public class NotePosition { // TODO: Calibrate
         public static final double extract = 0.0; // extract from shooter. in meters
-        public static final double amp = -0.25; // install in amp. in meters
+        public static final double amp = -0.15; // install in amp. in meters
         public static final double trap = -0.35; // install in trap. in meters
     }
 

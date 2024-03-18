@@ -160,6 +160,7 @@ public class SwerveModule {
         SwerveModuleState state = optimize(desiredState, this._steerMotor.getPosition());
 
         if (state.speedMetersPerSecond != 0) // Avoid steering in place
+        System.out.println(state.angle.getDegrees());
             this._steerMotor.setReference(state.angle.getDegrees(), ControlType.kPosition);
 
         if (state.speedMetersPerSecond == 0)
