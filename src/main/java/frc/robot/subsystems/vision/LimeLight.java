@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.vision;
 
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -21,6 +24,9 @@ public class LimeLight extends SubsystemBase {
     private NetworkTableEntry LEDs;
     private double hDiff = 0;
 
+    private PIDController yController;
+    private PIDController angleController;
+
     /** Creates a new LimeLight. */
     public LimeLight() { // CR: add a way to send the config to the limelight trough code
    
@@ -33,6 +39,9 @@ public class LimeLight extends SubsystemBase {
         LEDs = limeLightTable.getEntry("ledMode");
         SmartDashboard.putNumber("Limelight/tx", tx.getDouble(52));
              setPipeLine(0);
+
+        yController = new PIDController(LimelightConstants.yKp, 0, 0);
+        angleController = new PIDController(LimelightConstants.thetaKp, 0, 0);
     }
     public double getArea(){
   
@@ -73,9 +82,21 @@ public class LimeLight extends SubsystemBase {
         LEDs.setNumber(off ? LimelightConstants.LEDsForceOff : LimelightConstants.LEDsByPipeline);
     }
 
+    private double getDistanceFromTarget() {
+        return LimelightConstants.speakerTargetHeight / Math.tan(Math.toRadians(getYAngle() + LimelightConstants.limelightAngle));
+    }
 
+    public double getDistanceOutput() {
+        return yController.calculate(getDistanceFromTarget(), LimelightConstants.distanceSetpoint);
+    }
+
+    public double getAngleOutput() {
+        return angleController.calculate(getXAngle(), 0);
+    }
+    
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget() );
+        SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget());
+        SmartDashboard.putNumber("Limelight/distance from target", getDistanceFromTarget());
     }
 }
