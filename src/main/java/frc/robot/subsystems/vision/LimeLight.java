@@ -24,7 +24,7 @@ public class LimeLight extends SubsystemBase {
     private NetworkTableEntry LEDs;
     private double hDiff = 0;
 
-    private PIDController yController;
+    private PIDController distanceController;
     private PIDController angleController;
 
     /** Creates a new LimeLight. */
@@ -40,7 +40,7 @@ public class LimeLight extends SubsystemBase {
         SmartDashboard.putNumber("Limelight/tx", tx.getDouble(52));
              setPipeLine(0);
 
-        yController = new PIDController(LimelightConstants.yKp, 0, 0);
+        distanceController = new PIDController(LimelightConstants.yKp, 0, 0);
         angleController = new PIDController(LimelightConstants.thetaKp, 0, 0);
     }
     public double getArea(){
@@ -83,12 +83,12 @@ public class LimeLight extends SubsystemBase {
     }
 
     private double getDistanceFromTarget() {
-        return LimelightConstants.speakerTargetHeight / Math.tan(Math.toRadians(getYAngle() + LimelightConstants.limelightAngle));
+        return LimelightConstants.speakerTargetHeight / Math.tan(Math.toRadians(getYAngle() + LimelightConstants.limelightMountingAngle));
     }
 
     public double getDistanceOutput() {
         if (hasTarget()) {
-            return yController.calculate(getDistanceFromTarget(), LimelightConstants.distanceSetpoint);
+            return distanceController.calculate(getDistanceFromTarget(), LimelightConstants.distanceSetpoint);
         }
         return 0;
     }
