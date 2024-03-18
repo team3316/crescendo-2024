@@ -19,7 +19,7 @@ public class ManipulatorConstants {
 
     public class NotePosition { // TODO: Calibrate
         public static final double extract = 0.0; // extract from shooter. in meters
-        public static final double amp = -0.25; // install in amp. in meters
+        public static final double amp = -0.15; // install in amp. in meters
         public static final double trap = -0.35; // install in trap. in meters
     }
 
