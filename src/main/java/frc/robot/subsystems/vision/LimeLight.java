@@ -87,11 +87,17 @@ public class LimeLight extends SubsystemBase {
     }
 
     public double getDistanceOutput() {
-        return yController.calculate(getDistanceFromTarget(), LimelightConstants.distanceSetpoint);
+        if (hasTarget()) {
+            return yController.calculate(getDistanceFromTarget(), LimelightConstants.distanceSetpoint);
+        }
+        return 0;
     }
 
     public double getAngleOutput() {
-        return angleController.calculate(getXAngle(), 0);
+        if (hasTarget()) {
+            return angleController.calculate(getXAngle(), 0);
+        }
+        return 0;
     }
     
     @Override
