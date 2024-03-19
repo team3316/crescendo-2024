@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.LimelightConstants;
 
 public class LimeLight extends SubsystemBase {
+    private static final boolean UPDATE_DASHBOARD = true;
+
     NetworkTable limeLightTable;
     private NetworkTableEntry ta;
     private NetworkTableEntry tx;
@@ -102,9 +104,11 @@ public class LimeLight extends SubsystemBase {
     
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget());
-        SmartDashboard.putNumber("Limelight/distance from target", getDistanceFromTarget());
-        SmartDashboard.putNumber("Limelight/tx", getXAngle());
-        SmartDashboard.putNumber("Limelight/ty", getYAngle());
+        if (UPDATE_DASHBOARD) {
+            SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget());
+            SmartDashboard.putNumber("Limelight/distance from target", getDistanceFromTarget());
+            SmartDashboard.putNumber("Limelight/tx", getXAngle());
+            SmartDashboard.putNumber("Limelight/ty", getYAngle());
+        }
     }
 }
