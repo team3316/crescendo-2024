@@ -37,7 +37,7 @@ public class LimeLight extends SubsystemBase {
         hasTarget = limeLightTable.getEntry("tv");
         pipeLine = limeLightTable.getEntry("pipeline");
         LEDs = limeLightTable.getEntry("ledMode");
-        SmartDashboard.putNumber("Limelight/tx", tx.getDouble(52));
+        //SmartDashboard.putNumber("Limelight/tx", tx.getDouble(52));
              setPipeLine(0);
 
         distanceController = new PIDController(LimelightConstants.yKp, 0, 0);
@@ -104,5 +104,7 @@ public class LimeLight extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean("Limelight/hasTarget",hasTarget());
         SmartDashboard.putNumber("Limelight/distance from target", getDistanceFromTarget());
+        SmartDashboard.putNumber("Limelight/tx", getXAngle());
+        SmartDashboard.putNumber("Limelight/ty", getYAngle());
     }
 }
