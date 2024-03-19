@@ -95,7 +95,7 @@ public class LimeLight extends SubsystemBase {
 
     public double getAngleOutput() {
         if (hasTarget()) {
-            return angleController.calculate(getXAngle(), 0);
+            return -angleController.calculate(getXAngle(), 0);
         }
         return 0;
     }
