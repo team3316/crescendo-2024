@@ -75,7 +75,11 @@ public class Drivetrain extends SubsystemBase {
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            if (isRedAll()) {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            } else {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, rot, getPose().getRotation());
+            }
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
         }
@@ -83,6 +87,14 @@ public class Drivetrain extends SubsystemBase {
         var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
 
         setDesiredStates(moduleStates);
+    }
+
+    public boolean isRedAll() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
     }
 
     /**
@@ -234,6 +246,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetYaw() {
-        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(isRedAll()?180:0))));
     }
 }
