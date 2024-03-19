@@ -55,7 +55,7 @@ public class RobotContainer {
         private final CommandPS5Controller m_driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
         private final SendableChooser<Command> m_chooser;
-        private final SendableChooser<SendableChooser> m_pathGroupChooser;
+        private final SendableChooser<SendableChooser<Command>> m_pathGroupChooser;
         private final SendableChooser<Command> m_ShootAndComChooser;
         private final SendableChooser<Command> m_4GpChooser;
         private final SendableChooser<Command> m_onlyShootChooser;
@@ -83,7 +83,7 @@ public class RobotContainer {
 
                 AutoBuilder.buildAutoChooser();
                 this.m_chooser = new SendableChooser<Command>();
-                this.m_pathGroupChooser = new SendableChooser<SendableChooser>();
+                this.m_pathGroupChooser = new SendableChooser<SendableChooser<Command>>();
                 this.m_4GpChooser = new SendableChooser<Command>();
                 this.m_ShootAndComChooser = new SendableChooser<Command>();
                 this.m_onlyShootChooser = new SendableChooser<Command>();
@@ -170,6 +170,7 @@ public class RobotContainer {
                 return sequence;
         }
 
+
         private Command getCollectSequence() {
                 Command sequence = Commands.sequence(
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
@@ -238,6 +239,9 @@ public class RobotContainer {
                 SmartDashboard.putData("autoChooser", m_pathGroupChooser);
               
                 m_pathGroupChooser.addOption("4gp", m_4GpChooser);
+                m_pathGroupChooser.addOption("shoot and leave", m_ShootAndComChooser);
+                m_pathGroupChooser.addOption("only shoot", m_onlyShootChooser);
+                m_pathGroupChooser.addOption("nothing", m_nothingChooser);
 
                 m_pathGroupChooser.onChange((chooser)->setChooser(chooser));
   
@@ -271,6 +275,8 @@ public class RobotContainer {
         public void setChooser(SendableChooser chooser){
                 SmartDashboard.putData("variant chooser", chooser);
                 
+                
+                
         }
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -278,6 +284,7 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-return m_chooser.getSelected();
+
+                return m_pathGroupChooser.getSelected().getSelected();
         }
 }
