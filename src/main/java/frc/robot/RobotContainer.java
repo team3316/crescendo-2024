@@ -5,6 +5,8 @@
 
 package frc.robot;
 
+import java.util.function.Consumer;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -53,6 +55,12 @@ public class RobotContainer {
         private final CommandPS5Controller m_driverController = new CommandPS5Controller(JoysticksConstants.driverPort);
 
         private final SendableChooser<Command> m_chooser;
+        private final SendableChooser<SendableChooser<Command>> m_pathGroupChooser;
+        private final SendableChooser<Command> m_ShootAndComChooser;
+        private final SendableChooser<Command> m_4GpChooser;
+        private final SendableChooser<Command> m_onlyShootChooser;
+        private final SendableChooser<Command> m_nothingChooser;
+
         private final AutoFactory m_autoFactory;
 
         private boolean _fieldRelative = true;
@@ -75,9 +83,15 @@ public class RobotContainer {
 
                 AutoBuilder.buildAutoChooser();
                 this.m_chooser = new SendableChooser<Command>();
+                this.m_pathGroupChooser = new SendableChooser<SendableChooser<Command>>();
+                this.m_4GpChooser = new SendableChooser<Command>();
+                this.m_ShootAndComChooser = new SendableChooser<Command>();
+                this.m_onlyShootChooser = new SendableChooser<Command>();
+                this.m_nothingChooser = new SendableChooser<Command>();
                 initChooser();
                 // Configure the trigger bindings
                 configureBindings();
+
 
         }
 
@@ -155,6 +169,7 @@ public class RobotContainer {
                 return sequence;
         }
 
+
         private Command getCollectSequence() {
                 Command sequence = Commands.sequence(
                                 m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT)
@@ -227,45 +242,55 @@ public class RobotContainer {
 
         private void initChooser() {
 
+                SmartDashboard.putData("autoChooser", m_pathGroupChooser);
+              
+                m_pathGroupChooser.addOption("4gp", m_4GpChooser);
+                m_pathGroupChooser.addOption("shoot and leave", m_ShootAndComChooser);
+                m_pathGroupChooser.addOption("only shoot", m_onlyShootChooser);
+                m_pathGroupChooser.addOption("nothing", m_nothingChooser);
+
+                m_pathGroupChooser.onChange((chooser)->setChooser(chooser));
+  
+
+                m_4GpChooser.addOption("4gpAMP", null);
+                m_4GpChooser.addOption("4gpMID",  m_autoFactory.createAuto("4_gp"));
+                m_4GpChooser.addOption("4gpSOURCE", null);
+                m_4GpChooser.addOption("4gpAMPcenter", null);
+                m_4GpChooser.addOption("4gpMIDcenter", null);
+                m_4GpChooser.addOption("4gpSOURCEcenter", null);
+
+                m_ShootAndComChooser.addOption("source shoot and exit", m_autoFactory.createAuto("source_Shoot_Com"));
+                m_ShootAndComChooser.addOption("amp shoot and exit",m_autoFactory.createAuto("amp_Shoot_Com"));
+
+                m_onlyShootChooser.addOption("only shoot", getAutoShootSequence());
+
+                m_nothingChooser.addOption("nothing", new InstantCommand());
+
+
                 SmartDashboard.putData("Auto Chooser PLACE BY DRIVERS!", m_chooser);
 
-                m_chooser.addOption("5 gp", m_autoFactory.createAuto("5_gp"));
 
                 m_chooser.addOption("4_gp", m_autoFactory.createAuto("4_gp"));
 
-                m_chooser.addOption("3 gp source long", m_autoFactory.createAuto("3_gp_source_long"));
+              
 
-                m_chooser.addOption("2 gp amp", null);
 
-                m_chooser.addOption("2 gp source", null);
-                // basic
-                m_chooser.addOption("mid shoot and exit", m_autoFactory.createAuto("MID_Shoot_Com"));
-                m_chooser.addOption("source shoot and exit", m_autoFactory.createAuto("source_Shoot_Com"));// oppisate in
-                                                                                                        // path, no
-                                                                                                         // idea
-                                                                                                        // how changing
-                                                                                                        // name will
-                                                                                                        // effect PP
-                m_chooser.addOption("amp shoot and exit", m_autoFactory.createAuto("amp_Shoot_Com"));// TODO: fix
-                                                                                                        // befor ISR3
-
-                // only shoot
-                m_chooser.addOption("only shoot", getAutoShootSequence());
-
-                // nothing
-                m_chooser.addOption("nothing", new InstantCommand());
-
-                                m_chooser.addOption("test", m_autoFactory.createAuto("test2"));
-
-                //
         }
 
+
+        public void setChooser(SendableChooser chooser){
+                SmartDashboard.putData("variant chooser", chooser);
+                
+                
+                
+        }
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
          *
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return m_chooser.getSelected();
+
+                return m_pathGroupChooser.getSelected().getSelected();
         }
 }
