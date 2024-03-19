@@ -80,6 +80,7 @@ public class SwerveModule {
 
         // Configure the offset angle of the magnet
         _absencoderConfig.MagnetSensor.withMagnetOffset((360 - zeroAngle) / 360);
+        // _absencoderConfig.MagnetSensor.withMagnetOffset(0);
         _absencoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         CANcoder.getConfigurator().apply(_absencoderConfig, 0.3);
 
