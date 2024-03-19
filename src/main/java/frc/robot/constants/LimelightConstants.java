@@ -44,4 +44,8 @@ public class LimelightConstants {
     public static final int LEDsForceOff = 1;
     public static final int LEDsForceBlink = 2;
     public static final int LEDsForceON = 3;
+
+    public static final double limelightMountingAngle = 32.41; // limelight's normal angle to the ground, deg
+    public static final double speakerTargetHeight = 1.45; // meters
+    public static final double distanceSetpoint = 1.21; // meters
 }
