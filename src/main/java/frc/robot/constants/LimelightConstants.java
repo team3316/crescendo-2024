@@ -47,5 +47,5 @@ public class LimelightConstants {
 
     public static final double limelightMountingAngle = 32.41; // limelight's normal angle to the ground, deg
     public static final double speakerTargetHeight = 1.45; // meters
-    public static final double distanceSetpoint = 0.15; // meters
+    public static final double distanceSetpoint = 1.21; // meters
 }
