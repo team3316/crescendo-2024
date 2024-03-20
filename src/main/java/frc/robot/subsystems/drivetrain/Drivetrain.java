@@ -75,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            if (isRedAll()) {
+            if (!isRedAll()) {
                 speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
             } else {
                 speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, rot, getPose().getRotation());
@@ -199,7 +199,7 @@ public class Drivetrain extends SubsystemBase {
             _modules[i].updateSDB(i);
         }
 
-        SmartDashboard.putNumber("Drivetrain/rotation", getRotation2d().getRadians());
+        SmartDashboard.putNumber("Drivetrain/rotation", getPose().getRotation().getRadians());
     }
 
     /************************
