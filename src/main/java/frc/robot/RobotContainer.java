@@ -147,7 +147,7 @@ public class RobotContainer {
                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
                         () -> m_Intake.setStateCommand(IntakeState.DISABLED)
                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
-        m_driverController.cross().whileTrue(new RunCommand(() -> m_Drivetrain.drive(m_limeLight.getDistanceOutput(), m_driverController.getLeftX() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond, m_limeLight.getAngleOutput(), false), m_Drivetrain, m_limeLight));
+        // m_driverController.cross().whileTrue(new RunCommand(() -> m_Drivetrain.drive(m_limeLight.getDistanceOutput(), m_driverController.getLeftX() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond, m_limeLight.getAngleOutput(), false), m_Drivetrain, m_limeLight));
         
         
 
