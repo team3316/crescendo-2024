@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.3089291736778261,
-      "y": 5.537862667174266
+      "y": 5.4
     },
     "rotation": 0
   },
@@ -14,7 +14,19 @@
         {
           "type": "named",
           "data": {
+            "name": "hold"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -30,6 +42,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "MID_ORBIT_3"
@@ -39,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "MID_ORBIT_4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -54,14 +78,20 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "midtocenter"
+            "pathName": "orbit_center"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "dcmp",
   "choreoAuto": false
 }

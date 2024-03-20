@@ -254,11 +254,11 @@ public class RobotContainer {
   
 
                 m_4GpChooser.addOption("4gpAMP", null);
-                m_4GpChooser.addOption("4gpMID",  m_autoFactory.createAuto("4_gp"));
-                m_4GpChooser.addOption("4gpSOURCE", null);
+                m_4GpChooser.addOption("4gpSOURCE",  m_autoFactory.createAuto("4_gp"));
+                
                 m_4GpChooser.addOption("4gpAMPcenter", null);
-                m_4GpChooser.addOption("4gpMIDcenter", null);
-                m_4GpChooser.addOption("4gpSOURCEcenter", null);
+                m_4GpChooser.addOption("4gpSOURCEcenter", m_autoFactory.createAuto("center_4_gp"));
+                
 
                 m_ShootAndComChooser.addOption("source shoot and exit", m_autoFactory.createAuto("source_Shoot_Com"));
                 m_ShootAndComChooser.addOption("amp shoot and exit",m_autoFactory.createAuto("amp_Shoot_Com"));

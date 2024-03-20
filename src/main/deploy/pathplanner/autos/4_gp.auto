@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.3089291736778261,
-      "y": 5.537862667174266
+      "y": 5.4
     },
     "rotation": 0
   },
@@ -86,6 +86,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "dcmp",
   "choreoAuto": false
 }
