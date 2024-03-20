@@ -1,0 +1,97 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3089291736778261,
+      "y": 5.4
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "hold"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_6"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "orbit_center"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "dcmp",
+  "choreoAuto": false
+}

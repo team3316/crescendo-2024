@@ -253,10 +253,10 @@ public class RobotContainer {
                 m_pathGroupChooser.onChange((chooser)->setChooser(chooser));
   
 
-                m_4GpChooser.addOption("4gpAMP", null);
+                m_4GpChooser.addOption("4gpAMP", m_autoFactory.createAuto("4_gp_amp"));
                 m_4GpChooser.addOption("4gpSOURCE",  m_autoFactory.createAuto("4_gp"));
                 
-                m_4GpChooser.addOption("4gpAMPcenter", null);
+                m_4GpChooser.addOption("4gpAMPcenter", m_autoFactory.createAuto("4_gp_amp_center"));
                 m_4GpChooser.addOption("4gpSOURCEcenter", m_autoFactory.createAuto("center_4_gp"));
                 
 
