@@ -121,6 +121,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void periodic() {
+        calibrateSteering();
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), getSwerveModulePositions());
 
