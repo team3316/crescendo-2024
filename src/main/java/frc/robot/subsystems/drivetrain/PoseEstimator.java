@@ -64,7 +64,6 @@ public class PoseEstimator extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator;
 
     private final Field2d field2d = new Field2d();
-    private final Field2d field2dAudiometry = new Field2d();
 
     public PoseEstimator(Drivetrain drivetrain, LimeLight limeLight) {
         this.limeLight = limeLight;
@@ -115,13 +114,10 @@ public class PoseEstimator extends SubsystemBase {
                 drivetrain.getRotation2d(),
                 drivetrain.getSwerveModulePositions());
 
-        field2d.setRobotPose(getCurrentPose());
-        SmartDashboard.putData("field", field2d);
+        // field2d.setRobotPose(getCurrentPose());
+        // SmartDashboard.putData("field", field2d);
+                SmartDashboard.putString("posepose", getCurrentPose().toString());
         
-        field2dAudiometry.setRobotPose(drivetrain.getPose());
-        SmartDashboard.putData("field Audiometry", field2dAudiometry);
-
-
         //updating the StdDev and display the value on the SmartDashboard;
         this.updateStdDevs();
         
