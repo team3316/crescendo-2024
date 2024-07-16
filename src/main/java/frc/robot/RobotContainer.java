@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,13 +59,12 @@ public class RobotContainer {
         private boolean _fieldRelative = true;
 
         public RobotContainer() {
-                m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+                m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.driveJoystickRotControl(
                                 m_driverController.getLeftY() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                                 m_driverController.getLeftX() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                                m_driverController.getCombinedAxis() *
-                                                DrivetrainConstants.maxRotationSpeedRadPerSec,
+                                new Translation2d(-m_driverController.getRightX(), m_driverController.getRightY()),
                                 _fieldRelative), m_Drivetrain));
 
                 SmartDashboard.putBoolean("Field Relative", _fieldRelative);
@@ -105,49 +105,49 @@ public class RobotContainer {
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
 
-        m_operatorController.L1().onTrue(getCollectSequence());
-        m_operatorController.R2().whileTrue(getShooterSpinCommand());
+                m_operatorController.L1().onTrue(getCollectSequence());
+                m_operatorController.R2().whileTrue(getShooterSpinCommand());
 
-        
-        m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED)
-                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
-                
-        m_operatorController.circle()
-                .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
-                        new WaitCommand(3), m_Manipulator
-                                .getSetStateCommand(ManipulatorState.OFF)));
-        m_operatorController.povDown()
-                .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
-        
-        m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
-                .alongWith(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)));
-        
-        m_driverController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.PRE_CLIB));
-        m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
-        m_driverController.R1().onTrue(getShooterTriggerCommand());
 
-        m_driverController.L1()
-                .whileTrue(new StartEndCommand(
-                        () -> m_Intake.setStateCommand(IntakeState.EJECT)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
-                        () -> m_Intake.setStateCommand(IntakeState.DISABLED)
-                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
-        m_driverController.cross().whileTrue(new RunCommand(() -> m_Drivetrain.drive(m_limeLight.getDistanceOutput(), m_driverController.getLeftX() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond, m_limeLight.getAngleOutput(), false), m_Drivetrain, m_limeLight));
-        
+                m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED)
+                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
+
+                m_operatorController.circle()
+                                .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
+                                                new WaitCommand(3), m_Manipulator
+                                                                .getSetStateCommand(ManipulatorState.OFF)));
+                m_operatorController.povDown()
+                                .onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT));
+
+                m_operatorController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.AMP)
+                                .alongWith(m_Manipulator.getMoveNoteToPositionCommand(NotePosition.AMP)));
+
+                m_driverController.square().onTrue(m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.PRE_CLIB));
+                m_driverController.triangle().whileTrue(m_ArmWristSuperStructure.getClimbCommand());
+                m_driverController.R1().onTrue(getShooterTriggerCommand());
+
+                m_driverController.L1()
+                                .whileTrue(new StartEndCommand(
+                                                () -> m_Intake.setStateCommand(IntakeState.EJECT)
+                                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.EJECT)).schedule(),
+                                                () -> m_Intake.setStateCommand(IntakeState.DISABLED)
+                                                                .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)).schedule()));
+                m_driverController.cross().whileTrue(new RunCommand(() -> m_Drivetrain.drive(m_limeLight.getDistanceOutput(), m_driverController.getLeftX() * SwerveModuleConstants.driveFreeSpeedMetersPerSecond, m_limeLight.getAngleOutput(), false), m_Drivetrain, m_limeLight));
+
         }
 
         private Command getShooterTriggerCommand() {
                 Command sequence = Commands.sequence(
-                                                new WaitUntilCommand(
-                                                                () -> m_Shooter.isAtTargetVelocity() && m_Shooter
-                                                                                .getShooterState() == ShooterState.ON),
-                                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                new WaitUntilCommand(
+                                                () -> m_Shooter.isAtTargetVelocity() && m_Shooter
+                                                                .getShooterState() == ShooterState.ON),
+                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                new WaitCommand(2),
+                                m_Shooter.getSetStateCommand(ShooterState.OFF)
+                                                .andThen(m_Manipulator.getSetStateCommand(
+                                                                ManipulatorState.OFF)))
+                                .alongWith(
                                                 new WaitCommand(2),
-                                                m_Shooter.getSetStateCommand(ShooterState.OFF)
-                                                                .andThen(m_Manipulator.getSetStateCommand(
-                                                                                ManipulatorState.OFF)))
-                                                .alongWith(
-                                                                new WaitCommand(2),
                                                 m_Intake.setStateCommand(IntakeState.DISABLED));
                 return sequence;
         }
