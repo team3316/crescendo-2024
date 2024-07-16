@@ -6,6 +6,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -45,6 +46,7 @@ public class Drivetrain extends SubsystemBase {
     private StructArrayLogEntry<SwerveModuleState> m_modulesWantedStateLog;
 
     private static PIDController angleController;
+    private static PIDController robotRotController;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -65,6 +67,8 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
+        robotRotController = new PIDController(0, 0, 0);
+
         calibrateSteering();
 
     }
@@ -83,6 +87,13 @@ public class Drivetrain extends SubsystemBase {
         var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
 
         setDesiredStates(moduleStates);
+    }
+
+    public void driveJoystickRotControl(double xSpeed, double ySpeed, Translation2d rot, boolean fieldRelative){
+        double rotSpeed = robotRotController.calculate(getRotation2d().getRadians(),rot.getAngle().getDegrees());
+        rotSpeed = rotSpeed*rot.getNorm()*DrivetrainConstants.maxRotationSpeedRadPerSec;
+
+         drive(xSpeed, ySpeed, rotSpeed, fieldRelative);
     }
 
     /**
