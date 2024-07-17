@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.JoysticksConstants;
 import frc.robot.constants.LimelightConstants;
 
 /**
@@ -67,7 +68,7 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
-        robotRotController = new PIDController(0, 0, 0);
+        robotRotController = new PIDController(1, 0, 0);
 
         calibrateSteering();
 
@@ -90,12 +91,15 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void driveJoystickRotControl(double xSpeed, double ySpeed, Translation2d rot, boolean fieldRelative){
-        double rotSpeed = robotRotController.calculate(getRotation2d().getRadians(),rot.getAngle().getDegrees());
-        rotSpeed = rotSpeed*rot.getNorm()*DrivetrainConstants.maxRotationSpeedRadPerSec;
+        System.out.println("set point: "+ rot.getAngle().getRadians());
+        System.out.println("mesh"+getRotation2d().getRadians());
+        double rotSpeed = rot.getNorm()<= JoysticksConstants.deadBand ? 0 : robotRotController.calculate(getRotation2d().getRadians(),rot.getAngle().getRadians());
+        System.out.println("out"+ rotSpeed);
+        rotSpeed = rotSpeed*rot.getNorm()*DrivetrainConstants.maxRotationSpeedRadPerSec*0.5;
 
          drive(xSpeed, ySpeed, rotSpeed, fieldRelative);
     }
-
+ 
     /**
      * Drives by X and Y inputs, maintaining given target angle given from vision
      * target
