@@ -68,13 +68,33 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
-        robotRotController = new PIDController(1, 0, 0);
+        robotRotController = new PIDController(1.5, 0, 0);
 
         calibrateSteering();
 
     }
 
+    boolean prevTriggerZero = true;
+
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+        // boolean triggerZero = getTrigger();
+
+        // if(triggerZero == false && prevTriggerZero == true) { 
+        //     doSetpoint();
+        // }
+        
+        if(rot == 0){
+            if(prevTriggerZero){
+                robotRotController.setSetpoint(getRotation2d().getRadians());
+                prevTriggerZero = false;
+            }
+            rot = robotRotController.calculate(getRotation2d().getRadians());
+            SmartDashboard.putNumber("error", robotRotController.getSetpoint()- getRotation2d().getRadians());
+        }
+        else{
+            prevTriggerZero =true;
+        }
+
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
@@ -88,6 +108,8 @@ public class Drivetrain extends SubsystemBase {
         var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
 
         setDesiredStates(moduleStates);
+
+       
     }
 
     public void driveJoystickRotControl(double xSpeed, double ySpeed, Translation2d rot, boolean fieldRelative){
