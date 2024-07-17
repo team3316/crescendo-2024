@@ -68,7 +68,8 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
-        robotRotController = new PIDController(1.5, 0, 0);
+        robotRotController = new PIDController(4, 0, 0);
+        SmartDashboard.putData("pid rot control ",robotRotController);
 
         calibrateSteering();
 
@@ -89,12 +90,12 @@ public class Drivetrain extends SubsystemBase {
                 prevTriggerZero = false;
             }
             rot = robotRotController.calculate(getRotation2d().getRadians());
-            SmartDashboard.putNumber("error", robotRotController.getSetpoint()- getRotation2d().getRadians());
+            // SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
         }
         else{
             prevTriggerZero =true;
         }
-
+         SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
