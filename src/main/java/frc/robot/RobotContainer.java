@@ -59,22 +59,22 @@ public class RobotContainer {
         private boolean _fieldRelative = true;
 
         public RobotContainer() {
-                // m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
-                //                 m_driverController.getLeftY() *
-                //                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                //                 m_driverController.getLeftX() *
-                //                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                //                 m_driverController.getCombinedAxis() *
-                //                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
-                //                 _fieldRelative), m_Drivetrain));
+                m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.drive(
+                                m_driverController.getLeftY() *
+                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                                m_driverController.getLeftX() *
+                                                SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                                m_driverController.getCombinedAxis() *
+                                                DrivetrainConstants.maxRotationSpeedRadPerSec,
+                                _fieldRelative), m_Drivetrain));
 
-                m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.driveJoystickRotControl(
-                        m_driverController.getLeftY() *
-                                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                        m_driverController.getLeftX() *
-                                        SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                        new Translation2d(m_driverController.getRightY(), m_driverController.getRightX()),
-                        _fieldRelative), m_Drivetrain));
+                // m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.driveJoystickRotControl(
+                //         m_driverController.getLeftY() *
+                //                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                //         m_driverController.getLeftX() *
+                //                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                //         new Translation2d(m_driverController.getRightY(), m_driverController.getRightX()),
+                //         _fieldRelative), m_Drivetrain));
 
                 SmartDashboard.putBoolean("Field Relative", _fieldRelative);
                 SmartDashboard.putBoolean("Field Relative", _fieldRelative);
