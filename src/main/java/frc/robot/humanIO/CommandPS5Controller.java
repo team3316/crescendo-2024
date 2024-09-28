@@ -479,6 +479,6 @@ public class CommandPS5Controller extends CommandGenericHID {
      * @return the axis value.
      */
     public double getCombinedAxis() {
-        return m_hid.getCombinedTriggers();
+        return m_hid.getRotation();
     }
 }
