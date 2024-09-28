@@ -36,8 +36,6 @@ public class Wrist extends SubsystemBase {
 
     private TalonFX _wristMotor;
 
-    private DigitalInput _wristHallEffect;
-
     private Supplier<Double> _armAngleDeg;
     private final PositionVoltage request;
 
@@ -49,8 +47,6 @@ public class Wrist extends SubsystemBase {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
         _wristMotor.getConfigurator().apply(getConfigurator());
         _wristMotor.setInverted(true);
-
-        _wristHallEffect = new DigitalInput(WristConstants.wristHallEffectID);
 
         _feedforward = new ArmFeedforward(0, WristConstants.kg, WristConstants.kv);
         _armAngleDeg = armAngleDeg;
@@ -99,10 +95,6 @@ public class Wrist extends SubsystemBase {
 
     private double getVelocityDegPerSec() {
         return _wristMotor.getVelocity().getValueAsDouble();
-    }
-
-    public boolean getHallEffect() {
-        return !_wristHallEffect.get();
     }
 
     private State getTrapezoidState() {
