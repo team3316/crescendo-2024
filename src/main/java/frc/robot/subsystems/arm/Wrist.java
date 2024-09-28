@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
-import frc.robot.utils.LatchedBoolean;
 
 public class Wrist extends SubsystemBase {
 
@@ -46,8 +45,6 @@ public class Wrist extends SubsystemBase {
 
     private DoubleLogEntry m_VelLog;
 
-    private LatchedBoolean _inHallEffectRange;
-
     public Wrist(Supplier<Double> armAngleDeg) {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
         _wristMotor.getConfigurator().apply(getConfigurator());
@@ -59,8 +56,6 @@ public class Wrist extends SubsystemBase {
         _armAngleDeg = armAngleDeg;
 
         request = new PositionVoltage(0);
-
-        _inHallEffectRange = new LatchedBoolean();
 
         initTelemetry();
     }
@@ -173,10 +168,6 @@ public class Wrist extends SubsystemBase {
         }
         if (UPDATE_TELEMETRY) {
             updateTelemetry();
-        }
-
-        if (_inHallEffectRange.update(getHallEffect())) {
-            setSensorPosition(WristConstants.hallEffectAngle);
         }
     }
 
