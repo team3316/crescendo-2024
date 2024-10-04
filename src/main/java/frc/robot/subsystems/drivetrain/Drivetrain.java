@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.struct.SwerveModuleStateStruct;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.DataLog;
@@ -47,7 +49,7 @@ public class Drivetrain extends SubsystemBase {
     private StructArrayLogEntry<SwerveModuleState> m_modulesWantedStateLog;
 
     private static PIDController angleController;
-    private static PIDController robotRotController;
+    private static ProfiledPIDController robotRotController;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -69,9 +71,9 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
-        robotRotController = new PIDController(7, 0, 0);
+        robotRotController = new ProfiledPIDController(DrivetrainConstants.robotRotKp, 0, 0, DrivetrainConstants.robotRotConstraints);
         SmartDashboard.putData("pid rot control ",robotRotController);
-       robotRotController.enableContinuousInput(3.13,-3.13);
+       robotRotController.enableContinuousInput(Math.PI,-Math.PI);
 
         calibrateSteering();
 
@@ -85,19 +87,21 @@ public class Drivetrain extends SubsystemBase {
         // if(triggerZero == false && prevTriggerZero == true) { 
         //     doSetpoint();
         // }
-        
+        SmartDashboard.putNumber("aaaa/robot pos", getRotation2d().getRadians());
+            SmartDashboard.putNumber("aaaa/goal pos", robotRotController.getGoal().position);
         if(rot == 0){
             if(prevTriggerZero){
-                robotRotController.setSetpoint(getRotation2d().getRadians());
+                robotRotController.reset(getRotation2d().getRadians());
+                robotRotController.setGoal(getRotation2d().getRadians());
                 prevTriggerZero = false;
             }
-            rot = robotRotController.calculate(getRotation2d().getRadians());
-            // SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
+            SmartDashboard.putNumber("aaaa/setPoint pos", robotRotController.getSetpoint().position);
+            SmartDashboard.putNumber("aaaa/setPoint vel", robotRotController.getSetpoint().velocity);
+            rot = robotRotController.calculate(getRotation2d().getRadians()) + robotRotController.getSetpoint().velocity;
         }
         else{
             prevTriggerZero =true;
         }
-         SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
@@ -121,6 +125,7 @@ public class Drivetrain extends SubsystemBase {
         double rotSpeed = rot.getNorm()<= JoysticksConstants.deadBand ? 0 : robotRotController.calculate(getPose().getRotation().getRadians(),rot.getAngle().getRadians());
         System.out.println("out"+ rotSpeed);
         rotSpeed = rotSpeed*rot.getNorm();
+
 
          drive(xSpeed, ySpeed, rotSpeed, fieldRelative);
     }
