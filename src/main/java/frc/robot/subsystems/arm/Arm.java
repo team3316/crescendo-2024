@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.util.datalog.DataLog;
@@ -29,7 +28,6 @@ import frc.robot.constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
 import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
-import frc.robot.utils.LatchedBoolean;
 
 public class Arm extends SubsystemBase {
 
@@ -44,9 +42,6 @@ public class Arm extends SubsystemBase {
     private ArmFeedforward _armFeedforward;
 
     private DoubleLogEntry m_velLog;
-
-    private final Debouncer _recalibrationDebouncer = new Debouncer(2);
-    private LatchedBoolean _limitLatchedBoolean;
 
     public Arm() {
         _leader = DBugSparkMax.create(ArmConstants.leaderCANID, new PIDFGains(ArmConstants.kp),
@@ -65,8 +60,6 @@ public class Arm extends SubsystemBase {
         _leader.setPosition(getInitialState().armAngleDeg);
 
         initTelemetry();
-
-        _limitLatchedBoolean = new LatchedBoolean();
     }
 
     private void initTelemetry() {
@@ -89,7 +82,6 @@ public class Arm extends SubsystemBase {
         _leader.setPosition(position);
     }
 
-    // TODO: check if switches are NC or NO
     public boolean anyLimitSwitchClosed() {
         return !_leftSwitch.get();
     }
@@ -171,10 +163,6 @@ public class Arm extends SubsystemBase {
         }
         if (UPDATE_TELEMETRY) {
             updateTelemetry();
-        }
-
-        if (_limitLatchedBoolean.update(_recalibrationDebouncer.calculate(anyLimitSwitchClosed()))) {
-            setSensorPosition(ArmWristState.COLLECT.armAngleDeg);
         }
     }
 }
