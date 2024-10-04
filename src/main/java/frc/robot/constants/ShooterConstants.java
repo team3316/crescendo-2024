@@ -6,7 +6,7 @@ public class ShooterConstants {
     public static final int followerDownRightPort = 13;
 
     public static final double SparkFlexUnShootingVelocity = 0; // mps
-    public static final double SparkFlexShootingVelocity = 7; // mps
+    public static final double SparkFlexShootingVelocity = 8; // mps
 
     private static final double wheelDiameter = 4 * 0.0254; // 4 inches in meters
     public static final double positionFactor = wheelDiameter; // meters / rotation
