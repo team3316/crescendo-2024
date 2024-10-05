@@ -44,7 +44,7 @@ public class DBugPS5Controller extends PS5Controller {
         double x =calculateDeadband(-super.getLeftX(), -super.getLeftY());
         double y = calculateDeadband(-super.getLeftY(), -super.getLeftX());
         if (x == 0) {
-            return 0;
+            return y;
         }
         double res = Math.copySign((Math.pow(x,2) + Math.pow(y,2)) * Math.sin(Math.atan(y/x)), y);
         return Math.abs(res) > 1 ? res / Math.abs(res) : res;
