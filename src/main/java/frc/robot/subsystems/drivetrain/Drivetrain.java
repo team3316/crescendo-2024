@@ -79,7 +79,11 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-    boolean prevTriggerZero = true;
+    private boolean prevTriggerZero = true;
+
+    private TrapezoidProfile.State getRotTrapState() {
+        return new TrapezoidProfile.State(getRotation2d().getRadians(), robotRotController.getVelocityError());
+    }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         // boolean triggerZero = getTrigger();
@@ -89,9 +93,9 @@ public class Drivetrain extends SubsystemBase {
         // }
         SmartDashboard.putNumber("aaaa/robot pos", getRotation2d().getRadians());
             SmartDashboard.putNumber("aaaa/goal pos", robotRotController.getGoal().position);
-        if(rot == 0){
+        if(rot == 0) {
+            robotRotController.reset(getRotTrapState());
             if(prevTriggerZero){
-                robotRotController.reset(getRotation2d().getRadians());
                 robotRotController.setGoal(getRotation2d().getRadians());
                 prevTriggerZero = false;
             }
@@ -125,8 +129,6 @@ public class Drivetrain extends SubsystemBase {
         double rotSpeed = rot.getNorm()<= JoysticksConstants.deadBand ? 0 : robotRotController.calculate(getPose().getRotation().getRadians(),rot.getAngle().getRadians());
         System.out.println("out"+ rotSpeed);
         rotSpeed = rotSpeed*rot.getNorm();
-
-
          drive(xSpeed, ySpeed, rotSpeed, fieldRelative);
     }
  
