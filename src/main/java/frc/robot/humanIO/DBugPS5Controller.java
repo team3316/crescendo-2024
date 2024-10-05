@@ -32,14 +32,22 @@ public class DBugPS5Controller extends PS5Controller {
     public double getLeftX() {
         double x =calculateDeadband(-super.getLeftX(), -super.getLeftY());
         double y = calculateDeadband(-super.getLeftY(), -super.getLeftX());
-        return Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) * Math.cos(Math.atan(y/x));
+        if (x == 0) {
+            return 0;
+        }
+        double res = Math.copySign((Math.pow(x,2) + Math.pow(y,2)) * Math.cos(Math.atan(y/x)), x);
+        return Math.abs(res) > 1 ? res / Math.abs(res) : res;
     }
 
     @Override
     public double getLeftY() {
         double x =calculateDeadband(-super.getLeftX(), -super.getLeftY());
         double y = calculateDeadband(-super.getLeftY(), -super.getLeftX());
-        return Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) * Math.sin(Math.atan(y/x));
+        if (x == 0) {
+            return 0;
+        }
+        double res = Math.copySign((Math.pow(x,2) + Math.pow(y,2)) * Math.sin(Math.atan(y/x)), y);
+        return Math.abs(res) > 1 ? res / Math.abs(res) : res;
     }
 
     @Override
