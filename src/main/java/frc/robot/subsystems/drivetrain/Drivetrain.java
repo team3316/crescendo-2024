@@ -91,6 +91,7 @@ public class Drivetrain extends SubsystemBase {
         }
         prevTriggerZero = rot == 0;
         rot = robotRotController.getSetpoint().velocity + robotRotController.calculate(getPose().getRotation().getRadians());
+        rot = Math.abs(rot) > 0.1 ? rot : 0;
         robotAng += 0.02 * rot;
         SmartDashboard.putNumber("Drivetrain/Right Joystick angle", rightJoystick.getAngle().getRadians());
         SmartDashboard.putNumber("Drivetrain/Right Joystick Norm", rightJoystick.getNorm());
