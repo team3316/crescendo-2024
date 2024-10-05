@@ -96,9 +96,10 @@ public class DrivetrainConstants {
 
         public static final double driveCurrentLimit = 60;
 
-        private static final double robotRotMaxVelocity = 1; // rad/sec
-        private static final double robotRotMaxAcceleration = 1; // rad/sec^2
+        public static final double robotRotMaxVelocity = 5; // rad/sec
+        public static final double robotRotMaxAcceleration = 5; // rad/sec^2
         public static final TrapezoidProfile.Constraints robotRotConstraints = new TrapezoidProfile.Constraints(robotRotMaxVelocity, robotRotMaxAcceleration);
-        public static final double robotRotKp = 10; // (rad/sec)/rad
+        public static final double robotRotKp = 5; // (rad/sec)/rad
+        public static final double robotRotKd = 2.5; // (rad/sec)/(rad/sec)=1
 
 }
