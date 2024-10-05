@@ -87,7 +87,7 @@ public class Drivetrain extends SubsystemBase {
             robotRotController.setGoal(new TrapezoidProfile.State(robotRotController.getSetpoint().position + (0.02 * rot), rot));
 
         } else if (!prevTriggerZero) {
-            robotRotController.setGoal(getPose().getRotation().getRadians());
+            robotRotController.setGoal(getPose().getRotation().getRadians() + (Math.signum(robotRotController.getSetpoint().velocity) * Math.pow(robotRotController.getSetpoint().velocity, 2) / (2 * DrivetrainConstants.robotRotMaxAcceleration)));
         }
         prevTriggerZero = rot == 0;
         rot = robotRotController.getSetpoint().velocity + robotRotController.calculate(getPose().getRotation().getRadians());
