@@ -60,7 +60,7 @@ public class DrivetrainConstants {
                 }
         }
 
-        public static final double maxRotationSpeedRadPerSec = 11.5;
+        public static final double maxRotationSpeedRadPerSec = 7; // 11.5
 
         public static final double frontWheelDistMeters = 0.7403;
         public static final double sideWheelDistMeters = 0.4253;
@@ -96,8 +96,8 @@ public class DrivetrainConstants {
 
         public static final double driveCurrentLimit = 60;
 
-        public static final double robotRotMaxVelocity = 5; // rad/sec
-        public static final double robotRotMaxAcceleration = 5; // rad/sec^2
+        public static final double robotRotMaxVelocity = 7; // rad/sec
+        public static final double robotRotMaxAcceleration = 7; // rad/sec^2
         public static final TrapezoidProfile.Constraints robotRotConstraints = new TrapezoidProfile.Constraints(robotRotMaxVelocity, robotRotMaxAcceleration);
         public static final double robotRotKp = 5; // (rad/sec)/rad=1/sec
         public static final double robotRotKd = 0.3; // (rad/sec)/(rad/sec)=no units
