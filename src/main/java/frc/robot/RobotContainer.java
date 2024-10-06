@@ -243,6 +243,10 @@ public class RobotContainer {
                 //
         }
 
+        public void resetDrivetrainRotController() {
+                m_Drivetrain.resetRotController();
+        }
+
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
          *

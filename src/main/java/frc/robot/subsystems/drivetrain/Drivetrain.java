@@ -268,6 +268,10 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetYaw() {
         resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        resetRotController();
+    }
+
+    public void resetRotController() {
         robotRotController.setGoal(getPose().getRotation().getRadians());
         robotRotController.reset(getPose().getRotation().getRadians());
     }
