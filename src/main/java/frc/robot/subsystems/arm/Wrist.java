@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.constants.WristConstants;
 import frc.robot.subsystems.arm.ArmWristSuperStructure.ArmWristState;
-import frc.robot.utils.LatchedBoolean;
 
 public class Wrist extends SubsystemBase {
 
@@ -37,8 +36,6 @@ public class Wrist extends SubsystemBase {
 
     private TalonFX _wristMotor;
 
-    private DigitalInput _wristHallEffect;
-
     private Supplier<Double> _armAngleDeg;
     private final PositionVoltage request;
 
@@ -46,21 +43,15 @@ public class Wrist extends SubsystemBase {
 
     private DoubleLogEntry m_VelLog;
 
-    private LatchedBoolean _inHallEffectRange;
-
     public Wrist(Supplier<Double> armAngleDeg) {
         _wristMotor = new TalonFX(WristConstants.wristCANID);
         _wristMotor.getConfigurator().apply(getConfigurator());
         _wristMotor.setInverted(true);
 
-        _wristHallEffect = new DigitalInput(WristConstants.wristHallEffectID);
-
         _feedforward = new ArmFeedforward(0, WristConstants.kg, WristConstants.kv);
         _armAngleDeg = armAngleDeg;
 
         request = new PositionVoltage(0);
-
-        _inHallEffectRange = new LatchedBoolean();
 
         initTelemetry();
     }
@@ -104,10 +95,6 @@ public class Wrist extends SubsystemBase {
 
     private double getVelocityDegPerSec() {
         return _wristMotor.getVelocity().getValueAsDouble();
-    }
-
-    public boolean getHallEffect() {
-        return !_wristHallEffect.get();
     }
 
     private State getTrapezoidState() {
@@ -158,7 +145,7 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putNumber("Wrist/wrist position", getPositionDeg());
         SmartDashboard.putNumber("Wrist/wrist velocity", getVelocityDegPerSec());
         SmartDashboard.putNumber("Wrist/wrist absolute position", getAbsolutePositionDeg());
-        SmartDashboard.putBoolean("Wrist/hall-effect", getHallEffect());
+        // SmartDashboard.putBoolean("Wrist/hall-effect", getHallEffect());
     }
 
     public void setBrakeMode(boolean shouldBreak) {
@@ -173,10 +160,6 @@ public class Wrist extends SubsystemBase {
         }
         if (UPDATE_TELEMETRY) {
             updateTelemetry();
-        }
-
-        if (_inHallEffectRange.update(getHallEffect())) {
-            setSensorPosition(WristConstants.hallEffectAngle);
         }
     }
 

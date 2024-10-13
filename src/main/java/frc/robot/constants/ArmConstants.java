@@ -5,9 +5,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 public class ArmConstants {
     public static final int leaderCANID = 8; // left
     public static final int followerCANID = 7; // right
-    public static final int leftSwitchPort = 6;
+    public static final int leftSwitchPort = 7;
     public static final int rightSwitchPort = 7;
-    public static final int coastSwitchPort = 3;
+    public static final int coastSwitchPort = 1;
 
 
     public static final double collectAngle = -43.2; // deg

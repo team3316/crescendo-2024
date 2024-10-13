@@ -5,8 +5,8 @@ import frc.robot.motors.PIDFGains;
 public class ManipulatorConstants {
     // ports
     public static final int sparkmaxCANID = 10;
-    public static final int lowBeamBreakPort = 8;
-    public static final int highBeamBreakPort = 7;
+    public static final int lowBeamBreakPort = 4;
+    public static final int highBeamBreakPort = 3;
 
     // gains
     public static final PIDFGains gains = new PIDFGains(3.0); // TODO: Calibrate
