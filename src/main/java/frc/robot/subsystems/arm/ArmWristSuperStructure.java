@@ -20,7 +20,7 @@ public class ArmWristSuperStructure extends SubsystemBase {
     public ArmWristSuperStructure() {
         this.m_Arm = new Arm();
         this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
-        this._coastTrigger = new Trigger(() -> DriverStation.isDisabled() && _coastSwitch.get()).debounce(1);
+        this._coastTrigger = new Trigger(() -> DriverStation.isDisabled() && !_coastSwitch.get()).debounce(1);
         this._atCollectTrigger = new Trigger(m_Arm::anyLimitSwitchClosed).debounce(2);
 
         _coastTrigger.toggleOnTrue(Commands.startEnd(() -> setBrakeMode(false), () -> setBrakeMode(true))
