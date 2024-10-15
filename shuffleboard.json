@@ -241,6 +241,32 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "7,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/autoChooser",
+              "_title": "/SmartDashboard/autoChooser",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/variant chooser",
+              "_title": "/SmartDashboard/variant chooser",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -485,7 +511,41 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "titleType": 0,
-        "tiles": {}
+        "tiles": {
+          "4,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/aaaaaaaaa: error",
+              "_title": "SmartDashboard/aaaaaaaaa: error",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/aaaaaaaaa: error": true
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              2
+            ],
+            "content": {
+              "_type": "PID Controller",
+              "_source0": "network_table:///SmartDashboard/pid rot control ",
+              "_title": "SmartDashboard/pid rot control ",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
       }
     }
   ],

@@ -138,6 +138,7 @@ public class RobotContainer {
 
         private Command getShooterTriggerCommand() {
                 Command sequence = Commands.sequence(
+                                                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT),
                                                 new WaitUntilCommand(
                                                                 () -> m_Shooter.isAtTargetVelocity() && m_Shooter
                                                                                 .getShooterState() == ShooterState.ON),
