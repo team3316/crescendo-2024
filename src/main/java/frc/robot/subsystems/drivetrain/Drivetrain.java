@@ -69,7 +69,7 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
-        robotRotController = new PIDController(7, 0, 0);
+        robotRotController = new PIDController(2, 0, 0);
         SmartDashboard.putData("pid rot control ",robotRotController);
        robotRotController.enableContinuousInput(3.13,-3.13);
 
