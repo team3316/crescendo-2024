@@ -145,7 +145,6 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putNumber("Wrist/wrist position", getPositionDeg());
         SmartDashboard.putNumber("Wrist/wrist velocity", getVelocityDegPerSec());
         SmartDashboard.putNumber("Wrist/wrist absolute position", getAbsolutePositionDeg());
-        SmartDashboard.putBoolean("Wrist/hall-effect", getHallEffect());
     }
 
     public void setBrakeMode(boolean shouldBreak) {
