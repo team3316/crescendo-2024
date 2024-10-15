@@ -46,8 +46,8 @@ public class Drivetrain extends SubsystemBase {
     private StructArrayLogEntry<SwerveModuleState> m_modulesCurrentStateLog;
     private StructArrayLogEntry<SwerveModuleState> m_modulesWantedStateLog;
 
-    private static PIDController angleController;
-    private static PIDController robotRotController;
+    private PIDController angleController;
+    private PIDController robotRotController;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -69,9 +69,13 @@ public class Drivetrain extends SubsystemBase {
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
 
-        robotRotController = new PIDController(7, 0, 0);
+        
+        
+        robotRotController = new PIDController(2, 0, 0);
         SmartDashboard.putData("pid rot control ",robotRotController);
-       robotRotController.enableContinuousInput(3.13,-3.13);
+    //    robotRotController.enableContinuousInput(3.13,-3.13);
+
+       robotRotController.setSetpoint(getRotation2d().getRadians());
 
         calibrateSteering();
 
@@ -86,7 +90,7 @@ public class Drivetrain extends SubsystemBase {
         //     doSetpoint();
         // }
         
-        if(rot == 0){
+        /*if(rot == 0){
             if(prevTriggerZero){
                 robotRotController.setSetpoint(getRotation2d().getRadians());
                 prevTriggerZero = false;
@@ -96,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
         }
         else{
             prevTriggerZero =true;
-        }
+        }*/
          SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
@@ -113,6 +117,10 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
 
        
+    }
+
+    public double getRotationController(){
+        return this.robotRotController.calculate(getRotation2d().getRadians());
     }
 
     public void driveJoystickRotControl(double xSpeed, double ySpeed, Translation2d rot, boolean fieldRelative){
