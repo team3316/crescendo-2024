@@ -63,7 +63,7 @@ public class RobotContainer {
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                                 m_driverController.getLeftX() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                                m_driverController.getCombinedAxis() *
+                                m_driverController.getRightX() *
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
 
