@@ -6,6 +6,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.JoysticksConstants;
 import frc.robot.constants.LimelightConstants;
 
 /**
@@ -45,6 +47,7 @@ public class Drivetrain extends SubsystemBase {
     private StructArrayLogEntry<SwerveModuleState> m_modulesWantedStateLog;
 
     private static PIDController angleController;
+    private static PIDController robotRotController;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -61,15 +64,40 @@ public class Drivetrain extends SubsystemBase {
 
         initTelemetry();
 
+
         angleController = new PIDController(LimelightConstants.angleKp, 0, 0);
         angleController.setTolerance(LimelightConstants.angleTol);
         angleController.setSetpoint(0);
+
+        robotRotController = new PIDController(2, 0, 0);
+        SmartDashboard.putData("pid rot control ",robotRotController);
+       robotRotController.enableContinuousInput(3.13,-3.13);
 
         calibrateSteering();
 
     }
 
+    boolean prevTriggerZero = true;
+
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+        // boolean triggerZero = getTrigger();
+
+        // if(triggerZero == false && prevTriggerZero == true) { 
+        //     doSetpoint();
+        // }
+        
+        if(rot == 0){
+            if(prevTriggerZero){
+                robotRotController.setSetpoint(getRotation2d().getRadians());
+                prevTriggerZero = false;
+            }
+            rot = robotRotController.calculate(getRotation2d().getRadians());
+            // SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
+        }
+        else{
+            prevTriggerZero =true;
+        }
+         SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
@@ -83,8 +111,20 @@ public class Drivetrain extends SubsystemBase {
         var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
 
         setDesiredStates(moduleStates);
+
+       
     }
 
+    public void driveJoystickRotControl(double xSpeed, double ySpeed, Translation2d rot, boolean fieldRelative){
+        System.out.println("set point: "+ rot.getAngle().getRadians());
+        System.out.println("mesh"+getPose().getRotation().getRadians());
+        double rotSpeed = rot.getNorm()<= JoysticksConstants.deadBand ? 0 : robotRotController.calculate(getPose().getRotation().getRadians(),rot.getAngle().getRadians());
+        System.out.println("out"+ rotSpeed);
+        rotSpeed = rotSpeed*rot.getNorm();
+
+         drive(xSpeed, ySpeed, rotSpeed, fieldRelative);
+    }
+ 
     /**
      * Drives by X and Y inputs, maintaining given target angle given from vision
      * target
