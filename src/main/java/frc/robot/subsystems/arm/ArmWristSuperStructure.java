@@ -15,14 +15,20 @@ public class ArmWristSuperStructure extends SubsystemBase {
     private final Wrist m_Wrist;
     private DigitalInput _coastSwitch = new DigitalInput(ArmConstants.coastSwitchPort);
     private Trigger _coastTrigger;
+    private Trigger _atCollectTrigger;
 
     public ArmWristSuperStructure() {
         this.m_Arm = new Arm();
         this.m_Wrist = new Wrist(m_Arm::getPositionDeg);
         this._coastTrigger = new Trigger(() -> DriverStation.isDisabled() && _coastSwitch.get()).debounce(1);
+        this._atCollectTrigger = new Trigger(m_Arm::anyLimitSwitchClosed).debounce(2);
 
         _coastTrigger.toggleOnTrue(Commands.startEnd(() -> setBrakeMode(false), () -> setBrakeMode(true))
                 .until(DriverStation::isEnabled).ignoringDisable(true));
+        _atCollectTrigger.onTrue(
+                Commands.sequence(Commands.runOnce(() -> m_Arm.setSensorPosition(ArmWristState.COLLECT.armAngleDeg)),
+                        Commands.runOnce(() -> m_Wrist.setSensorPosition(ArmWristState.COLLECT.wristAngleDeg))).ignoringDisable(true));
+
     }
 
     public static enum ArmWristState {
