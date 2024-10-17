@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3089291736778261,
-      "y": 5.4
+      "x": 1.3317093521057397,
+      "y": 5.463674676317147
     },
     "rotation": 0
   },
@@ -86,6 +86,6 @@
       ]
     }
   },
-  "folder": "dcmp",
+  "folder": "4gp",
   "choreoAuto": false
 }

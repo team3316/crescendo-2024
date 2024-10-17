@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3089291736778261,
-        "y": 5.4
+        "x": 1.3317093521057397,
+        "y": 5.463674676317147
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.308929173677827,
-        "y": 5.4
+        "x": 2.33170935210574,
+        "y": 5.463674676317147
       },
       "isLocked": false,
       "linkedName": "start mid"
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "orbit",
+  "folder": "4gp",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -163,7 +163,7 @@ public class RobotContainer {
                                 new WaitUntilCommand(
                                                 () -> m_Shooter.isAtTargetVelocity() && m_Shooter
                                                                 .getShooterState() == ShooterState.ON),
-                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
                                 new WaitCommand(2),
                                 m_Shooter.getSetStateCommand(ShooterState.OFF)
                                                 .andThen(m_Manipulator.getSetStateCommand(
@@ -260,8 +260,6 @@ public class RobotContainer {
                 m_4GpChooser.addOption("4gpAMP", m_autoFactory.createAuto("4_gp_amp"));
                 m_4GpChooser.addOption("4gpSOURCE", m_autoFactory.createAuto("4_gp"));
 
-                m_4GpChooser.addOption("4gpAMPcenter", m_autoFactory.createAuto("4_gp_amp_center"));
-                m_4GpChooser.addOption("4gpSOURCEcenter", m_autoFactory.createAuto("center_4_gp"));
 
                 m_ShootAndComChooser.addOption("source shoot and exit", m_autoFactory.createAuto("source_Shoot_Com"));
                 m_ShootAndComChooser.addOption("amp shoot and exit", m_autoFactory.createAuto("amp_Shoot_Com"));
@@ -269,8 +267,6 @@ public class RobotContainer {
                 m_onlyShootChooser.addOption("only shoot", getAutoShootSequence());
 
                 m_nothingChooser.addOption("nothing", new InstantCommand());
-
-                SmartDashboard.putData("Auto Chooser PLACE BY DRIVERS!", m_chooser);
 
                 m_chooser.addOption("4_gp", m_autoFactory.createAuto("4_gp"));
 

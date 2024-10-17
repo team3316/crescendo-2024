@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.3089291736778261,
-        "y": 5.4
+        "x": 1.3317093521057397,
+        "y": 5.463674676317147
       },
       "prevControl": {
-        "x": 1.777019117050772,
-        "y": 5.4
+        "x": 1.7997992954786857,
+        "y": 5.463674676317147
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "orbit",
+  "folder": "4gp",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
