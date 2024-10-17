@@ -4,6 +4,9 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -77,7 +80,8 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-    boolean prevTriggerZero = true;
+Debouncer debouncer = new Debouncer(0.2,DebounceType.kBoth);
+boolean prevTriggerZero = true; 
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         // boolean triggerZero = getTrigger();
@@ -87,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
         // }
         
         if(rot == 0){
-            if(prevTriggerZero){
+            if(debouncer.calculate(prevTriggerZero)){
                 robotRotController.setSetpoint(getRotation2d().getRadians());
                 prevTriggerZero = false;
             }
