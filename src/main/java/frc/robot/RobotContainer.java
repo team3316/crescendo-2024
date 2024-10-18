@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -71,10 +72,19 @@ public class RobotContainer {
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
                                 m_driverController.getLeftX() *
                                                 SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
-                                m_driverController.getCombinedAxis() *
+                                m_driverController.getRightX() *
                                                 DrivetrainConstants.maxRotationSpeedRadPerSec,
                                 _fieldRelative), m_Drivetrain));
 
+                // m_Drivetrain.setDefaultCommand(new RunCommand(() -> m_Drivetrain.driveJoystickRotControl(
+                //         m_driverController.getLeftY() *
+                //                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                //         m_driverController.getLeftX() *
+                //                         SwerveModuleConstants.driveFreeSpeedMetersPerSecond,
+                //         new Translation2d(m_driverController.getRightY(), m_driverController.getRightX()),
+                //         _fieldRelative), m_Drivetrain));
+
+                SmartDashboard.putBoolean("Field Relative", _fieldRelative);
                 SmartDashboard.putBoolean("Field Relative", _fieldRelative);
 
                 this.m_autoFactory = new AutoFactory(m_Drivetrain);
@@ -163,7 +173,9 @@ public class RobotContainer {
                                 new WaitUntilCommand(
                                                 () -> m_Shooter.isAtTargetVelocity() && m_Shooter
                                                                 .getShooterState() == ShooterState.ON),
+
                                                                 m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+
                                 new WaitCommand(2),
                                 m_Shooter.getSetStateCommand(ShooterState.OFF)
                                                 .andThen(m_Manipulator.getSetStateCommand(
