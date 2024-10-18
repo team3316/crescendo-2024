@@ -114,9 +114,7 @@ public class RobotContainer {
                 m_driverController.share().onTrue(
                                 new InstantCommand(m_Drivetrain::resetYaw)); // toggle field relative mode
 
-                m_operatorController.L1().onTrue(getCollectSequence());
-                m_operatorController.R2().whileTrue(getShooterSpinCommand());
-
+                
                 m_operatorController.L1().onTrue(getCollectSequence());
                 m_operatorController.R2().whileTrue(getShooterSpinCommand());
 
