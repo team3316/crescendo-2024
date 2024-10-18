@@ -6,14 +6,15 @@ public class WristConstants {
     public static final int wristCANID = 9;
     public static final int wristHallEffectID = 2;
     
-    public static final double collectAngle = -109.3; // deg
+    public static final double collectAngle = -109.8; // deg
     public static final double AMPAngle = 0; // deg
     public static final double preClimbAngle = -109.3; // deg
 
     // The angle in which the wrist entes the range of the hall effect
     public static final double hallEffectAngle = -99.4; // deg
 
-    private static final double gearRatio = 1.0 / 35.0;
+    private static final double gearRatio = 1.0 / 35.0; 
+    
     public static final double positionFactor = 360 * gearRatio; // deg/rotations
 
     private static final double maxVelocity = 600; // deg/sec
