@@ -138,17 +138,17 @@ public class RobotContainer {
 
         private Command getShooterTriggerCommand() {
                 Command sequence = Commands.sequence(
-                                                m_ArmWristSuperStructure.getSetStateCommand(ArmWristState.COLLECT),
-                                                new WaitUntilCommand(
-                                                                () -> m_Shooter.isAtTargetVelocity() && m_Shooter
-                                                                                .getShooterState() == ShooterState.ON),
-                                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                               m_Manipulator.getSetStateCommand(ManipulatorState.OFF),  
+                                new WaitUntilCommand(
+                                                () -> m_Shooter.isAtTargetVelocity() && m_Shooter
+                                                                .getShooterState() == ShooterState.ON),
+                                                                m_Manipulator.getSetStateCommand(ManipulatorState.TO_SHOOTER),
+                                new WaitCommand(2),
+                                m_Shooter.getSetStateCommand(ShooterState.OFF)
+                                                .andThen(m_Manipulator.getSetStateCommand(
+                                                                ManipulatorState.OFF)))
+                                .alongWith(
                                                 new WaitCommand(2),
-                                                m_Shooter.getSetStateCommand(ShooterState.OFF)
-                                                                .andThen(m_Manipulator.getSetStateCommand(
-                                                                                ManipulatorState.OFF)))
-                                                .alongWith(
-                                                                new WaitCommand(2),
                                                 m_Intake.setStateCommand(IntakeState.DISABLED));
                 return sequence;
         }
