@@ -3,39 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3317093521057397,
-        "y": 5.463674676317147
+        "x": 0.7443913814334647,
+        "y": 4.4734292606487776
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.33170935210574,
-        "y": 5.463674676317147
+        "x": 2.8657117249931074,
+        "y": 2.3521089170891347
       },
       "isLocked": false,
-      "linkedName": "start mid"
+      "linkedName": "long-shoot"
     },
     {
       "anchor": {
-        "x": 2.742143631555673,
-        "y": 5.537862667174266
+        "x": 8.147329523395628,
+        "y": 2.451962756939552
       },
       "prevControl": {
-        "x": 2.244905962496012,
-        "y": 5.547612425391122
+        "x": 6.026009179835986,
+        "y": 0.3306424133799091
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "collect wing middle"
+      "linkedName": "long-collect2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "collect",
-      "waypointRelativePos": 0.3,
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.7,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -61,9 +61,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4gp",
+  "folder": "goLong",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -60.52411099675432,
     "velocity": 0
   },
   "useDefaultConstraints": true

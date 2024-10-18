@@ -164,7 +164,7 @@ public class SwerveModule {
             this._steerMotor.setReference(state.angle.getDegrees(), ControlType.kPosition);
 
         if (state.speedMetersPerSecond == 0)
-            this.stop();
+              _driveMotor.set(0);
         else
             this._driveMotor.setControl(new VelocityVoltage(
                     state.speedMetersPerSecond));

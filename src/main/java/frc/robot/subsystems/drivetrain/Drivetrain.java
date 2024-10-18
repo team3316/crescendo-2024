@@ -35,7 +35,7 @@ import frc.robot.constants.LimelightConstants;
  */
 public class Drivetrain extends SubsystemBase {
 
-    private static final boolean UPDATE_TELEMETRY = false;
+    private static final boolean UPDATE_TELEMETRY = true ;
     private static final boolean UPDATE_DASHBOARD = true;
 
     private SwerveModule[] _modules;
@@ -107,7 +107,11 @@ boolean prevTriggerZero = true;
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            if (!isRedAll()) {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            } else {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, rot, getPose().getRotation());
+            }
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
         }
@@ -119,7 +123,15 @@ boolean prevTriggerZero = true;
        
     }
 
- 
+    public boolean isRedAll() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+    }
+
+
     /**
      * Drives by X and Y inputs, maintaining given target angle given from vision
      * target
@@ -144,6 +156,7 @@ boolean prevTriggerZero = true;
     }
 
     public void periodic() {
+        calibrateSteering();
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), getSwerveModulePositions());
 
@@ -222,7 +235,7 @@ boolean prevTriggerZero = true;
             _modules[i].updateSDB(i);
         }
 
-        SmartDashboard.putNumber("Drivetrain/rotation", getRotation2d().getRadians());
+        SmartDashboard.putNumber("Drivetrain/rotation", getPose().getRotation().getRadians());
     }
 
     /************************
@@ -269,6 +282,6 @@ boolean prevTriggerZero = true;
     }
 
     public void resetYaw() {
-        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(isRedAll()?180:0))));
     }
 }

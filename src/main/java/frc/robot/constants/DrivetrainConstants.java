@@ -64,10 +64,10 @@ public class DrivetrainConstants {
         public static final double frontWheelDistMeters = 0.7403;
         public static final double sideWheelDistMeters = 0.4253;
 
-        public final static double cancoderTROffset = 22.1;
+        public final static double cancoderTROffset = 21.7;
         public final static double cancoderTLOffset = 283.8;
         public final static double cancoderBROffset = 212.6;        
-        public final static double cancoderBLOffset = 143;
+        public final static double cancoderBLOffset = 143.4;
         
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
                         new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 17, 2,

@@ -3,52 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6,
-        "y": 4.0
+        "x": 0.9276592693161668,
+        "y": 6.660923784481021
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1320116055909075,
-        "y": 4.0
+        "x": 5.08586753828312,
+        "y": 7.6055284732159025
       },
       "isLocked": false,
-      "linkedName": "collect wing bottom"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3317093521057397,
-        "y": 5.463674676317147
+        "x": 7.491201127123489,
+        "y": 7.401026427201135
       },
       "prevControl": {
-        "x": 2.023758845950897,
-        "y": 5.5397308174924715
+        "x": 6.491201127123489,
+        "y": 7.401026427201135
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "start mid"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "spinUp",
-      "waypointRelativePos": 0.3,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Shoot"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
@@ -61,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4gp",
+  "folder": "ShootAndCom",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 49.02826366648515,
     "velocity": 0
   },
   "useDefaultConstraints": true

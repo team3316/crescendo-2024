@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3089291736778261,
-        "y": 5.537862667174266
+        "x": 1.3317093521057397,
+        "y": 5.463674676317147
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.339697206084804,
-        "y": 6.105846802440936
+        "x": 2.362477384512718,
+        "y": 6.031658811583817
       },
       "isLocked": false,
       "linkedName": "start mid"
     },
     {
       "anchor": {
-        "x": 2.690272142110121,
-        "y": 6.982284142504229
+        "x": 2.75,
+        "y": 6.85
       },
       "prevControl": {
-        "x": 2.018336848061597,
-        "y": 6.719352940485241
+        "x": 1.7456674533752394,
+        "y": 7.030975105841078
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.45,
       "command": {
         "type": "sequential",
         "data": {
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "orbit",
+  "folder": "4gp",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
