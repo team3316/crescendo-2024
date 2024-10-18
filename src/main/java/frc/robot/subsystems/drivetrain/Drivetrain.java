@@ -119,15 +119,6 @@ boolean prevTriggerZero = true;
        
     }
 
-    public void driveJoystickRotControl(double xSpeed, double ySpeed, Translation2d rot, boolean fieldRelative){
-        System.out.println("set point: "+ rot.getAngle().getRadians());
-        System.out.println("mesh"+getPose().getRotation().getRadians());
-        double rotSpeed = rot.getNorm()<= JoysticksConstants.deadBand ? 0 : robotRotController.calculate(getPose().getRotation().getRadians(),rot.getAngle().getRadians());
-        System.out.println("out"+ rotSpeed);
-        rotSpeed = rotSpeed*rot.getNorm();
-
-         drive(xSpeed, ySpeed, rotSpeed, fieldRelative);
-    }
  
     /**
      * Drives by X and Y inputs, maintaining given target angle given from vision
