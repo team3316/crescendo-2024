@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3089291736778261,
-      "y": 5.537862667174266
+      "x": 1.3317093521057397,
+      "y": 5.463674676317147
     },
     "rotation": 0
   },
@@ -14,7 +14,19 @@
         {
           "type": "named",
           "data": {
+            "name": "hold"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -30,6 +42,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "MID_ORBIT_3"
@@ -39,6 +57,12 @@
           "type": "path",
           "data": {
             "pathName": "MID_ORBIT_4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -52,10 +76,16 @@
           "data": {
             "pathName": "MID_ORBIT_6"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "4gp",
   "choreoAuto": false
 }

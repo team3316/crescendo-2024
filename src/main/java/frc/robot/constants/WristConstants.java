@@ -26,4 +26,5 @@ public class WristConstants {
     public static final double kp = 0.12; //v/deg
 
     public static final double softLimitExtraAngle = 10; // deg
+    public static double wristHoldPercent = -0.05;
 }

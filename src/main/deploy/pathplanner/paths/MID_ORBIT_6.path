@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.690272142110121,
-        "y": 6.982284142504229
+        "x": 2.75,
+        "y": 6.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2905320552190216,
-        "y": 6.777539219950251
+        "x": 2.350259913108901,
+        "y": 6.645255077446022
       },
       "isLocked": false,
       "linkedName": "collect wing top"
     },
     {
       "anchor": {
-        "x": 1.3089291736778261,
-        "y": 5.537862667174266
+        "x": 1.3317093521057397,
+        "y": 5.463674676317147
       },
       "prevControl": {
-        "x": 2.079160072809458,
-        "y": 5.742607589728243
+        "x": 2.1019402512373713,
+        "y": 5.668419598871124
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "spinUp",
-      "waypointRelativePos": 0.15,
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "sequential",
         "data": {
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "orbit",
+  "folder": "4gp",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

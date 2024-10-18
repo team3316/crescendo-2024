@@ -3,52 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3317093521057397,
-        "y": 5.463674676317147
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.33170935210574,
-        "y": 5.463674676317147
+        "x": 4.1,
+        "y": 6.0
       },
       "isLocked": false,
-      "linkedName": "start mid"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.742143631555673,
-        "y": 5.537862667174266
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 2.244905962496012,
-        "y": 5.547612425391122
+        "x": 3.9,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "collect wing middle"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "collect",
-      "waypointRelativePos": 0.3,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Collect"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,
@@ -61,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4gp",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

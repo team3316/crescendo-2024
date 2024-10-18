@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7434431971001721,
-      "y": 4.465389263320095
+      "x": 1.3317093521057397,
+      "y": 5.463674676317147
     },
-    "rotation": -60.55985000194755
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,25 +14,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RIGHT_ORBIT_1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MID_ORBIT_4"
+            "name": "hold"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -48,9 +42,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Shoot"
+            "waitTime": 0.5
           }
         },
         {
@@ -66,14 +60,32 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Shoot"
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MID_ORBIT_4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "4gp",
   "choreoAuto": false
 }
