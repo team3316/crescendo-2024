@@ -3,11 +3,12 @@
   "robotLength": 0.8,
   "holonomicMode": true,
   "pathFolders": [
-    "test",
     "ShootAndCom",
-    "orbit"
+    "4gp",
+    "test"
   ],
   "autoFolders": [
+    "4gp",
     "ShootAndCom"
   ],
   "defaultMaxVel": 4.5,

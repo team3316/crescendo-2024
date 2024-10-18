@@ -127,7 +127,7 @@ public class Wrist extends SubsystemBase {
     }
 
     private Command getHoldCommand(ArmWristState targetState) {
-        return new ConditionalCommand(new InstantCommand(() -> _wristMotor.set(-0.03)), new InstantCommand(),
+        return new ConditionalCommand(new InstantCommand(() -> _wristMotor.set(WristConstants.wristHoldPercent)), new InstantCommand(),
                 () -> targetState == ArmWristState.COLLECT);
     }
 
@@ -145,6 +145,9 @@ public class Wrist extends SubsystemBase {
         SmartDashboard.putNumber("Wrist/wrist position", getPositionDeg());
         SmartDashboard.putNumber("Wrist/wrist velocity", getVelocityDegPerSec());
         SmartDashboard.putNumber("Wrist/wrist absolute position", getAbsolutePositionDeg());
+
+        // SmartDashboard.putBoolean("Wrist/hall-effect", getHallEffect());
+
     }
 
     public void setBrakeMode(boolean shouldBreak) {

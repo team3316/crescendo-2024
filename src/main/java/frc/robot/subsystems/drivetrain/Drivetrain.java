@@ -30,7 +30,7 @@ import frc.robot.constants.LimelightConstants;
  */
 public class Drivetrain extends SubsystemBase {
 
-    private static final boolean UPDATE_TELEMETRY = false;
+    private static final boolean UPDATE_TELEMETRY = true ;
     private static final boolean UPDATE_DASHBOARD = true;
 
     private SwerveModule[] _modules;
@@ -75,7 +75,11 @@ public class Drivetrain extends SubsystemBase {
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            if (!isRedAll()) {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
+            } else {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, rot, getPose().getRotation());
+            }
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
         }
@@ -83,6 +87,14 @@ public class Drivetrain extends SubsystemBase {
         var moduleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(speeds);
 
         setDesiredStates(moduleStates);
+    }
+
+    public boolean isRedAll() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
     }
 
     /**
@@ -109,6 +121,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void periodic() {
+        calibrateSteering();
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), getSwerveModulePositions());
 
@@ -187,7 +200,7 @@ public class Drivetrain extends SubsystemBase {
             _modules[i].updateSDB(i);
         }
 
-        SmartDashboard.putNumber("Drivetrain/rotation", getRotation2d().getRadians());
+        SmartDashboard.putNumber("Drivetrain/rotation", getPose().getRotation().getRadians());
     }
 
     /************************
@@ -234,6 +247,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetYaw() {
-        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        resetPose(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(isRedAll()?180:0))));
     }
 }

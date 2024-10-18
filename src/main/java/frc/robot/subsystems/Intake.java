@@ -16,13 +16,14 @@ public class Intake extends SubsystemBase {
     private DBugSparkMax _intakeRoller;
 
     private DigitalInput _hasNoteSwitch;
-    private Debouncer _hasNoteDebouncer;
+    // private Debouncer _hasNoteDebouncer;
 
     private IntakeState _state;
 
     public static enum IntakeState {
         COLLECTING(IntakeConstants.collectingPercentage),
         SLOW_COLLECT(IntakeConstants.slowCollectPercentage),
+        AUTO_SLOW(0.6),
         EJECT(IntakeConstants.ejectPercentage),
         DISABLED(IntakeConstants.disabledPrecent);
         
@@ -35,7 +36,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(){
         this._hasNoteSwitch = new DigitalInput(IntakeConstants.sensorID);
-        this._hasNoteDebouncer = new Debouncer(0.5);
+        // this._hasNoteDebouncer = new Debouncer(0.5);
 
         _intakeMotor = DBugSparkMax.create(IntakeConstants.intakeMotorID);
         _intakeMotor.setSmartCurrentLimit(15);
@@ -46,7 +47,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean isNoteInIntake(){
-        return _hasNoteDebouncer.calculate(!_hasNoteSwitch.get());
+        return /*_hasNoteDebouncer.calculate*/(!_hasNoteSwitch.get());
     }
 
     public IntakeState getState(){
