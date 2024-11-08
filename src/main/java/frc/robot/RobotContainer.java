@@ -136,7 +136,7 @@ public class RobotContainer {
                 m_operatorController.cross().onTrue(m_Intake.setStateCommand(IntakeState.DISABLED)
                                 .alongWith(m_Manipulator.getSetStateCommand(ManipulatorState.OFF)));
 
-                m_operatorController.circle()
+                m_operatorController.circle().or(m_driverController.circle())
                                 .onTrue(Commands.sequence(m_Manipulator.getSetStateCommand(ManipulatorState.AMP),
                                                 new WaitCommand(3), m_Manipulator
                                                                 .getSetStateCommand(ManipulatorState.OFF)));

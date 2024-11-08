@@ -40,11 +40,10 @@ public class DBugPS5Controller extends PS5Controller {
 
     @Override
     public double getRightX() {
-        return squareInputs(calculateDeadband(-super.getRightX(), -super.getRightY()));
+        return squareInputs(squareInputs(calculateDeadband(-super.getRightX(), -super.getRightY())));
     }
-
     @Override
     public double getRightY() {
-        return squareInputs(calculateDeadband(-super.getRightY(), -super.getRightX()));
+        return squareInputs(squareInputs(calculateDeadband(-super.getRightY(), -super.getRightX())));
     }
 }
