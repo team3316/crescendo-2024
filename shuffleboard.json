@@ -229,19 +229,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/Auto Chooser PLACE BY DRIVERS!",
-              "_title": "/SmartDashboard/Auto Chooser PLACE BY DRIVERS!",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "7,2": {
             "size": [
               1,
@@ -528,8 +515,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul",
-              "Visible data/SmartDashboard/aaaaaaaaa: error": true
+              "Y-axis/Unit": "ul"
             }
           },
           "3,1": {

@@ -101,7 +101,7 @@ boolean prevTriggerZero = true;
         else{
             prevTriggerZero =true;
         }
-         SmartDashboard.putNumber("aaaaaaaaa: error", robotRotController.getSetpoint()- getRotation2d().getRadians());
+        
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
